@@ -3,7 +3,7 @@
 
 # Differentiable Mix Style Transfer
 
-<img src="./Assets/mst_final.png">
+<img src="./Assets/mst_wbg.png">
 
 </div>
 
