@@ -1,0 +1,10 @@
+
+env/**
+mst/callbacks/trail.ipynb
+model_saved/**
+
+
+__pycache__
+*.egg-info
+dasp-pytorch/**
+

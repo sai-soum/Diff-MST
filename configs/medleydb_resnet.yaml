@@ -1,0 +1,95 @@
+seed_everything: true
+
+trainer:
+  logger: 
+    class_path: pytorch_lightning.loggers.TensorBoardLogger
+    init_args:
+      save_dir: /fsx/home-csteinmetz1/logs/mix-style-transfer
+  enable_checkpointing: true
+  callbacks: null
+  default_root_dir: null
+  gradient_clip_val: 4.0
+  gpus: 1
+  track_grad_norm: -1
+  check_val_every_n_epoch: 1
+  max_steps: 100000
+  log_every_n_steps: 50
+  accelerator: gpu
+  strategy: ddp
+  sync_batchnorm: true
+  precision: 32
+  enable_model_summary: true
+  num_sanity_val_steps: 2
+  benchmark: true
+  amp_backend: native
+  multiple_trainloader_mode: max_size_cycle
+
+model:
+  class_path: mst.system.System
+  init_args:
+    mix_fn: mst.mixing.naive_random_mix
+    model:
+      class_path: mst.modules.MixStyleTransferModel
+      init_args:
+        track_encoder: 
+          class_path: mst.modules.SpectrogramResNetEncoder
+          init_args:
+            embed_dim: 128
+            n_fft: 2048
+            hop_length: 512
+            input_batchnorm: false
+        mix_encoder: 
+          class_path: mst.modules.SpectrogramResNetEncoder
+          init_args:
+            embed_dim: 128
+            n_fft: 2048
+            hop_length: 512
+            input_batchnorm: false
+        controller:
+          class_path: mst.modules.TransformerController
+          init_args:
+            embed_dim: 128
+            num_control_params: 2
+            num_layers: 6
+            nhead: 8
+        mix_console:
+          class_path: mst.modules.BasicMixConsole
+          init_args:
+            sample_rate: 44100
+            min_gain_db: -80.0
+            max_gain_db: 24.0
+            min_pan: 0.0
+            max_pan: 1.0
+    loss: 
+      class_path: auraloss.freq.MultiResolutionSTFTLoss
+      init_args:
+        fft_sizes: 
+        - 512
+        - 2048
+        - 8192
+        hop_sizes: 
+        - 256 
+        - 1024
+        - 4096
+        win_lengths:
+        - 512
+        - 2048
+        - 8192
+        w_sc: 0.0
+        w_phs: 0.0
+        w_lin_mag: 1.0
+        w_log_mag: 1.0
+       
+data:
+  class_path: mst.data.medley.MedleyDBDataModule
+  init_args:
+    root_dirs: 
+    - /fsx/home-csteinmetz1/data/MedleyDB/V1
+    - /fsx/home-csteinmetz1/data/MedleyDB/V2
+    length: 524288
+    batch_size: 8
+    num_workers: 4
+optimizer:
+  class_path: torch.optim.AdamW
+  init_args:
+    lr: 0.00001
