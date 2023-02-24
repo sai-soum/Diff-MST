@@ -2,6 +2,8 @@
 <div align="center">
 
 # Differentiable Mixing Style Transfer
+[Paper]()|[Website]()
+
 
 <img src="./Assets/mst_wbg.png">
 
