@@ -1,4 +1,4 @@
-# Diff-MST
+
 <div align="center">
 
 # Differentiable Mixing Style Transfer
