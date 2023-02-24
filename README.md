@@ -1,14 +1,21 @@
 # Diff-MST
 <div align="center">
 
-# Differentiable Mix Style Transfer
+# Differentiable Mixing Style Transfer
 
 <img src="./Assets/mst_wbg.png">
 
 </div>
 
 Mixing style transfer using reference mix. 
-Given the stems of a song and the correcsponding demo mix, the model can predict gain and pan parameters for each of the stems.
+Given the tracks of a song and the correcsponding reference mix, the model can predict mixing console parameter values for each of the tracks.
+
+There are two mixing console configurations (in `modules.py`)
+1. `BasicMixConsole`: Gain + Pan
+2. `AdvancedMixConsole`: Gain + Pan + Diff EQ + Diff Compressor
+
+Mixes for training can be created using either `naive_random_mix` (assigns random parameter values for mixing console to create a mix) or `knowledge_engineering_mix` (uses knowledge engineering to assign parameter values for mixing console to create a mix). Both of these modules can be found in `mixing.py`
+
 
 
 # Usage
