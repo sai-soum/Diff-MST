@@ -50,5 +50,5 @@ git pull
 
 To train the model: 
 ```
-python scripts/train.py fit --config=configs/medleydb_resnet.yaml
+python main.py fit --config=configs/medleydb_resnet_dmc.yaml
 ```

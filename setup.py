@@ -36,7 +36,7 @@ setup(
         "pedalboard",
         "torchvision",
         "auraloss",
-        "pytorch_lightning",
+        "pytorch_lightning[extra]",
         "scipy",
         "matplotlib",
         "numpy",

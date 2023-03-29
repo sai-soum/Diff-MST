@@ -190,6 +190,8 @@ class MedleyDBDataModule(pl.LightningDataModule):
         length: int,
         num_workers: int = 4,
         batch_size: int = 16,
+        train_buffer_size_gb: float = 2.0,
+        val_buffer_size_gb: float = 0.1,
     ):
         super().__init__()
         self.save_hyperparameters()
@@ -198,15 +200,17 @@ class MedleyDBDataModule(pl.LightningDataModule):
         if stage == "fit":
             self.train_dataset = MedleyDBDataset(
                 root_dirs=self.hparams.root_dirs,
-                indices=[0, 90],
+                indices=[0, 70],
                 length=self.hparams.length,
+                buffer_size_gb=self.hparams.train_buffer_size_gb,
             )
 
         if stage == "validate" or stage == "fit":
             self.val_dataset = MedleyDBDataset(
                 root_dirs=self.hparams.root_dirs,
-                indices=[90, 100],
+                indices=[70, 100],
                 length=self.hparams.length,
+                buffer_size_gb=self.hparams.val_buffer_size_gb,
             )
 
     def train_dataloader(self):
