@@ -115,6 +115,7 @@ class System(pl.LightningModule):
         # for plotting down the line
         data_dict = {
             "ref_mix_a": ref_mix_a.detach().float().cpu(),
+            "ref_mix_b": ref_mix_b.detach().float().cpu(),
             "pred_mix_a": pred_mix_a.detach().float().cpu(),
         }
 
@@ -126,11 +127,7 @@ class System(pl.LightningModule):
 
     def validation_step(self, batch, batch_idx):
         loss, data_dict = self.common_step(batch, batch_idx, train=False)
-
-        if batch_idx == 0:
-            return loss, data_dict
-
-        return loss
+        return data_dict
 
     def configure_optimizers(self):
         optimizer = torch.optim.Adam(

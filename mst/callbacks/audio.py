@@ -27,9 +27,8 @@ class LogAudioCallback(pl.callbacks.Callback):
         dataloader_idx,
     ):
         """Called when the validation batch ends."""
-
         if outputs is not None:
-            num_examples = outputs["x"].shape[0]
+            num_examples = outputs["ref_mix_a"].shape[0]
             if num_examples > self.num_examples:
                 num_examples = self.num_examples
 
@@ -38,7 +37,7 @@ class LogAudioCallback(pl.callbacks.Callback):
                     self.log_audio(
                         outputs,
                         n,
-                        pl_module.hparams.sample_rate,
+                        pl_module.model.mix_console.sample_rate,
                         trainer.global_step,
                         trainer.logger,
                     )
@@ -53,49 +52,35 @@ class LogAudioCallback(pl.callbacks.Callback):
         n_fft: int = 4096,
         hop_length: int = 1024,
     ):
-        if "x" in outputs:
-            x = outputs["x"][batch_idx, ...].float()
+        if "ref_mix_a" in outputs:
+            x = outputs["ref_mix_a"][batch_idx, ...].float()
             x /= x.abs().max()
 
             logger.experiment.add_audio(
-                f"{batch_idx+1}/input",
+                f"{batch_idx+1}/ref_mix_a",
                 x[0:1, :],
                 global_step,
                 sample_rate=sample_rate,
             )
 
-        if "y" in outputs:
-            y = outputs["y"][batch_idx, ...].float()
+        if "ref_mix_b" in outputs:
+            y = outputs["ref_mix_b"][batch_idx, ...].float()
             y /= y.abs().max()
 
             logger.experiment.add_audio(
-                f"{batch_idx+1}/target",
+                f"{batch_idx+1}/ref_mix_b",
                 y[0:1, :],
                 global_step,
                 sample_rate=sample_rate,
             )
 
-        if "y_hat" in outputs:
-            y_hat = outputs["y_hat"][batch_idx, ...].float()
+        if "pred_mix_a" in outputs:
+            y_hat = outputs["pred_mix_a"][batch_idx, ...].float()
             y_hat /= y_hat.abs().max()
 
             logger.experiment.add_audio(
-                f"{batch_idx+1}/estimate",
+                f"{batch_idx+1}/pred_mix_a",
                 y_hat[0:1, :],
                 global_step,
                 sample_rate=sample_rate,
-            )
-
-        if "x" in outputs and "y" in outputs and "y_hat" in outputs:
-            logger.experiment.add_image(
-                f"spectrograms/{batch_idx+1}",
-                plot_spectrograms(
-                    x,
-                    y,
-                    y_hat,
-                    n_fft=n_fft,
-                    hop_length=hop_length,
-                    sample_rate=sample_rate,
-                ),
-                global_step,
             )

@@ -6,7 +6,8 @@ trainer:
     init_args:
       save_dir: /fsx/home-csteinmetz1/logs/DiffMST
   enable_checkpointing: true
-  callbacks: null
+  callbacks:
+    - class_path: mst.callbacks.audio.LogAudioCallback
   default_root_dir: null
   gradient_clip_val: 4.0
   gpus: 1
@@ -97,7 +98,7 @@ data:
     batch_size: 8
     num_workers: 4
     train_buffer_size_gb: 4
-    val_buffer_size_gb: 1
+    val_buffer_size_gb: 0.1
 optimizer:
   class_path: torch.optim.AdamW
   init_args:

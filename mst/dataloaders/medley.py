@@ -21,7 +21,7 @@ class MedleyDBDataset(torch.utils.data.Dataset):
         length: float = 524288,
         indices: List[int] = [0, 90],
         buffer_reload_rate: int = 4000,
-        num_examples_per_epoch: int = 1000,
+        num_examples_per_epoch: int = 10000,
         buffer_size_gb: float = 1.0,
     ) -> None:
         super().__init__()
