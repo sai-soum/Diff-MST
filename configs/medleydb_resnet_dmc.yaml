@@ -97,8 +97,8 @@ data:
     length: 524288
     batch_size: 8
     num_workers: 4
-    train_buffer_size_gb: 4
-    val_buffer_size_gb: 0.1
+    train_buffer_size_gb: 8
+    val_buffer_size_gb: 1.0
 optimizer:
   class_path: torch.optim.AdamW
   init_args:
