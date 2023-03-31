@@ -93,7 +93,8 @@ data:
   class_path: mst.dataloaders.medley.MedleyDBDataModule
   init_args:
     root_dirs: 
-    - /scratch/MedleyDB/V1
+    - /scratch/csteinmetz1/V1
+    - /scratch/csteinmetz1/MedleyDB_V2
     length: 524288
     batch_size: 8
     num_workers: 4
