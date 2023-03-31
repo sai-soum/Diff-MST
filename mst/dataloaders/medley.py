@@ -203,14 +203,16 @@ class MedleyDBDataModule(pl.LightningDataModule):
                 indices=[0, 70],
                 length=self.hparams.length,
                 buffer_size_gb=self.hparams.train_buffer_size_gb,
+                num_examples_per_epoch=10000,
             )
 
         if stage == "validate" or stage == "fit":
             self.val_dataset = MedleyDBDataset(
                 root_dirs=self.hparams.root_dirs,
-                indices=[0, 70],  # temporarily use the same indices as train
+                indices=[70, 120],
                 length=self.hparams.length,
                 buffer_size_gb=self.hparams.val_buffer_size_gb,
+                num_examples_per_epoch=1000,
             )
 
     def train_dataloader(self):
