@@ -5,6 +5,7 @@ import random
 import itertools
 import torchaudio
 import numpy as np
+import pyloudnorm as pyln
 import pytorch_lightning as pl
 
 from tqdm import tqdm
@@ -23,6 +24,7 @@ class MedleyDBDataset(torch.utils.data.Dataset):
         buffer_reload_rate: int = 4000,
         num_examples_per_epoch: int = 10000,
         buffer_size_gb: float = 1.0,
+        target_track_lufs_db: float = -32.0,
     ) -> None:
         super().__init__()
         self.sample_rate = sample_rate
@@ -37,6 +39,9 @@ class MedleyDBDataset(torch.utils.data.Dataset):
         self.buffer_frames = (
             self.length
         )  # load examples with same size as the train length
+        self.target_track_lufs_db = target_track_lufs_db
+
+        self.meter = pyln.Meter(sample_rate)  # create BS.1770 meter
 
         self.mix_dirs = []
         for root_dir in root_dirs:
@@ -132,9 +137,24 @@ class MedleyDBDataset(torch.utils.data.Dataset):
                 if track.shape[-1] != self.buffer_frames:
                     continue
 
+                # loudness normalization
+                track_lufs_db = self.meter.integrated_loudness(y.permute(1, 0).numpy())
+
+                if track_lufs_db == float("-inf"):
+                    continue
+
+                delta_lufs_db = torch.tensor(
+                    [self.target_track_lufs_db - track_lufs_db]
+                ).float()
+                gain_lin = 10.0 ** (delta_lufs_db.clamp(-120, 40.0) / 20.0)
+                track = gain_lin * track
+
                 tracks.append(track)
                 nbytes = track.element_size() * track.nelement()
                 nbytes_loaded += nbytes
+
+            if len(tracks) < self.min_tracks:
+                continue
 
             # store this example
             example = {

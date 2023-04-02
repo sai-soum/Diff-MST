@@ -22,6 +22,7 @@ def naive_random_mix(tracks: torch.Tensor, mix_console: torch.nn.Module):
     # generate a mix of the tracks
     mix, param_dict = mix_console(tracks, mix_params)
 
-    # might want to consider loudnorm here?
+    # peak normalize the mix
+    mix /= mix.abs().max().clamp(min=1e-8)
 
     return mix, param_dict
