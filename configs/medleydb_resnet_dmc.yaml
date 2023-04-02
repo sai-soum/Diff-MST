@@ -2,8 +2,9 @@ seed_everything: true
 
 trainer:
   logger: 
-    class_path: pytorch_lightning.loggers.TensorBoardLogger
+    class_path: pytorch_lightning.loggers.WandbLogger
     init_args:
+      project: DiffMST
       save_dir: /fsx/home-csteinmetz1/logs/DiffMST
   enable_checkpointing: true
   callbacks:
@@ -98,8 +99,8 @@ data:
     length: 524288
     batch_size: 8
     num_workers: 4
-    train_buffer_size_gb: 8
-    val_buffer_size_gb: 1.0
+    train_buffer_size_gb: 8.0
+    val_buffer_size_gb: 0.1
 optimizer:
   class_path: torch.optim.AdamW
   init_args:

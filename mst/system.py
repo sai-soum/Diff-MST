@@ -117,6 +117,7 @@ class System(pl.LightningModule):
             "ref_mix_a": ref_mix_a.detach().float().cpu(),
             "ref_mix_b": ref_mix_b.detach().float().cpu(),
             "pred_mix_a": pred_mix_a.detach().float().cpu(),
+            "sum_mix_a": tracks_a.sum(dim=1, keepdim=True).detach().float().cpu(),
         }
 
         return loss, data_dict

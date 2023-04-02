@@ -13,11 +13,12 @@ from pytorch_lightning.strategies import DDPStrategy
 
 def cli_main():
     cli = LightningCLI(
+        save_config_callback=None,
         trainer_defaults={
             "accelerator": "gpu",
             "strategy": DDPStrategy(find_unused_parameters=False),
-            "log_every_n_steps": 1,
-        }
+            "log_every_n_steps": 50,
+        },
     )
 
 
