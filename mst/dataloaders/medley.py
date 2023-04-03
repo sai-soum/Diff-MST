@@ -5,6 +5,7 @@ import random
 import itertools
 import torchaudio
 import numpy as np
+import pyloudnorm as pyln
 import pytorch_lightning as pl
 
 from tqdm import tqdm
@@ -21,8 +22,9 @@ class MedleyDBDataset(torch.utils.data.Dataset):
         length: float = 524288,
         indices: List[int] = [0, 90],
         buffer_reload_rate: int = 4000,
-        num_examples_per_epoch: int = 1000,
+        num_examples_per_epoch: int = 10000,
         buffer_size_gb: float = 1.0,
+        target_track_lufs_db: float = -32.0,
     ) -> None:
         super().__init__()
         self.sample_rate = sample_rate
@@ -37,6 +39,9 @@ class MedleyDBDataset(torch.utils.data.Dataset):
         self.buffer_frames = (
             self.length
         )  # load examples with same size as the train length
+        self.target_track_lufs_db = target_track_lufs_db
+
+        self.meter = pyln.Meter(sample_rate)  # create BS.1770 meter
 
         self.mix_dirs = []
         for root_dir in root_dirs:
@@ -132,9 +137,24 @@ class MedleyDBDataset(torch.utils.data.Dataset):
                 if track.shape[-1] != self.buffer_frames:
                     continue
 
+                # loudness normalization
+                track_lufs_db = self.meter.integrated_loudness(y.permute(1, 0).numpy())
+
+                if track_lufs_db == float("-inf"):
+                    continue
+
+                delta_lufs_db = torch.tensor(
+                    [self.target_track_lufs_db - track_lufs_db]
+                ).float()
+                gain_lin = 10.0 ** (delta_lufs_db.clamp(-120, 40.0) / 20.0)
+                track = gain_lin * track
+
                 tracks.append(track)
                 nbytes = track.element_size() * track.nelement()
                 nbytes_loaded += nbytes
+
+            if len(tracks) < self.min_tracks:
+                continue
 
             # store this example
             example = {
@@ -190,6 +210,8 @@ class MedleyDBDataModule(pl.LightningDataModule):
         length: int,
         num_workers: int = 4,
         batch_size: int = 16,
+        train_buffer_size_gb: float = 2.0,
+        val_buffer_size_gb: float = 0.1,
     ):
         super().__init__()
         self.save_hyperparameters()
@@ -198,15 +220,19 @@ class MedleyDBDataModule(pl.LightningDataModule):
         if stage == "fit":
             self.train_dataset = MedleyDBDataset(
                 root_dirs=self.hparams.root_dirs,
-                indices=[0, 90],
+                indices=[0, 70],
                 length=self.hparams.length,
+                buffer_size_gb=self.hparams.train_buffer_size_gb,
+                num_examples_per_epoch=10000,
             )
 
         if stage == "validate" or stage == "fit":
             self.val_dataset = MedleyDBDataset(
                 root_dirs=self.hparams.root_dirs,
-                indices=[90, 100],
+                indices=[70, 120],
                 length=self.hparams.length,
+                buffer_size_gb=self.hparams.val_buffer_size_gb,
+                num_examples_per_epoch=1000,
             )
 
     def train_dataloader(self):

@@ -1,9 +1,9 @@
 from pathlib import Path
 from setuptools import setup, find_packages
 
-NAME = "mix-style-transfer"
+NAME = "DiffMST"
 DESCRIPTION = "Mix style transfer with differentiable signal processing"
-URL = "https://github.com/sai-soum/mix_style_transfer.git"
+URL = "https://github.com/sai-soum/DiffMST.git"
 EMAIL = "s.s.vanka@qmul.ac.uk"
 AUTHOR = "Soumya Sai Vanka"
 REQUIRES_PYTHON = ">=3.7.11"
@@ -36,13 +36,15 @@ setup(
         "pedalboard",
         "torchvision",
         "auraloss",
-        "pytorch_lightning",
+        "pytorch_lightning[extra]",
         "scipy",
         "matplotlib",
         "numpy",
         "tqdm",
         "tensorboard",
         "librosa",
+        "pyloudnorm",
+        "wandb",
     ],
     extras_require={
         "asteroid": ["asteroid-filterbanks>=0.3.2"],

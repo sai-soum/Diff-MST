@@ -48,7 +48,8 @@ git pull
 
 ## Train
 
-To train the model: 
+First update the paths in the configuration file for both the logger and the dataset root directory.
+Then call the `main.py` script passing in the configuration file. 
 ```
-python scripts/train.py fit --config=configs/medleydb_resnet.yaml
+python main.py fit --config=configs/medleydb_resnet_dmc.yaml
 ```

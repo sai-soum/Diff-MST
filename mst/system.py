@@ -11,12 +11,14 @@ class System(pl.LightningModule):
     def __init__(
         self,
         model: torch.nn.Module,
+        generate_mix_console: torch.nn.Module,
         mix_fn: Callable,
         loss: torch.nn.Module,
         **kwargs,
     ) -> None:
         super().__init__()
         self.model = model
+        self.generate_mix_console = generate_mix_console
         self.mix_fn = mix_fn
         self.loss = loss
 
@@ -60,7 +62,7 @@ class System(pl.LightningModule):
         tracks = batch
 
         # create a random mix (on GPU, if applicable)
-        ref_mix, ref_param_dict = self.mix_fn(tracks, self.model.mix_console)
+        ref_mix, ref_param_dict = self.mix_fn(tracks, self.generate_mix_console)
 
         # now split into A and B sections
         middle_idx = ref_mix.shape[-1] // 2
@@ -83,6 +85,7 @@ class System(pl.LightningModule):
             on_epoch=True,
             prog_bar=True,
             logger=True,
+            sync_dist=True,
         )
 
         sisdr_error = -self.sisdr(pred_mix_a, ref_mix_a)
@@ -94,6 +97,7 @@ class System(pl.LightningModule):
             on_epoch=True,
             prog_bar=False,
             logger=True,
+            sync_dist=True,
         )
 
         mrstft_error = self.mrstft(pred_mix_a, ref_mix_a)
@@ -105,12 +109,15 @@ class System(pl.LightningModule):
             on_epoch=True,
             prog_bar=False,
             logger=True,
+            sync_dist=True,
         )
 
         # for plotting down the line
         data_dict = {
             "ref_mix_a": ref_mix_a.detach().float().cpu(),
+            "ref_mix_b": ref_mix_b.detach().float().cpu(),
             "pred_mix_a": pred_mix_a.detach().float().cpu(),
+            "sum_mix_a": tracks_a.sum(dim=1, keepdim=True).detach().float().cpu(),
         }
 
         return loss, data_dict
@@ -121,11 +128,7 @@ class System(pl.LightningModule):
 
     def validation_step(self, batch, batch_idx):
         loss, data_dict = self.common_step(batch, batch_idx, train=False)
-
-        if batch_idx == 0:
-            return loss, data_dict
-
-        return loss
+        return data_dict
 
     def configure_optimizers(self):
         optimizer = torch.optim.Adam(
