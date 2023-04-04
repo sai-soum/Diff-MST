@@ -160,10 +160,10 @@ class BasicMixConsole(torch.nn.Module):
         # extract and denormalize the parameters
         param_dict = {
             "input_gain": {
-                "gain_db": mix_params[..., 0],  # bs, num_tracks, 1
+                "gain_db": mix_params[:,:, 0],  # bs, num_tracks, 1
             },
             "stereo_panner": {
-                "pan": mix_params[..., 1],
+                "pan": mix_params[:,:, 1],
             },
         }
         param_dict = denormalize_parameters(param_dict, self.param_ranges)

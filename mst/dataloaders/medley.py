@@ -155,11 +155,13 @@ class MedleyDBDataset(torch.utils.data.Dataset):
                     frame_offset=offset,
                     num_frames=self.buffer_frames,
                 )
-
+                #-------------------------------------------
                 
-
-                if (track**2).mean() < 1e-3:
-                    continue
+                #this checks for silence in the track
+                # if (track**2).mean() < 1e-3:
+                #     print("passed")
+                #     continue
+                #-------------------------------------------
                 #print(track_filepath)
                 # if track.shape[-1] != self.buffer_frames:
                 #     continue
@@ -219,6 +221,7 @@ class MedleyDBDataset(torch.utils.data.Dataset):
         # read tracks from RAM
         tracks = torch.zeros(self.max_tracks, self.length)
         instrument_id = example["metadata"]
+
         
         track_idx = 0
         
@@ -238,6 +241,9 @@ class MedleyDBDataset(torch.utils.data.Dataset):
                 else:
                     tracks[track_idx, :] = track[ch_idx, :]
                     track_idx += 1
+        # print(tracks.shape)
+        
+        instrument_id = torch.tensor(instrument_id)
         
         return tracks, instrument_id, example["genre"]
 
@@ -288,14 +294,16 @@ class MedleyDBDataModule(pl.LightningDataModule):
 #     dataset = MedleyDBDataset(root_dirs=["/import/c4dm-datasets/MedleyDB_V1/V1"])
 #     print(len(dataset))
 
-#     dataloader = torch.utils.data.DataLoader(dataset, batch_size=1, shuffle=False)
+#     dataloader = torch.utils.data.DataLoader(dataset, batch_size=4, shuffle=False)
 
-#     for i, (track, instrument_id) in enumerate(dataloader):
+#     for i, (track, instrument_id, genre) in enumerate(dataloader):
 #         #print(track.shape)
 #         #print(track.shape)
-#         print(instrument_id)
+#         # print(instrument_id)
+#         # print(genre)
+#         # print(track.size())
         
 
-#         if i > 2:
+#         if i == 0:
 
 #             break
