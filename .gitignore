@@ -6,5 +6,5 @@ model_saved/**
 
 __pycache__
 *.egg-info
-dasp-pytorch/**
+dasp-pytorch/
 

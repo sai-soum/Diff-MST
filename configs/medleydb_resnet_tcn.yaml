@@ -53,13 +53,27 @@ model:
             num_layers: 6
             nhead: 8
         mix_console:
-          class_path: mst.modules.BasicMixConsole
+          class_path: mst.modules.TCNMixConsole
           init_args:
-            sample_rate: 44100
-            min_gain_db: -80.0
-            max_gain_db: 24.0
-            min_pan: 0.0
-            max_pan: 1.0
+            tcn:
+              class_path: mst.modules.TCN
+              init_args:
+                out_channels: [64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 2]
+                dilations: [1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1]
+                in_ch: 1
+                kernel_size: 13
+                cond_dim: 256
+                use_film_bn: true
+
+    generate_mix_console:
+      class_path: mst.modules.BasicMixConsole
+      init_args:
+        sample_rate: 44100
+        min_gain_db: -80.0
+        max_gain_db: 24.0
+        min_pan: 0.0
+        max_pan: 1.0
+
     loss: 
       class_path: auraloss.freq.MultiResolutionSTFTLoss
       init_args:
@@ -81,11 +95,10 @@ model:
         w_log_mag: 1.0
        
 data:
-  class_path: mst.data.medley.MedleyDBDataModule
+  class_path: mst.dataloaders.medley.MedleyDBDataModule
   init_args:
     root_dirs: 
-    - /fsx/home-csteinmetz1/data/MedleyDB/V1
-    - /fsx/home-csteinmetz1/data/MedleyDB/V2
+    - /admin/home-csteinmetz1/data/V1
     length: 524288
     batch_size: 8
     num_workers: 4

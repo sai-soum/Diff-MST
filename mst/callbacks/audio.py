@@ -1,3 +1,5 @@
+import torch
+import wandb
 import numpy as np
 import pytorch_lightning as pl
 
@@ -27,9 +29,8 @@ class LogAudioCallback(pl.callbacks.Callback):
         dataloader_idx,
     ):
         """Called when the validation batch ends."""
-
         if outputs is not None:
-            num_examples = outputs["x"].shape[0]
+            num_examples = outputs["ref_mix_a"].shape[0]
             if num_examples > self.num_examples:
                 num_examples = self.num_examples
 
@@ -38,9 +39,10 @@ class LogAudioCallback(pl.callbacks.Callback):
                     self.log_audio(
                         outputs,
                         n,
-                        pl_module.hparams.sample_rate,
+                        pl_module.model.mix_console.sample_rate,
                         trainer.global_step,
                         trainer.logger,
+                        f"Epoch {trainer.current_epoch}",
                     )
 
     def log_audio(
@@ -50,52 +52,37 @@ class LogAudioCallback(pl.callbacks.Callback):
         sample_rate: int,
         global_step: int,
         logger,
+        caption: str,
         n_fft: int = 4096,
         hop_length: int = 1024,
     ):
-        if "x" in outputs:
-            x = outputs["x"][batch_idx, ...].float()
+        audio_files = []
+        audio_keys = []
+        total_samples = 0
+        # put all audio in file
+        for key, audio in outputs.items():
+            x = audio[batch_idx, ...].float()
+            x = x.permute(1, 0)
             x /= x.abs().max()
+            audio_files.append(x)
+            audio_keys.append(key)
+            total_samples += x.shape[0]
 
-            logger.experiment.add_audio(
-                f"{batch_idx+1}/input",
-                x[0:1, :],
-                global_step,
-                sample_rate=sample_rate,
-            )
+        y = torch.zeros(total_samples + int(len(audio_keys) * sample_rate), 2)
+        name = f"{batch_idx}_"
+        start = 0
+        for x, key in zip(audio_files, audio_keys):
+            end = start + x.shape[0]
+            y[start:end, :] = x
+            start = end + int(sample_rate)
+            name += key + "-"
 
-        if "y" in outputs:
-            y = outputs["y"][batch_idx, ...].float()
-            y /= y.abs().max()
-
-            logger.experiment.add_audio(
-                f"{batch_idx+1}/target",
-                y[0:1, :],
-                global_step,
-                sample_rate=sample_rate,
-            )
-
-        if "y_hat" in outputs:
-            y_hat = outputs["y_hat"][batch_idx, ...].float()
-            y_hat /= y_hat.abs().max()
-
-            logger.experiment.add_audio(
-                f"{batch_idx+1}/estimate",
-                y_hat[0:1, :],
-                global_step,
-                sample_rate=sample_rate,
-            )
-
-        if "x" in outputs and "y" in outputs and "y_hat" in outputs:
-            logger.experiment.add_image(
-                f"spectrograms/{batch_idx+1}",
-                plot_spectrograms(
-                    x,
-                    y,
-                    y_hat,
-                    n_fft=n_fft,
-                    hop_length=hop_length,
-                    sample_rate=sample_rate,
-                ),
-                global_step,
-            )
+        logger.experiment.log(
+            {
+                f"{name}": wandb.Audio(
+                    y.numpy(),
+                    caption=caption,
+                    sample_rate=int(sample_rate),
+                )
+            }
+        )
