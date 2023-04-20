@@ -77,7 +77,7 @@ class MedleyDBDataset(torch.utils.data.Dataset):
             if mix_id in self.medley_split[self.indices]:
                 subset_dirs.append(mix_dir)
         self.mix_dirs = subset_dirs    
-        print(f"Found {len(self.mix_dirs)} mix directories in {self.indices} set.")
+        print(f"Found {len(self.mix_dirs)} mix directories in {self.indices} sest.")
 
         filtered_mix_dirs = []
 
@@ -172,6 +172,7 @@ class MedleyDBDataset(torch.utils.data.Dataset):
                     frame_offset=offset,
                     num_frames=self.buffer_frames,
                 )
+                #print(track.shape)
                 #-------------------------------------------
                 
                 #this checks for silence in the track
@@ -206,24 +207,31 @@ class MedleyDBDataset(torch.utils.data.Dataset):
                 ).float()
                 gain_lin = 10.0 ** (delta_lufs_db.clamp(-120, 40.0) / 20.0)
                 track = gain_lin * track
+                
 
                 tracks.append(track)
                 #get the instrumnet name from the metadata file
                 instru_id = mdata[os.path.basename(track_filepath)]
                 #assign the instrument id based on the instrument name
+                
                 inst_id = self.instrument_ids[instru_id]
+                metadata.append(inst_id)
+                if track.shape[-2] == 2:
+                    #print("Stereo track found", track.shape)
+                    metadata.append(inst_id)
+
                 
                 #print(instru_id)
-                metadata.append(inst_id)
+                
                 # print("\n")
                 # print(os.path.basename(track_filepath), mdata[os.path.basename(track_filepath)])
                 nbytes = track.element_size() * track.nelement()
                 nbytes_loaded += nbytes
             #print("\n")
             #print(metadata)
-            if len(metadata) != len(tracks):
-                print("Metadata and tracks do not match")
-                exit()
+            # if len(metadata) != len(tracks):
+            #     print("Metadata and tracks do not match")
+            #     exit()
 
             if len(tracks) < self.min_tracks:
                 continue
@@ -267,7 +275,7 @@ class MedleyDBDataset(torch.utils.data.Dataset):
         tracks = torch.zeros(self.max_tracks, self.length)
         instrument_id = example["metadata"]
 
-        
+        stereo_info = []
         track_idx = 0
         
         num_silent_tracks = self.max_tracks-len(instrument_id)
@@ -276,21 +284,34 @@ class MedleyDBDataset(torch.utils.data.Dataset):
             i += 1
         
         
-        
+        stereo = 0
         for track in example["tracks"]:
+            if track.shape[0] == 2:
+                stereo = 1
             # print(track.shape)
             # print(len(instrument_id))
             for ch_idx in range(track.shape[0]):
-                if track_idx > self.max_tracks:
+                if track_idx == self.max_tracks:
                     break
                 else:
                     tracks[track_idx, :] = track[ch_idx, :]
                     track_idx += 1
+                    
+                    if stereo == 1:
+                        stereo_info.append(stereo)
+                        stereo = 0
+                    else:
+                        stereo_info.append(stereo)
+                    
         # print(tracks.shape)
+        if len(stereo_info) != len(instrument_id):
+            for i in range(len(instrument_id)-len(stereo_info)):
+                stereo_info.append(0)
         
         instrument_id = torch.tensor(instrument_id)
+        stereo_info = torch.tensor(stereo_info).reshape(instrument_id.shape)
         
-        return tracks, instrument_id
+        return tracks, instrument_id, stereo_info
 
 
 class MedleyDBDataModule(pl.LightningDataModule):
@@ -348,10 +369,12 @@ class MedleyDBDataModule(pl.LightningDataModule):
 
 #     dataloader = torch.utils.data.DataLoader(dataset, batch_size=4, shuffle=False)
 
-#     for i, (track, instrument_id, genre) in enumerate(dataloader):
+#     for i, (track, instrument_id, stereo) in enumerate(dataloader):
+#         print(track.shape)
+#         print(stereo)
 #         #print(track.shape)
 #         #print(track.shape)
-#         # print(instrument_id)
+#         print(instrument_id)
 #         # print(genre)
 #         # print(track.size())
         

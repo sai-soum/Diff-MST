@@ -126,6 +126,9 @@ class CambridgeDataset(torch.utils.data.Dataset):
         paths = glob.glob(os.path.join(root_dirs[0], "*"))
         #print(f"Found {len(paths)} mix directories in {root_dirs}.")
         for path in paths:
+            
+            if os.path.basename(path) == "00275":
+                continue
             #print(os.path.basename(path))
             song_dir = os.path.join(path,"tracks/")
             #print(song_dir)
@@ -171,6 +174,7 @@ class CambridgeDataset(torch.utils.data.Dataset):
 
         for mix_dir in pbar:
             print(mix_dir)
+        
             #mix_id = os.path.basename(mix_dir)
             #print(mix_id)
             track_filepaths = glob.glob(os.path.join(mix_dir, "*.wav"))
@@ -181,9 +185,11 @@ class CambridgeDataset(torch.utils.data.Dataset):
             num_frames = torchaudio.info(track_filepaths[0]).num_frames
             offset = np.random.randint(0, num_frames - self.buffer_frames - 1)
             tracks = []
-            
+            solo_tracks = []
+            stereo_info = []
             silent = True 
             metadata = []
+            stereo = 0
             for tidx, track_filepath in enumerate(track_filepaths):
                 # load the track
                 track, sr = torchaudio.load(
@@ -191,9 +197,11 @@ class CambridgeDataset(torch.utils.data.Dataset):
                     frame_offset=offset,
                     num_frames=self.buffer_frames,
                 )
-
-                if track.size()[0] == 2:
-                    track = stereo_to_mono(track)
+                solo_track = track
+                if solo_track.size()[0] == 2:
+                    #print("stereo", tidx)
+                    solo_track = stereo_to_mono(solo_track)
+                    stereo = 1
 
                 if track.shape[-1] != self.buffer_frames:
                     continue
@@ -217,9 +225,20 @@ class CambridgeDataset(torch.utils.data.Dataset):
                
 
                 tracks.append(track)
-                metadata.append(instrument)
+                solo_tracks.append(solo_track)
                 
-            solo_tracks = tracks
+                if stereo:
+                    stereo_info.append(stereo)
+                    metadata.append(instrument)
+                    stereo = 0
+                    stereo_info.append(stereo)
+                    metadata.append(instrument)
+                else:
+                    metadata.append(instrument)
+                    stereo_info.append(stereo)
+
+            
+            
             y = torch.stack(solo_tracks)
             #print(y.shape)
             y = y.sum(0)
@@ -253,10 +272,12 @@ class CambridgeDataset(torch.utils.data.Dataset):
 
             # store this example
             example ={
+                "songname" : os.path.basename(mix_dir),
                 "num_frames": num_frames,
                 "track_filepaths": track_filepaths,
                 "tracks": tracks,
-                "metadata": metadata
+                "metadata": metadata,
+                "stereo": stereo_info
             }
             #print(example)
 
@@ -283,10 +304,11 @@ class CambridgeDataset(torch.utils.data.Dataset):
         # select an example at random
         example_idx = np.random.randint(0, len(self.examples))
         example = self.examples[example_idx]
-
+        #print(example["songname"])
         # read tracks from RAM
         tracks = torch.zeros(self.max_tracks, self.length)
         instrument_id = example["metadata"]
+        stereo_info = example["stereo"]
 
         
         track_idx = 0
@@ -299,22 +321,32 @@ class CambridgeDataset(torch.utils.data.Dataset):
         
         
         for track in example["tracks"]:
-            # print(track.shape)
+            #print(track.shape)
             # print(len(instrument_id))
             for ch_idx in range(track.shape[0]):
-                if track_idx > self.max_tracks:
+                #print(ch_idx)
+                if track_idx == self.max_tracks:
                     break
                 else:
+                    #print("track_idx",track_idx)
                     tracks[track_idx, :] = track[ch_idx, :]
                     track_idx += 1
         # print(tracks.shape)
-        
+        #print(tracks.shape)
+        if len(stereo_info) != len(instrument_id):
+            for i in range(len(instrument_id)-len(stereo_info)):
+                stereo_info.append(0)
+
+        instrument_id = instrument_id[:self.max_tracks]
         instrument_id = torch.tensor(instrument_id)
+        stereo_info = stereo_info[:self.max_tracks]
+        stereo_info = torch.tensor(stereo_info).reshape(instrument_id.shape)
         
-        return tracks, instrument_id
+       
+        return tracks, instrument_id, stereo_info
 
 
-class MedleyDBDataModule(pl.LightningDataModule):
+class CambridgeDataModule(pl.LightningDataModule):
     def __init__(
         self,
         root_dirs: List[str],
@@ -367,16 +399,17 @@ class MedleyDBDataModule(pl.LightningDataModule):
 #     dataset = CambridgeDataset(root_dirs=["/import/c4dm-multitrack-private/C4DM Multitrack Collection/mixing-secrets"])
 #     print(len(dataset))
 
-#     dataloader = torch.utils.data.DataLoader(dataset, batch_size=1, shuffle=False)
+#     dataloader = torch.utils.data.DataLoader(dataset, batch_size=4, shuffle=False)
 
-#     for i, (track, instrument_id) in enumerate(dataloader):
+#     for i, (track, instrument_id, stereo) in enumerate(dataloader):
 #         print(track.shape)
 #         #print(track.shape)
 #         print(instrument_id)
+#         print(stereo)
 #         # print(genre)
 #         # print(track.size())
         
 
-#         if i == 0:
+#         if i == 1:
 
 #              break
