@@ -24,11 +24,11 @@ class MedleyDBDataset(torch.utils.data.Dataset):
         min_tracks: int = 4,
         max_tracks: int = 20,
         length: float = 524288,
-        indices: str = 'train',
+        indices: str = 'test',
         buffer_reload_rate: int = 4000,
         num_examples_per_epoch: int = 10000,
-        buffer_size_gb: float = 0.02,
-        target_track_lufs_db: float = -32.0,
+        buffer_size_gb: float = 0.2,
+        target_track_lufs_db: float = -12.0,
     ) -> None:
         super().__init__()
         self.sample_rate = sample_rate
@@ -77,7 +77,7 @@ class MedleyDBDataset(torch.utils.data.Dataset):
             if mix_id in self.medley_split[self.indices]:
                 subset_dirs.append(mix_dir)
         self.mix_dirs = subset_dirs    
-        print(f"Found {len(self.mix_dirs)} mix directories in {self.indices} sest.")
+        print(f"Found {len(self.mix_dirs)} mix directories in {self.indices} set.")
 
         filtered_mix_dirs = []
 
@@ -246,6 +246,9 @@ class MedleyDBDataset(torch.utils.data.Dataset):
                 "metadata": metadata,
                 "genre": genre
             }
+            for track in tracks:
+                if torch.isnan(track).any():
+                    raise ValueError("Found nan while loading tracks!")
 
             self.examples.append(example)
             pbar.set_description(f"Loaded {nbytes_loaded/1e9:0.3} gb")

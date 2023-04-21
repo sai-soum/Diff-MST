@@ -1,5 +1,6 @@
 # Store mixing functions here (e.g. knowledge engineering)
 import torch
+import os
 import json
 import random
 import numpy as np
@@ -10,7 +11,7 @@ import mst.dataloaders.medley
 from mst.dataloaders.cambridge import CambridgeDataset
 
 from mst.dataloaders.medley import MedleyDBDataset
-
+import torchaudio
 
 
 def instrument_metadata(instrument_id: list):
@@ -73,7 +74,7 @@ def knowledge_engineering_mix(
     #print("mdata:", mdata)
 
     #BasicMixConsole
-    
+    advance_console = False
     
     mix_params = torch.full((bs, num_tracks, mix_console.num_control_params), -18.0)
     pan_params = torch.full((bs, num_tracks, 1), 0.5)
@@ -182,13 +183,13 @@ def knowledge_engineering_mix(
                 mix_params[j, i, 0] = round(random.uniform(-13.0, -11.0), 1)
                 if advance_console:
                     eq_lowpass_params[j, i, :] = torch.tensor([2, 50, 2]) + random.uniform(-1, 1) * eq
-                    eq_bandpass1_params[j, i, :] = [1, 100, 1] + random.uniform(-1, 1) * eq
-                    eq_bandpass2_params[j, i, :] = [-3, 500, 1] + random.uniform(-1, 1) * eq
-                    comp_params[j, i, :] = [-20, 4, 10, 10, 5, 4] + random.uniform(-1, 1) * compressor
+                    eq_bandpass1_params[j, i, :] = torch.tensor([1, 100, 1]) + random.uniform(-1, 1) * eq
+                    eq_bandpass2_params[j, i, :] = torch.tensor([-3, 500, 1]) + random.uniform(-1, 1) * eq
+                    comp_params[j, i, :] = torch.tensor([-20, 4, 10, 10, 5, 4]) + random.uniform(-1, 1) * compressor
                     if random.uniform(0,1) > 0.5:
-                        eq_bandpass3_params[j, i, :] = [0, 2000, 1] + random.uniform(-1, 1) * eq
-                        eq_bandpass4_params[j, i, :] = [-6, 5000, 1] + random.uniform(-1, 1) * eq
-                        eq_highpass_params[j, i, :] = [0, 10000, 0.5] + random.uniform(-1, 1) * eq
+                        eq_bandpass3_params[j, i, :] = torch.tensor([0, 2000, 1]) + random.uniform(-1, 1) * eq
+                        eq_bandpass4_params[j, i, :] = torch.tensor([-6, 5000, 1]) + random.uniform(-1, 1) * eq
+                        eq_highpass_params[j, i, :] = torch.tensor([0, 10000, 0.5]) + random.uniform(-1, 1) * eq
                 
 
             elif metadata[i] == ["snare drum","tabla"]:
@@ -462,7 +463,7 @@ def knowledge_engineering_mix(
         mix_params[:,:,16:19]=eq_highpass_params
         mix_params[:,:,19:25]=comp_params
 
-        param_dict = param_dict = {
+        param_dict = {
             "input_gain": {
                 "gain_db": mix_params[..., 0],
             },
@@ -470,18 +471,18 @@ def knowledge_engineering_mix(
                 "low_shelf_gain_db": mix_params[..., 1],
                 "low_shelf_cutoff_freq": mix_params[..., 2],
                 "low_shelf_q_factor": mix_params[..., 3],
-                "first_band_gain_db": mix_params[..., 4],
-                "first_band_cutoff_freq": mix_params[..., 5],
-                "first_band_q_factor": mix_params[..., 6],
-                "second_band_gain_db": mix_params[..., 7],
-                "second_band_cutoff_freq": mix_params[..., 8],
-                "second_band_q_factor": mix_params[..., 9],
-                "third_band_gain_db": mix_params[..., 10],
-                "third_band_cutoff_freq": mix_params[..., 11],
-                "third_band_q_factor": mix_params[..., 12],
-                "fourth_band_gain_db": mix_params[..., 13],
-                "fourth_band_cutoff_freq": mix_params[..., 14],
-                "fourth_band_q_factor": mix_params[..., 15],
+                "band0_gain_db": mix_params[..., 4],
+                "band0_cutoff_freq": mix_params[..., 5],
+                "band0_q_factor": mix_params[..., 6],
+                "band1_gain_db": mix_params[..., 7],
+                "band1_cutoff_freq": mix_params[..., 8],
+                "band1_q_factor": mix_params[..., 9],
+                "band2_gain_db": mix_params[..., 10],
+                "band2_cutoff_freq": mix_params[..., 11],
+                "band2_q_factor": mix_params[..., 12],
+                "band3_gain_db": mix_params[..., 13],
+                "band3_cutoff_freq": mix_params[..., 14],
+                "band3_q_factor": mix_params[..., 15],
                 "high_shelf_gain_db": mix_params[..., 16],
                 "high_shelf_cutoff_freq": mix_params[..., 17],
                 "high_shelf_q_factor": mix_params[..., 18],
@@ -516,9 +517,9 @@ if __name__ == "__main__":
     dataset = MedleyDBDataset(root_dirs=["/import/c4dm-datasets/MedleyDB_V1/V1"])
     print(len(dataset))
 
-    dataloader = torch.utils.data.DataLoader(dataset, batch_size=2, shuffle=False)
-    mix_console = mst.modules.BasicMixConsole(sample_rate=44100.0)
-    mix_console = mst.modules.AdvancedMixConsole()
+    dataloader = torch.utils.data.DataLoader(dataset, batch_size=4, shuffle=False)
+    #mix_console = mst.modules.BasicMixConsole(sample_rate=44100.0)
+    mix_console = mst.modules.AdvancedMixConsole(sample_rate=44100.0)
     for i, (track, instrument_id, stereo) in enumerate(dataloader):
         print("\n\n mixing")
         print("track", track.size())
@@ -529,6 +530,16 @@ if __name__ == "__main__":
         
         
         mix, param_dict = knowledge_engineering_mix(track, mix_console, instrument_id, stereo)
+        sum_mix =  torch.sum(track, dim=1)
+        print("mix", mix.size())
+        if not os.path.exists("mix_KE_basic"):
+            os.mkdir("mix_KE_basic")
+        save_dir = "mix_KE_basic/"
+
+        #export audio
+        for j in range(batch_size):
+            torchaudio.save(os.path.join(save_dir,"mix_"+str(j)+".wav"), mix[j], 44100)
+            #torchaudio.save(os.path.join(save_dir,"sum"+str(j)+".wav"), sum_mix[j], 44100)
         print("mix", mix.size())
         if i==0:
             break

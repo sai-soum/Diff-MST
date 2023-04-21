@@ -10,7 +10,7 @@ from mst.modules import (
 
 sample_rate = 44100
 embed_dim = 128
-num_control_params = 10
+num_control_params = 26
 
 track_encoder = SpectrogramResNetEncoder()
 mix_encoder = SpectrogramResNetEncoder()
@@ -19,7 +19,7 @@ controller = TransformerController(
 )
 
 
-mix_console = BasicMixConsole(sample_rate)
+mix_console = AdvancedMixConsole(sample_rate)
 
 model = MixStyleTransferModel(track_encoder, mix_encoder, controller, mix_console)
 
@@ -30,4 +30,6 @@ seq_len = 262144
 tracks = torch.randn(bs, num_tracks, seq_len)
 ref_mix = torch.randn(bs, 2, seq_len)
 
-model(tracks, ref_mix)
+mix, params = model(tracks, ref_mix)
+print(mix.shape)
+print(mix)
