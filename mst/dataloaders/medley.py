@@ -24,7 +24,7 @@ class MedleyDBDataset(torch.utils.data.Dataset):
         buffer_reload_rate: int = 4000,
         num_examples_per_epoch: int = 10000,
         buffer_size_gb: float = 1.0,
-        target_track_lufs_db: float = -32.0,
+        target_track_lufs_db: float = -12.0,
     ) -> None:
         super().__init__()
         self.sample_rate = sample_rate
@@ -164,6 +164,9 @@ class MedleyDBDataset(torch.utils.data.Dataset):
                 "track_filepaths": track_filepaths,
                 "tracks": tracks,
             }
+            for track in tracks:
+                if torch.isnan(track).any():
+                    raise ValueError("Found nan while loading tracks!")
 
             self.examples.append(example)
             pbar.set_description(f"Loaded {nbytes_loaded/1e9:0.3} gb")

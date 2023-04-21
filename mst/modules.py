@@ -128,17 +128,68 @@ class BasicMixConsole(torch.nn.Module):
 
 
 class AdvancedMixConsole(torch.nn.Module):
-    def __init__(self) -> None:
+    def __init__(
+        self,
+        sample_rate: float,
+        min_gain_db: float = -24.0,
+        max_gain_db: float = 24.0,
+        eq_min_gain_db: float = -24.0,
+        eq_max_gain_db: float = 24.0,
+        min_pan: float = 0.0,
+        max_pan: float = 1.0,
+    ):
         super().__init__()
+        self.sample_rate = sample_rate
+        self.param_ranges = {
+            "input_gain": {"gain_db": (min_gain_db, max_gain_db)},
+            "parametric_eq": {
+                "low_shelf_gain_db": (eq_min_gain_db, eq_max_gain_db),
+                "low_shelf_cutoff_freq": (20, 2000),
+                "low_shelf_q_factor": (0.1, 5.0),
+                "band0_gain_db": (eq_min_gain_db, eq_max_gain_db),
+                "band0_cutoff_freq": (80, 2000),
+                "band0_q_factor": (0.1, 5.0),
+                "band1_gain_db": (eq_min_gain_db, eq_max_gain_db),
+                "band1_cutoff_freq": (2000, 8000),
+                "band1_q_factor": (0.1, 5.0),
+                "band2_gain_db": (eq_min_gain_db, eq_max_gain_db),
+                "band2_cutoff_freq": (8000, 12000),
+                "band2_q_factor": (0.1, 5.0),
+                "band3_gain_db": (eq_min_gain_db, eq_max_gain_db),
+                "band3_cutoff_freq": (12000, (sample_rate // 2) - 1000),
+                "band3_q_factor": (0.1, 5.0),
+                "high_shelf_gain_db": (eq_min_gain_db, eq_max_gain_db),
+                "high_shelf_cutoff_freq": (6000, (sample_rate // 2) - 1000),
+                "high_shelf_q_factor": (0.1, 5.0),
+            },
+            "compressor": {
+                "threshold_db": (-60.0, 0.0),
+                "ratio": (1.0, 10.0),
+                "attack_ms": (1.0, 1000.0),
+                "release_ms": (1.0, 1000.0),
+                "knee_db": (3.0, 24.0),
+                "makeup_gain_db": (0.0, 24.0),
+            },
+            "stereo_panner": {"pan": (min_pan, max_pan)},
+        }
         self.num_control_params = 26
 
     def forward_mix_console(self, tracks: torch.torch.Tensor, param_dict: dict):
+        bs, num_tracks, seq_len = tracks.shape
+        # find all fully silent tracks
+        # silent_tracks = tracks.abs().max(dim=-1).values < 1e-8
+
         # apply effects in series but all tracks at once
         tracks = gain(tracks, **param_dict["input_gain"])
-        tracks = parametric_eq(tracks, **param_dict["parametric_eq"])
-        tracks = compressor(tracks, **param_dict["compressor"])
+        tracks = parametric_eq(tracks, self.sample_rate, **param_dict["parametric_eq"])
+        tracks = compressor(tracks, self.sample_rate, **param_dict["compressor"])
         tracks = stereo_panner(tracks, **param_dict["stereo_panner"])
-        return tracks.sum(dim=1)
+
+        # set silent tracks to zero
+        # idx = silent_tracks.unsqueeze(1).unsqueeze(-1).repeat(1, 2, 1, seq_len)
+        # tracks[idx] = 0.0
+
+        return tracks.sum(dim=2)
 
     def forward(self, tracks: torch.torch.Tensor, mix_params: torch.torch.Tensor):
         # extract and denormalize the parameters
@@ -150,18 +201,18 @@ class AdvancedMixConsole(torch.nn.Module):
                 "low_shelf_gain_db": mix_params[..., 1],
                 "low_shelf_cutoff_freq": mix_params[..., 2],
                 "low_shelf_q_factor": mix_params[..., 3],
-                "first_band_gain_db": mix_params[..., 4],
-                "first_band_cutoff_freq": mix_params[..., 5],
-                "first_band_q_factor": mix_params[..., 6],
-                "second_band_gain_db": mix_params[..., 7],
-                "second_band_cutoff_freq": mix_params[..., 8],
-                "second_band_q_factor": mix_params[..., 9],
-                "third_band_gain_db": mix_params[..., 10],
-                "third_band_cutoff_freq": mix_params[..., 11],
-                "third_band_q_factor": mix_params[..., 12],
-                "fourth_band_gain_db": mix_params[..., 13],
-                "fourth_band_cutoff_freq": mix_params[..., 14],
-                "fourth_band_q_factor": mix_params[..., 15],
+                "band0_gain_db": mix_params[..., 4],
+                "band0_cutoff_freq": mix_params[..., 5],
+                "band0_q_factor": mix_params[..., 6],
+                "band1_gain_db": mix_params[..., 7],
+                "band1_cutoff_freq": mix_params[..., 8],
+                "band1_q_factor": mix_params[..., 9],
+                "band2_gain_db": mix_params[..., 10],
+                "band2_cutoff_freq": mix_params[..., 11],
+                "band2_q_factor": mix_params[..., 12],
+                "band3_gain_db": mix_params[..., 13],
+                "band3_cutoff_freq": mix_params[..., 14],
+                "band3_q_factor": mix_params[..., 15],
                 "high_shelf_gain_db": mix_params[..., 16],
                 "high_shelf_cutoff_freq": mix_params[..., 17],
                 "high_shelf_q_factor": mix_params[..., 18],
@@ -180,7 +231,7 @@ class AdvancedMixConsole(torch.nn.Module):
         }
         param_dict = denormalize_parameters(param_dict, self.param_ranges)
         mix = self.forward_mix_console(tracks, param_dict)
-        return mix
+        return mix, param_dict
 
 
 class SpectrogramResNetEncoder(torch.nn.Module):

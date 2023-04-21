@@ -1,4 +1,4 @@
-seed_everything: true
+seed_everything: 42
 
 trainer:
   logger: 
@@ -94,12 +94,12 @@ data:
   class_path: mst.dataloaders.medley.MedleyDBDataModule
   init_args:
     root_dirs: 
-    - /scratch/csteinmetz1/V1
-    - /scratch/csteinmetz1/MedleyDB_V2
+    - /scratch/medleydb/V1
+    - /scratch/medleydb/MedleyDB_V2
     length: 524288
     batch_size: 8
     num_workers: 4
-    train_buffer_size_gb: 8.0
+    train_buffer_size_gb: 0.1
     val_buffer_size_gb: 0.1
 optimizer:
   class_path: torch.optim.AdamW
