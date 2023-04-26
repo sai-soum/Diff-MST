@@ -1,6 +1,7 @@
 import torch
 import torchvision
 from typing import Callable, Optional, List
+import torchaudio
 from dasp_pytorch.functional import gain, stereo_panner, compressor, parametric_eq
 
 
@@ -185,10 +186,15 @@ class AdvancedMixConsole(torch.nn.Module):
         # silent_tracks = tracks.abs().max(dim=-1).values < 1e-8
 
         # apply effects in series but all tracks at once
+        
         tracks = gain(tracks, **param_dict["input_gain"])
+        
         tracks = parametric_eq(tracks, self.sample_rate, **param_dict["parametric_eq"])
+        
         tracks = compressor(tracks, self.sample_rate, **param_dict["compressor"])
+        
         tracks = stereo_panner(tracks, **param_dict["stereo_panner"])
+        
 
         # set silent tracks to zero
         # idx = silent_tracks.unsqueeze(1).unsqueeze(-1).repeat(1, 2, 1, seq_len)

@@ -1,0 +1,86 @@
+---
+#silence
+[instrument_category]:
+  instruments: 
+    - instrument
+  gain : 
+    - -24.0
+    - -24.0
+  pan : 
+    - 0.0
+    - 1.0
+  eq:
+    eq_lowshelf_gain : 
+      - -3.0
+      - -1.0
+    eq_lowshelf_freq :
+      - 20
+      - 2000
+    eq_lowshelf_q :
+      - 0.1
+      - 5.0
+    eq_band0_gain :
+      - -24
+      - 24
+    eq_band0_freq :
+      - 80
+      - 2000
+    eq_band0_q :
+      - 0.1
+      - 5.0
+    eq_band1_gain : 
+      - -24
+      - 24
+    eq_band1_freq : 
+      - 2000
+      - 8000
+    eq_band1_q :
+      - 0.1
+      - 5.0
+    eq_band2_gain :
+      - -24
+      - 24
+    eq_band2_freq : 
+      - 8000
+      - 12000
+    eq_band2_q :
+      - 0.1
+      - 5.0 
+    eq_band3_gain :
+      - 0.0
+      - 0.0
+    eq_band3_freq : 
+      - 12000
+      - 20000
+    eq_band3_q :
+      - 0.1
+      - 5.0
+    eq_highshelf_gain : 
+      - -24
+      - 24
+    eq_highshelf_freq :
+      - 6000
+      - 20000
+    eq_highshelf_q : 
+      - 0.1
+      - 5.0
+  compressor:
+    threshold_db :
+      - -60.0
+      - 0.0
+    ratio:
+      - 1.0
+      - 10.0
+    attack_ms:
+      - 1.0
+      - 1000.0
+    release_ms:
+      - 1.0
+      - 1000.0
+    knee_db:
+      - 3.0
+      - 24.0
+    makeup_gain_db:
+      - 0.0
+      - 24.0
+
