@@ -57,6 +57,7 @@ def naive_random_mix(tracks: torch.Tensor, mix_console: torch.nn.Module):
 
     # generate a mix of the tracks
     mix, param_dict = mix_console(tracks, mix_params)
+    mix /= mix.abs().max().clamp(min=1e-8)
 
     return mix, param_dict
 
@@ -353,7 +354,7 @@ def knowledge_engineering_mix(
           
             if skip:                
                 mix_params[j, i+1, :] = mix_params[j, i, :]
-                pan_params[j, i+1, :] = pan_params[j, i, :]
+                pan_params[j, i+1, :] = 1.0 - pan_params[j, i, :]
                 eq_lowshelf_params[j, i+1, :] = eq_lowshelf_params[j, i, :]
                 eq_bandpass0_params[j, i+1, :] = eq_bandpass0_params[j, i, :]
                 eq_bandpass1_params[j, i+1, :] = eq_bandpass1_params[j, i, :]
