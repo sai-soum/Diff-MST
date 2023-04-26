@@ -8,7 +8,7 @@ from mst.modules import (
     AdvancedMixConsole,
 )
 from tqdm import tqdm
-from mst.mixing import naive_random_mix
+from mst.mixing import naive_random_mix, knowledge_engineering_mix
 
 sample_rate = 44100
 embed_dim = 128
