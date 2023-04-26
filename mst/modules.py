@@ -52,6 +52,12 @@ def denormalize_parameters(param_dict: dict, param_ranges: dict):
     for effect_name, effect_param_dict in param_dict.items():
         denorm_param_dict[effect_name] = {}
         for param_name, param_tensor in effect_param_dict.items():
+            # check for out of range parameters
+            if param_tensor.min() < 0 or param_tensor.max() > 1:
+                raise ValueError(
+                    f"Parameter {param_name} of effect {effect_name} is out of range."
+                )
+
             param_val_denorm = denormalize(
                 param_tensor,
                 param_ranges[effect_name][param_name][1],
@@ -182,8 +188,6 @@ class AdvancedMixConsole(torch.nn.Module):
 
     def forward_mix_console(self, tracks: torch.torch.Tensor, param_dict: dict):
         bs, num_tracks, seq_len = tracks.shape
-        # find all fully silent tracks
-        # silent_tracks = tracks.abs().max(dim=-1).values < 1e-8
 
         # apply effects in series but all tracks at once
         
@@ -195,10 +199,6 @@ class AdvancedMixConsole(torch.nn.Module):
         
         tracks = stereo_panner(tracks, **param_dict["stereo_panner"])
         
-
-        # set silent tracks to zero
-        # idx = silent_tracks.unsqueeze(1).unsqueeze(-1).repeat(1, 2, 1, seq_len)
-        # tracks[idx] = 0.0
 
         return tracks.sum(dim=2)
 

@@ -1,31 +1,3 @@
-seed_everything: 42
-
-trainer:
-  logger: 
-    class_path: pytorch_lightning.loggers.WandbLogger
-    init_args:
-      project: DiffMST
-      save_dir: /homes/ssv02/Diff-MST/logs/
-  enable_checkpointing: true
-  callbacks:
-    - class_path: mst.callbacks.audio.LogAudioCallback
-  default_root_dir: null
-  gradient_clip_val: 4.0
-  devices: 1
-  track_grad_norm: -1
-  check_val_every_n_epoch: 1
-  max_steps: 100000
-  log_every_n_steps: 50
-  accelerator: gpu
-  strategy: ddp
-  sync_batchnorm: true
-  precision: 32
-  enable_model_summary: true
-  num_sanity_val_steps: 2
-  benchmark: true
-  amp_backend: native
-  multiple_trainloader_mode: max_size_cycle
-
 model:
   class_path: mst.system.System
   init_args:
@@ -34,7 +6,7 @@ model:
       class_path: mst.modules.AdvancedMixConsole
       init_args:
         sample_rate: 44100
-        min_gain_db: -24.0
+        min_gain_db: -80.0
         max_gain_db: 24.0
         eq_min_gain_db: -12.0
         eq_max_gain_db: 12.0
@@ -68,8 +40,10 @@ model:
           class_path: mst.modules.AdvancedMixConsole
           init_args:
             sample_rate: 44100
-            min_gain_db: -12.0
-            max_gain_db: 12.0
+            min_gain_db: -80.0
+            max_gain_db: 24.0
+            eq_min_gain_db: -24.0
+            eq_max_gain_db: 24.0
             min_pan: 0.0
             max_pan: 1.0
     loss: 
@@ -92,18 +66,3 @@ model:
         w_lin_mag: 1.0
         w_log_mag: 1.0
        
-data:
-  class_path: mst.dataloaders.medley.MedleyDBDataModule
-  init_args:
-    root_dirs: 
-    - /scratch/medleydb/V1
-    - /scratch/medleydb/MedleyDB_V2
-    length: 524288
-    batch_size: 4
-    num_workers: 4
-    train_buffer_size_gb: 0.1
-    val_buffer_size_gb: 0.1
-optimizer:
-  class_path: torch.optim.AdamW
-  init_args:
-    lr: 0.00001

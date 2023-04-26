@@ -1,5 +1,7 @@
 import os
+import json
 import glob
+import yaml
 import torch
 import random
 import itertools
@@ -13,18 +15,22 @@ import json
 from tqdm import tqdm
 from typing import List
 
+# TODO: use consistent data format (either ymal or json)
+
 
 
 class MedleyDBDataset(torch.utils.data.Dataset):
     def __init__(
         self,
         root_dirs: List[str],
-        metadata_dir = "/homes/ssv02/Diff-MST/medley_metadata",
+        metadata_dir: str = "./data/medley_metadata",
+        instrument_id_json: str = "./data/inst_id.json",
+        dataset_split_yaml: str = "./data/medley_split.yaml",
         sample_rate: float = 44100,
         min_tracks: int = 4,
         max_tracks: int = 20,
         length: float = 524288,
-        indices: str = 'test',
+        subset: str = "test",
         buffer_reload_rate: int = 4000,
         num_examples_per_epoch: int = 10000,
         buffer_size_gb: float = 0.2,
@@ -36,7 +42,7 @@ class MedleyDBDataset(torch.utils.data.Dataset):
         self.max_tracks = max_tracks
         self.length = length
         self.metadata_dir = metadata_dir
-        self.indices = indices
+        self.subset = subset
         self.buffer_reload_rate = buffer_reload_rate
         self.num_examples_per_epoch = num_examples_per_epoch
         self.buffer_size_gb = buffer_size_gb
@@ -48,19 +54,14 @@ class MedleyDBDataset(torch.utils.data.Dataset):
         self.meter = pyln.Meter(sample_rate)  # create BS.1770 meter
 
         self.mix_dirs = []
-        #We have a dictionary with different numbers assigned to each of the instruments. 
-        #We will assign these numbers to each of the tracks based on the instrument name in the metadata file.
-        #this will let us return this data from the dataloader
-        instrument_ids = json.load(open("/homes/ssv02/Diff-MST/inst_id.txt"))
-        medley_split = "/homes/ssv02/Diff-MST/medley_split.yaml"
-        with open(medley_split, 'r') as f:
-            self.medley_split = load(f, Loader=Loader)
+        # We have a dictionary with different numbers assigned to each of the instruments.
+        # We will assign these numbers to each of the tracks based on the instrument name in the metadata file.
+        # this will let us return this data from the dataloader
+        with open(instrument_id_json, "r") as f:
+            self.instrument_ids = json.load(f)
 
-        self.instrument_ids = instrument_ids
-        #print(type(self.instrument_ids))
-        
-       
-
+        with open(dataset_split_yaml, "r") as f:
+            self.medley_split = yaml.safe_load(f)
 
         for root_dir in root_dirs:
             # find all mix directories
@@ -74,10 +75,10 @@ class MedleyDBDataset(torch.utils.data.Dataset):
         subset_dirs = []
         for mix_dir in self.mix_dirs:
             mix_id = os.path.basename(mix_dir)
-            if mix_id in self.medley_split[self.indices]:
+            if mix_id in self.medley_split[self.subset]:
                 subset_dirs.append(mix_dir)
-        self.mix_dirs = subset_dirs    
-        print(f"Found {len(self.mix_dirs)} mix directories in {self.indices} set.")
+        self.mix_dirs = subset_dirs
+        print(f"Found {len(self.mix_dirs)} mix directories in {self.subset} set.")
 
         filtered_mix_dirs = []
 
@@ -95,7 +96,6 @@ class MedleyDBDataset(torch.utils.data.Dataset):
         print(
             f"Found {len(self.mix_dirs)} mix directories with tracks less than {self.max_tracks} and more than {self.min_tracks}."
         )
-        
         self.items_since_load = self.buffer_reload_rate
 
     def reload_buffer(self):
@@ -110,18 +110,18 @@ class MedleyDBDataset(torch.utils.data.Dataset):
         pbar = tqdm(itertools.cycle(self.mix_dirs))
         for mix_dir in pbar:
             mix_id = os.path.basename(mix_dir)
-            #print(mix_id)
+            # print(mix_id)
             mix_filepath = glob.glob(os.path.join(mix_dir, "*.wav"))[0]
-            metadata_filepath = os.path.join(self.metadata_dir, f"{mix_id}_METADATA.yaml")
-            with open(metadata_filepath, 'r') as f:
-                mdata = load(f, Loader=Loader)
-            
-            
-            
+            metadata_filepath = os.path.join(
+                self.metadata_dir, f"{mix_id}_METADATA.yaml"
+            )
+            with open(metadata_filepath, "r") as f:
+                mdata = yaml.safe_load(f)
+
             # print(mix_filepath)
             if "AimeeNorwich_Child" in mix_filepath:
                 continue
-            #print(mdata)
+            # print(mdata)
             # save only a random subset of this song so we can load more songs
             silent = True
             counter = 0
@@ -163,8 +163,8 @@ class MedleyDBDataset(torch.utils.data.Dataset):
             # check length of each track
             tracks = []
             metadata = []
-            genre = mdata['genre']
-            #print(len(track_filepaths))
+            genre = mdata["genre"]
+            # print(len(track_filepaths))
             for tidx, track_filepath in enumerate(track_filepaths):
                 # load the track
                 track, sr = torchaudio.load(
@@ -210,21 +210,15 @@ class MedleyDBDataset(torch.utils.data.Dataset):
                 
 
                 tracks.append(track)
-                #get the instrumnet name from the metadata file
+                # get the instrumnet name from the metadata file
                 instru_id = mdata[os.path.basename(track_filepath)]
-                #assign the instrument id based on the instrument name
-                
+                # assign the instrument id based on the instrument name
+
                 inst_id = self.instrument_ids[instru_id]
                 metadata.append(inst_id)
                 if track.shape[-2] == 2:
-                    #print("Stereo track found", track.shape)
                     metadata.append(inst_id)
 
-                
-                #print(instru_id)
-                
-                # print("\n")
-                # print(os.path.basename(track_filepath), mdata[os.path.basename(track_filepath)])
                 nbytes = track.element_size() * track.nelement()
                 nbytes_loaded += nbytes
             #print("\n")
@@ -244,7 +238,7 @@ class MedleyDBDataset(torch.utils.data.Dataset):
                 "track_filepaths": track_filepaths,
                 "tracks": tracks,
                 "metadata": metadata,
-                "genre": genre
+                "genre": genre,
             }
             for track in tracks:
                 if torch.isnan(track).any():
@@ -280,13 +274,12 @@ class MedleyDBDataset(torch.utils.data.Dataset):
 
         stereo_info = []
         track_idx = 0
-        
-        num_silent_tracks = self.max_tracks-len(instrument_id)
+
+        num_silent_tracks = self.max_tracks - len(instrument_id)
         for i in range(num_silent_tracks):
             instrument_id.append(0)
             i += 1
-        
-        
+
         stereo = 0
         for track in example["tracks"]:
             if track.shape[0] == 2:
@@ -299,21 +292,20 @@ class MedleyDBDataset(torch.utils.data.Dataset):
                 else:
                     tracks[track_idx, :] = track[ch_idx, :]
                     track_idx += 1
-                    
                     if stereo == 1:
                         stereo_info.append(stereo)
                         stereo = 0
                     else:
                         stereo_info.append(stereo)
-                    
+
         # print(tracks.shape)
         if len(stereo_info) != len(instrument_id):
-            for i in range(len(instrument_id)-len(stereo_info)):
+            for i in range(len(instrument_id) - len(stereo_info)):
                 stereo_info.append(0)
-        
+
         instrument_id = torch.tensor(instrument_id)
         stereo_info = torch.tensor(stereo_info).reshape(instrument_id.shape)
-        
+
         return tracks, instrument_id, stereo_info
 
 
@@ -335,7 +327,7 @@ class MedleyDBDataModule(pl.LightningDataModule):
         if stage == "fit":
             self.train_dataset = MedleyDBDataset(
                 root_dirs=self.hparams.root_dirs,
-                indices='train',
+                subset="train",
                 length=self.hparams.length,
                 buffer_size_gb=self.hparams.train_buffer_size_gb,
                 num_examples_per_epoch=10000,
@@ -344,7 +336,7 @@ class MedleyDBDataModule(pl.LightningDataModule):
         if stage == "validate" or stage == "fit":
             self.val_dataset = MedleyDBDataset(
                 root_dirs=self.hparams.root_dirs,
-                indices='val',
+                subset="val",
                 length=self.hparams.length,
                 buffer_size_gb=self.hparams.val_buffer_size_gb,
                 num_examples_per_epoch=1000,

@@ -59,14 +59,16 @@ class System(pl.LightningModule):
             optimizer_idx (int): Index of the optimizer, this step is called once for each optimizer.
             train (bool): Wether step is called during training (True) or validation (False).
         """
-        tracks = batch  # tracks, instrument id, stereo info
+        tracks, instrument_id, stereo_info = batch
 
         # create a random mix (on GPU, if applicable)
-        ref_mix, ref_param_dict = self.mix_fn(tracks, self.generate_mix_console)
+        ref_mix, ref_param_dict = self.mix_fn(
+            tracks, self.generate_mix_console, instrument_id, stereo_info
+        )
 
         if torch.isnan(ref_mix).any():
-            print("Found nan in ref_mix")
-            sys.exit()
+            print(ref_param_dict)
+            raise ValueError("Found nan in ref_mix")
 
         # now split into A and B sections
         middle_idx = ref_mix.shape[-1] // 2

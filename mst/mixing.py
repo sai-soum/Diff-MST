@@ -1,4 +1,5 @@
 # Store mixing functions here (e.g. knowledge engineering)
+import json
 import torch
 import os
 import json
@@ -12,6 +13,7 @@ from mst.dataloaders.cambridge import CambridgeDataset
 from yaml import load, dump, Loader, Dumper
 from mst.dataloaders.medley import MedleyDBDataset
 import torchaudio
+import random
 
 
 def instrument_metadata(instrument_id: list):
@@ -38,7 +40,7 @@ def instrument_metadata(instrument_id: list):
     return mdata
 
 
-def naive_random_mix(tracks: torch.Tensor, mix_console: torch.nn.Module):
+def naive_random_mix(tracks: torch.Tensor, mix_console: torch.nn.Module, *args):
     """Generate a random mix by sampling parameters uniformly on the parameter ranges.
 
     Args:
