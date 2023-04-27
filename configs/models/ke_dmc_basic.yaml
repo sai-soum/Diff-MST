@@ -1,7 +1,7 @@
 model:
   class_path: mst.system.System
   init_args:
-    mix_fn: mst.mixing.naive_random_mix
+    mix_fn: mst.mixing.knowledge_engineering_mix
     generate_mix_console:
       class_path: mst.modules.BasicMixConsole
       init_args:

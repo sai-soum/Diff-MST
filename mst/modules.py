@@ -1,6 +1,7 @@
 import torch
 import torchvision
 from typing import Callable, Optional, List
+import torchaudio
 from dasp_pytorch.functional import gain, stereo_panner, compressor, parametric_eq
 
 
@@ -40,6 +41,9 @@ class MixStyleTransferModel(torch.nn.Module):
 
 def denormalize(norm_val, max_val, min_val):
     return (norm_val * (max_val - min_val)) + min_val
+
+def normalize(val, min_val, max_val):
+    return (val - min_val) / (max_val - min_val)
 
 
 def denormalize_parameters(param_dict: dict, param_ranges: dict):
@@ -104,6 +108,9 @@ class BasicMixConsole(torch.nn.Module):
     def forward_mix_console(self, tracks: torch.Tensor, param_dict: dict):
         """Expects the param_dict has denormalized parameters."""
         # apply effects in series and all tracks in parallel
+        
+        bs, chs, seq_len = tracks.size()
+        
         tracks = gain(tracks, **param_dict["input_gain"])
         tracks = stereo_panner(tracks, **param_dict["stereo_panner"])
         return tracks.sum(dim=2)
@@ -122,10 +129,10 @@ class BasicMixConsole(torch.nn.Module):
         # extract and denormalize the parameters
         param_dict = {
             "input_gain": {
-                "gain_db": mix_params[..., 0],  # bs, num_tracks, 1
+                "gain_db": mix_params[:,:, 0],  # bs, num_tracks, 1
             },
             "stereo_panner": {
-                "pan": mix_params[..., 1],
+                "pan": mix_params[:,:, 1],
             },
         }
         param_dict = denormalize_parameters(param_dict, self.param_ranges)
@@ -184,10 +191,15 @@ class AdvancedMixConsole(torch.nn.Module):
         bs, num_tracks, seq_len = tracks.shape
 
         # apply effects in series but all tracks at once
+        
         tracks = gain(tracks, **param_dict["input_gain"])
+        
         tracks = parametric_eq(tracks, self.sample_rate, **param_dict["parametric_eq"])
+        
         tracks = compressor(tracks, self.sample_rate, **param_dict["compressor"])
+        
         tracks = stereo_panner(tracks, **param_dict["stereo_panner"])
+        
 
         return tracks.sum(dim=2)
 
@@ -217,10 +229,11 @@ class AdvancedMixConsole(torch.nn.Module):
                 "high_shelf_cutoff_freq": mix_params[..., 17],
                 "high_shelf_q_factor": mix_params[..., 18],
             },
+            #release and attack time must be the same
             "compressor": {
                 "threshold_db": mix_params[..., 19],
                 "ratio": mix_params[..., 20],
-                "attack_ms": mix_params[..., 21],
+                "attack_ms": mix_params[..., 21], 
                 "release_ms": mix_params[..., 22],
                 "knee_db": mix_params[..., 23],
                 "makeup_gain_db": mix_params[..., 24],

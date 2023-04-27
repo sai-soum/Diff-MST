@@ -1,10 +1,14 @@
-
+venv/**
 env/**
 mst/callbacks/trail.ipynb
 model_saved/**
-
+data/.ipynb_checkpoints/**
+data/*.ipynb
 
 __pycache__
 *.egg-info
 dasp-pytorch/
+mix_KE_adv/**
 .vscode/
+logs/**
+```

@@ -9,12 +9,14 @@ import torchaudio
 import numpy as np
 import pyloudnorm as pyln
 import pytorch_lightning as pl
-
-
+from yaml import load, dump
+from yaml import Loader, Dumper
+import json
 from tqdm import tqdm
 from typing import List
 
 # TODO: use consistent data format (either ymal or json)
+
 
 
 class MedleyDBDataset(torch.utils.data.Dataset):
@@ -94,7 +96,6 @@ class MedleyDBDataset(torch.utils.data.Dataset):
         print(
             f"Found {len(self.mix_dirs)} mix directories with tracks less than {self.max_tracks} and more than {self.min_tracks}."
         )
-
         self.items_since_load = self.buffer_reload_rate
 
     def reload_buffer(self):
@@ -152,7 +153,13 @@ class MedleyDBDataset(torch.utils.data.Dataset):
 
             # now find all the track filepaths
             track_filepaths = glob.glob(os.path.join(mix_dir, f"{mix_id}_RAW", "*.wav"))
-
+           
+            # print("\nMetadata:", mdata)
+            # for track_filepath in track_filepaths:
+            #     file= os.path.basename(track_filepath)
+            #     instru_id = mdata[file]
+            #     print(file, instru_id)
+            
             # check length of each track
             tracks = []
             metadata = []
@@ -165,6 +172,17 @@ class MedleyDBDataset(torch.utils.data.Dataset):
                     frame_offset=offset,
                     num_frames=self.buffer_frames,
                 )
+                #print(track.shape)
+                #-------------------------------------------
+                
+                #this checks for silence in the track
+                # if (track**2).mean() < 1e-3:
+                #     print("passed")
+                #     continue
+                #-------------------------------------------
+                #print(track_filepath)
+                # if track.shape[-1] != self.buffer_frames:
+                #     continue
 
                 # loudness normalization
                 track_lufs_db = self.meter.integrated_loudness(y.permute(1, 0).numpy())
@@ -189,6 +207,7 @@ class MedleyDBDataset(torch.utils.data.Dataset):
                 ).float()
                 gain_lin = 10.0 ** (delta_lufs_db.clamp(-120, 40.0) / 20.0)
                 track = gain_lin * track
+                
 
                 tracks.append(track)
                 # get the instrumnet name from the metadata file
@@ -202,6 +221,11 @@ class MedleyDBDataset(torch.utils.data.Dataset):
 
                 nbytes = track.element_size() * track.nelement()
                 nbytes_loaded += nbytes
+            #print("\n")
+            #print(metadata)
+            # if len(metadata) != len(tracks):
+            #     print("Metadata and tracks do not match")
+            #     exit()
 
             if len(tracks) < self.min_tracks:
                 continue
@@ -268,7 +292,6 @@ class MedleyDBDataset(torch.utils.data.Dataset):
                 else:
                     tracks[track_idx, :] = track[ch_idx, :]
                     track_idx += 1
-
                     if stereo == 1:
                         stereo_info.append(stereo)
                         stereo = 0
@@ -300,6 +323,7 @@ class MedleyDBDataModule(pl.LightningDataModule):
         self.save_hyperparameters()
 
     def setup(self, stage=None):
+
         if stage == "fit":
             self.train_dataset = MedleyDBDataset(
                 root_dirs=self.hparams.root_dirs,
@@ -333,3 +357,23 @@ class MedleyDBDataModule(pl.LightningDataModule):
             batch_size=self.hparams.batch_size,
             num_workers=4,
         )
+
+# if __name__ == "__main__":
+#     dataset = MedleyDBDataset(root_dirs=["/import/c4dm-datasets/MedleyDB_V1/V1"])
+#     print(len(dataset))
+
+#     dataloader = torch.utils.data.DataLoader(dataset, batch_size=4, shuffle=False)
+
+#     for i, (track, instrument_id, stereo) in enumerate(dataloader):
+#         print(track.shape)
+#         print(stereo)
+#         #print(track.shape)
+#         #print(track.shape)
+#         print(instrument_id)
+#         # print(genre)
+#         # print(track.size())
+        
+
+#         if i == 0:
+
+#             break
