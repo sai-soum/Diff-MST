@@ -1,0 +1,79 @@
+/homes/ssv02/Diff-MST/env/lib/python3.10/site-packages/pytorch_lightning/cli.py:617: UserWarning: `System.configure_optimizers` will be overridden by `LightningCLI.configure_optimizers`.
+  _warn(
+GPU available: True (cuda), used: True
+TPU available: False, using: 0 TPU cores
+IPU available: False, using: 0 IPUs
+HPU available: False, using: 0 HPUs
+[rank: 0] Global seed set to 42
+Initializing distributed: GLOBAL_RANK: 0, MEMBER: 1/2
+----------------------------------------------------------------------------------------------------
+distributed_backend=nccl
+All distributed processes registered. Starting with 2 processes
+----------------------------------------------------------------------------------------------------
+LOCAL_RANK: 0 - CUDA_VISIBLE_DEVICES: [0,1,2,3]
+  | Name                 | Type                    | Params
+-----------------------------------------------------------------
+0 | model                | MixStyleTransferModel   | 26.0 M
+1 | generate_mix_console | AdvancedMixConsole      | 0
+2 | loss                 | MultiResolutionSTFTLoss | 0
+3 | sisdr                | SISDRLoss               | 0
+4 | mrstft               | MultiResolutionSTFTLoss | 0
+-----------------------------------------------------------------
+26.0 M    Trainable params
+0         Non-trainable params
+26.0 M    Total params
+104.185   Total estimated model params size (MB)
+150 directories found with at least 4 tracks and at most 20 tracks.
+50 directories found with at least 4 tracks and at most 20 tracks.
+
+Sanity Checking DataLoader 0:   0%|                                                                                                                                                           | 0/2 [00:00<?, ?it/s]
+Traceback (most recent call last):
+  File "/homes/ssv02/Diff-MST/main.py", line 26, in <module>
+    cli_main()
+  File "/homes/ssv02/Diff-MST/main.py", line 15, in cli_main
+    cli = LightningCLI(
+  File "/homes/ssv02/Diff-MST/env/lib/python3.10/site-packages/pytorch_lightning/cli.py", line 353, in __init__
+    self._run_subcommand(self.subcommand)
+  File "/homes/ssv02/Diff-MST/env/lib/python3.10/site-packages/pytorch_lightning/cli.py", line 642, in _run_subcommand
+    fn(**fn_kwargs)
+  File "/homes/ssv02/Diff-MST/env/lib/python3.10/site-packages/pytorch_lightning/trainer/trainer.py", line 520, in fit
+    call._call_and_handle_interrupt(
+  File "/homes/ssv02/Diff-MST/env/lib/python3.10/site-packages/pytorch_lightning/trainer/call.py", line 42, in _call_and_handle_interrupt
+    return trainer.strategy.launcher.launch(trainer_fn, *args, trainer=trainer, **kwargs)
+  File "/homes/ssv02/Diff-MST/env/lib/python3.10/site-packages/pytorch_lightning/strategies/launchers/subprocess_script.py", line 92, in launch
+    return function(*args, **kwargs)
+  File "/homes/ssv02/Diff-MST/env/lib/python3.10/site-packages/pytorch_lightning/trainer/trainer.py", line 559, in _fit_impl
+    self._run(model, ckpt_path=ckpt_path)
+  File "/homes/ssv02/Diff-MST/env/lib/python3.10/site-packages/pytorch_lightning/trainer/trainer.py", line 935, in _run
+    results = self._run_stage()
+  File "/homes/ssv02/Diff-MST/env/lib/python3.10/site-packages/pytorch_lightning/trainer/trainer.py", line 976, in _run_stage
+    self._run_sanity_check()
+  File "/homes/ssv02/Diff-MST/env/lib/python3.10/site-packages/pytorch_lightning/trainer/trainer.py", line 1005, in _run_sanity_check
+    val_loop.run()
+  File "/homes/ssv02/Diff-MST/env/lib/python3.10/site-packages/pytorch_lightning/loops/utilities.py", line 177, in _decorator
+    return loop_run(self, *args, **kwargs)
+  File "/homes/ssv02/Diff-MST/env/lib/python3.10/site-packages/pytorch_lightning/loops/evaluation_loop.py", line 115, in run
+    self._evaluation_step(batch, batch_idx, dataloader_idx)
+  File "/homes/ssv02/Diff-MST/env/lib/python3.10/site-packages/pytorch_lightning/loops/evaluation_loop.py", line 375, in _evaluation_step
+    output = call._call_strategy_hook(trainer, hook_name, *step_kwargs.values())
+  File "/homes/ssv02/Diff-MST/env/lib/python3.10/site-packages/pytorch_lightning/trainer/call.py", line 288, in _call_strategy_hook
+    output = fn(*args, **kwargs)
+  File "/homes/ssv02/Diff-MST/env/lib/python3.10/site-packages/pytorch_lightning/strategies/ddp.py", line 337, in validation_step
+    return self.model(*args, **kwargs)
+  File "/homes/ssv02/Diff-MST/env/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1501, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/homes/ssv02/Diff-MST/env/lib/python3.10/site-packages/torch/nn/parallel/distributed.py", line 1156, in forward
+    output = self._run_ddp_forward(*inputs, **kwargs)
+  File "/homes/ssv02/Diff-MST/env/lib/python3.10/site-packages/torch/nn/parallel/distributed.py", line 1110, in _run_ddp_forward
+    return module_to_run(*inputs[0], **kwargs[0])  # type: ignore[index]
+  File "/homes/ssv02/Diff-MST/env/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1501, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/homes/ssv02/Diff-MST/env/lib/python3.10/site-packages/pytorch_lightning/overrides/base.py", line 102, in forward
+    return self._forward_module.validation_step(*inputs, **kwargs)
+  File "/homes/ssv02/Diff-MST/mst/system.py", line 136, in validation_step
+    loss, data_dict = self.common_step(batch, batch_idx, train=False)
+  File "/homes/ssv02/Diff-MST/mst/system.py", line 65, in common_step
+    ref_mix, ref_param_dict = self.mix_fn(
+  File "/homes/ssv02/Diff-MST/mst/mixing.py", line 396, in knowledge_engineering_mix
+    mix_params = mix_params.as_type(tracks)
+AttributeError: 'Tensor' object has no attribute 'as_type'

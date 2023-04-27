@@ -26,7 +26,7 @@ class LogAudioCallback(pl.callbacks.Callback):
         outputs,
         batch,
         batch_idx,
-        dataloader_idx,
+        
     ):
         """Called when the validation batch ends."""
         if outputs is not None:

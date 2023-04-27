@@ -1,0 +1,26 @@
+2023-04-27 10:30:40,439 INFO    MainThread:42462 [wandb_setup.py:_flush():76] Configure stats pid to 42462
+2023-04-27 10:30:40,440 INFO    MainThread:42462 [wandb_setup.py:_flush():76] Loading settings from /homes/ssv02/.config/wandb/settings
+2023-04-27 10:30:40,440 INFO    MainThread:42462 [wandb_setup.py:_flush():76] Loading settings from /homes/ssv02/Diff-MST/wandb/settings
+2023-04-27 10:30:40,440 INFO    MainThread:42462 [wandb_setup.py:_flush():76] Loading settings from environment variables: {}
+2023-04-27 10:30:40,440 INFO    MainThread:42462 [wandb_setup.py:_flush():76] Applying setup settings: {'_disable_service': False}
+2023-04-27 10:30:40,440 INFO    MainThread:42462 [wandb_setup.py:_flush():76] Inferring run settings from compute environment: {'program_relpath': 'main.py', 'program': '/homes/ssv02/Diff-MST/main.py'}
+2023-04-27 10:30:40,440 INFO    MainThread:42462 [wandb_init.py:_log_setup():506] Logging user logs to /homes/ssv02/Diff-MST/logs/wandb/run-20230427_103040-l2h9ffn3/logs/debug.log
+2023-04-27 10:30:40,440 INFO    MainThread:42462 [wandb_init.py:_log_setup():507] Logging internal logs to /homes/ssv02/Diff-MST/logs/wandb/run-20230427_103040-l2h9ffn3/logs/debug-internal.log
+2023-04-27 10:30:40,440 INFO    MainThread:42462 [wandb_init.py:init():546] calling init triggers
+2023-04-27 10:30:40,440 INFO    MainThread:42462 [wandb_init.py:init():552] wandb.init called with sweep_config: {}
+config: {}
+2023-04-27 10:30:40,440 INFO    MainThread:42462 [wandb_init.py:init():602] starting backend
+2023-04-27 10:30:40,441 INFO    MainThread:42462 [wandb_init.py:init():606] setting up manager
+2023-04-27 10:30:40,444 INFO    MainThread:42462 [backend.py:_multiprocessing_setup():106] multiprocessing start_methods=fork,spawn,forkserver, using: spawn
+2023-04-27 10:30:40,447 INFO    MainThread:42462 [wandb_init.py:init():613] backend started and connected
+2023-04-27 10:30:40,450 INFO    MainThread:42462 [wandb_init.py:init():701] updated telemetry
+2023-04-27 10:30:40,459 INFO    MainThread:42462 [wandb_init.py:init():741] communicating run to backend with 60.0 second timeout
+2023-04-27 10:30:40,838 INFO    MainThread:42462 [wandb_run.py:_on_init():2133] communicating current version
+2023-04-27 10:30:40,881 INFO    MainThread:42462 [wandb_run.py:_on_init():2142] got version response upgrade_message: "wandb version 0.15.0 is available!  To upgrade, please run:\n $ pip install wandb --upgrade"
+
+2023-04-27 10:30:40,881 INFO    MainThread:42462 [wandb_init.py:init():789] starting run threads in backend
+2023-04-27 10:30:41,019 INFO    MainThread:42462 [wandb_run.py:_console_start():2114] atexit reg
+2023-04-27 10:30:41,020 INFO    MainThread:42462 [wandb_run.py:_redirect():1969] redirect: SettingsConsole.WRAP_RAW
+2023-04-27 10:30:41,021 INFO    MainThread:42462 [wandb_run.py:_redirect():2034] Wrapping output streams.
+2023-04-27 10:30:41,021 INFO    MainThread:42462 [wandb_run.py:_redirect():2059] Redirects installed.
+2023-04-27 10:30:41,023 INFO    MainThread:42462 [wandb_init.py:init():831] run started, returning control to user process

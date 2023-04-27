@@ -1,0 +1,40 @@
+/homes/ssv02/Diff-MST/env/lib/python3.10/site-packages/pytorch_lightning/cli.py:617: UserWarning: `System.configure_optimizers` will be overridden by `LightningCLI.configure_optimizers`.
+  _warn(
+GPU available: True (cuda), used: True
+TPU available: False, using: 0 TPU cores
+IPU available: False, using: 0 IPUs
+HPU available: False, using: 0 HPUs
+[rank: 0] Global seed set to 42
+Initializing distributed: GLOBAL_RANK: 0, MEMBER: 1/2
+----------------------------------------------------------------------------------------------------
+distributed_backend=nccl
+All distributed processes registered. Starting with 2 processes
+----------------------------------------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/homes/ssv02/Diff-MST/main.py", line 26, in <module>
+    cli_main()
+  File "/homes/ssv02/Diff-MST/main.py", line 15, in cli_main
+    cli = LightningCLI(
+  File "/homes/ssv02/Diff-MST/env/lib/python3.10/site-packages/pytorch_lightning/cli.py", line 353, in __init__
+    self._run_subcommand(self.subcommand)
+  File "/homes/ssv02/Diff-MST/env/lib/python3.10/site-packages/pytorch_lightning/cli.py", line 642, in _run_subcommand
+    fn(**fn_kwargs)
+  File "/homes/ssv02/Diff-MST/env/lib/python3.10/site-packages/pytorch_lightning/trainer/trainer.py", line 520, in fit
+    call._call_and_handle_interrupt(
+  File "/homes/ssv02/Diff-MST/env/lib/python3.10/site-packages/pytorch_lightning/trainer/call.py", line 42, in _call_and_handle_interrupt
+    return trainer.strategy.launcher.launch(trainer_fn, *args, trainer=trainer, **kwargs)
+  File "/homes/ssv02/Diff-MST/env/lib/python3.10/site-packages/pytorch_lightning/strategies/launchers/subprocess_script.py", line 92, in launch
+    return function(*args, **kwargs)
+  File "/homes/ssv02/Diff-MST/env/lib/python3.10/site-packages/pytorch_lightning/trainer/trainer.py", line 559, in _fit_impl
+    self._run(model, ckpt_path=ckpt_path)
+  File "/homes/ssv02/Diff-MST/env/lib/python3.10/site-packages/pytorch_lightning/trainer/trainer.py", line 896, in _run
+    call._call_setup_hook(self)  # allow user to setup lightning_module in accelerator environment
+  File "/homes/ssv02/Diff-MST/env/lib/python3.10/site-packages/pytorch_lightning/trainer/call.py", line 81, in _call_setup_hook
+    _call_lightning_datamodule_hook(trainer, "setup", stage=fn)
+  File "/homes/ssv02/Diff-MST/env/lib/python3.10/site-packages/pytorch_lightning/trainer/call.py", line 162, in _call_lightning_datamodule_hook
+    return fn(*args, **kwargs)
+  File "/homes/ssv02/Diff-MST/mst/dataloaders/cambridge.py", line 365, in setup
+    self.train_dataset = CambridgeDataset(
+  File "/homes/ssv02/Diff-MST/mst/dataloaders/cambridge.py", line 152, in __init__
+    self.mix_dirs = self.mix_dirs[self.indices[0]:self.indices[1]]
+TypeError: slice indices must be integers or None or have an __index__ method

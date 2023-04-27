@@ -108,6 +108,7 @@ class BasicMixConsole(torch.nn.Module):
     def forward_mix_console(self, tracks: torch.Tensor, param_dict: dict):
         """Expects the param_dict has denormalized parameters."""
         # apply effects in series and all tracks in parallel
+        
         bs, chs, seq_len = tracks.size()
         
         tracks = gain(tracks, **param_dict["input_gain"])

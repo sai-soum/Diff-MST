@@ -371,6 +371,7 @@ def knowledge_engineering_mix(
 
     if mix_console.num_control_params == 2:
         mix_params[:,:,1]= pan_params[:, :, 0]
+        mix_params = mix_params.type_as(tracks)
         param_dict = {
                 "input_gain": {
                     "gain_db": mix_params[:,:, 0],  # bs, num_tracks, 1
@@ -392,7 +393,7 @@ def knowledge_engineering_mix(
         mix_params[:,:,13:16]=eq_bandpass3_params
         mix_params[:,:,16:19]=eq_highshelf_params
         mix_params[:,:,19:25]=comp_params
-
+        mix_params = mix_params.type_as(tracks)
         param_dict = {
             "input_gain": {
                 "gain_db": mix_params[..., 0],
@@ -430,7 +431,8 @@ def knowledge_engineering_mix(
                 "pan": mix_params[..., 25],
             },
         }
-
+     
+    
         
     mix = mix_console.forward_mix_console(tracks, param_dict)
     # peak normalize the mix

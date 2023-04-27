@@ -1,0 +1,107 @@
+/homes/ssv02/Diff-MST/env/lib/python3.10/site-packages/pytorch_lightning/cli.py:617: UserWarning: `System.configure_optimizers` will be overridden by `LightningCLI.configure_optimizers`.
+  _warn(
+GPU available: True (cuda), used: True
+TPU available: False, using: 0 TPU cores
+IPU available: False, using: 0 IPUs
+HPU available: False, using: 0 HPUs
+[rank: 0] Global seed set to 42
+Initializing distributed: GLOBAL_RANK: 0, MEMBER: 1/1
+----------------------------------------------------------------------------------------------------
+distributed_backend=nccl
+All distributed processes registered. Starting with 1 processes
+----------------------------------------------------------------------------------------------------
+You are using a CUDA device ('NVIDIA RTX A5000') that has Tensor Cores. To properly utilize them, you should set `torch.set_float32_matmul_precision('medium' | 'high')` which will trade-off precision for performance. For more details, read https://pytorch.org/docs/stable/generated/torch.set_float32_matmul_precision.html#torch.set_float32_matmul_precision
+100%|██████████████████████████████████████████████████████████████████████████| 139/139 [00:00<00:00, 2850.74it/s]
+100%|████████████████████████████████████████████████████████████████████████████| 30/30 [00:00<00:00, 2432.80it/s]
+LOCAL_RANK: 0 - CUDA_VISIBLE_DEVICES: [0,1,2,3,4,5,6,7]
+  | Name                 | Type                    | Params
+-----------------------------------------------------------------
+0 | model                | MixStyleTransferModel   | 26.0 M
+1 | generate_mix_console | AdvancedMixConsole      | 0
+2 | loss                 | MultiResolutionSTFTLoss | 0
+3 | sisdr                | SISDRLoss               | 0
+4 | mrstft               | MultiResolutionSTFTLoss | 0
+-----------------------------------------------------------------
+26.0 M    Trainable params
+0         Non-trainable params
+26.0 M    Total params
+104.185   Total estimated model params size (MB)
+Found 196 mix directories in ['/import/c4dm-datasets/MedleyDB_V1/V1', '/import/c4dm-datasets/MedleyDB_V2/V2'].
+Found 139 mix directories in train set.
+Found 101 mix directories with tracks less than 20 and more than 4.
+Found 196 mix directories in ['/import/c4dm-datasets/MedleyDB_V1/V1', '/import/c4dm-datasets/MedleyDB_V2/V2'].
+Found 30 mix directories in val set.
+Found 20 mix directories with tracks less than 20 and more than 4.
+
+
+Sanity Checking DataLoader 0:   0%|                                                          | 0/2 [00:00<?, ?it/s]
+
+
+
+
+
+
+
+
+
+
+
+
+
+Epoch 0:   1%| | 30/5000 [02:38<7:17:29,  5.28s/it, v_num=k0
+Traceback (most recent call last):
+  File "/homes/ssv02/Diff-MST/main.py", line 26, in <module>
+    cli_main()
+  File "/homes/ssv02/Diff-MST/main.py", line 15, in cli_main
+    cli = LightningCLI(
+  File "/homes/ssv02/Diff-MST/env/lib/python3.10/site-packages/pytorch_lightning/cli.py", line 353, in __init__
+    self._run_subcommand(self.subcommand)
+  File "/homes/ssv02/Diff-MST/env/lib/python3.10/site-packages/pytorch_lightning/cli.py", line 642, in _run_subcommand
+    fn(**fn_kwargs)
+  File "/homes/ssv02/Diff-MST/env/lib/python3.10/site-packages/pytorch_lightning/trainer/trainer.py", line 520, in fit
+    call._call_and_handle_interrupt(
+  File "/homes/ssv02/Diff-MST/env/lib/python3.10/site-packages/pytorch_lightning/trainer/call.py", line 42, in _call_and_handle_interrupt
+    return trainer.strategy.launcher.launch(trainer_fn, *args, trainer=trainer, **kwargs)
+  File "/homes/ssv02/Diff-MST/env/lib/python3.10/site-packages/pytorch_lightning/strategies/launchers/subprocess_script.py", line 92, in launch
+    return function(*args, **kwargs)
+  File "/homes/ssv02/Diff-MST/env/lib/python3.10/site-packages/pytorch_lightning/trainer/trainer.py", line 559, in _fit_impl
+    self._run(model, ckpt_path=ckpt_path)
+  File "/homes/ssv02/Diff-MST/env/lib/python3.10/site-packages/pytorch_lightning/trainer/trainer.py", line 935, in _run
+    results = self._run_stage()
+  File "/homes/ssv02/Diff-MST/env/lib/python3.10/site-packages/pytorch_lightning/trainer/trainer.py", line 978, in _run_stage
+    self.fit_loop.run()
+  File "/homes/ssv02/Diff-MST/env/lib/python3.10/site-packages/pytorch_lightning/loops/fit_loop.py", line 201, in run
+    self.advance()
+  File "/homes/ssv02/Diff-MST/env/lib/python3.10/site-packages/pytorch_lightning/loops/fit_loop.py", line 354, in advance
+    self.epoch_loop.run(self._data_fetcher)
+  File "/homes/ssv02/Diff-MST/env/lib/python3.10/site-packages/pytorch_lightning/loops/training_epoch_loop.py", line 133, in run
+    self.advance(data_fetcher)
+  File "/homes/ssv02/Diff-MST/env/lib/python3.10/site-packages/pytorch_lightning/loops/training_epoch_loop.py", line 189, in advance
+    batch = next(data_fetcher)
+  File "/homes/ssv02/Diff-MST/env/lib/python3.10/site-packages/pytorch_lightning/loops/fetchers.py", line 136, in __next__
+    self._fetch_next_batch(self.dataloader_iter)
+  File "/homes/ssv02/Diff-MST/env/lib/python3.10/site-packages/pytorch_lightning/loops/fetchers.py", line 150, in _fetch_next_batch
+    batch = next(iterator)
+  File "/homes/ssv02/Diff-MST/env/lib/python3.10/site-packages/pytorch_lightning/utilities/combined_loader.py", line 276, in __next__
+    out = next(self._iterator)
+  File "/homes/ssv02/Diff-MST/env/lib/python3.10/site-packages/pytorch_lightning/utilities/combined_loader.py", line 64, in __next__
+    out[i] = next(self.iterators[i])
+  File "/homes/ssv02/Diff-MST/env/lib/python3.10/site-packages/torch/utils/data/dataloader.py", line 634, in __next__
+    data = self._next_data()
+  File "/homes/ssv02/Diff-MST/env/lib/python3.10/site-packages/torch/utils/data/dataloader.py", line 1346, in _next_data
+    return self._process_data(data)
+  File "/homes/ssv02/Diff-MST/env/lib/python3.10/site-packages/torch/utils/data/dataloader.py", line 1372, in _process_data
+    data.reraise()
+  File "/homes/ssv02/Diff-MST/env/lib/python3.10/site-packages/torch/_utils.py", line 644, in reraise
+    raise exception
+RuntimeError: Caught RuntimeError in DataLoader worker process 6.
+Original Traceback (most recent call last):
+  File "/homes/ssv02/Diff-MST/env/lib/python3.10/site-packages/torch/utils/data/_utils/worker.py", line 308, in _worker_loop
+    data = fetcher.fetch(index)
+  File "/homes/ssv02/Diff-MST/env/lib/python3.10/site-packages/torch/utils/data/_utils/fetch.py", line 51, in fetch
+    data = [self.dataset[idx] for idx in possibly_batched_index]
+  File "/homes/ssv02/Diff-MST/env/lib/python3.10/site-packages/torch/utils/data/_utils/fetch.py", line 51, in <listcomp>
+    data = [self.dataset[idx] for idx in possibly_batched_index]
+  File "/homes/ssv02/Diff-MST/mst/dataloaders/medley.py", line 293, in __getitem__
+    tracks[track_idx, :] = track[ch_idx, :]
+RuntimeError: The expanded size of the tensor (524288) must match the existing size (0) at non-singleton dimension 0.  Target sizes: [524288].  Tensor sizes: [0]

@@ -2,10 +2,10 @@ data:
   class_path: mst.dataloaders.medley.MedleyDBDataModule
   init_args:
     root_dirs: 
-    - /scratch/medleydb/V1
-    - /scratch/medleydb/MedleyDB_V2
+    - /import/c4dm-datasets/MedleyDB_V1/V1
+    - /import/c4dm-datasets/MedleyDB_V2/V2
     length: 524288
-    batch_size: 4
-    num_workers: 4
-    train_buffer_size_gb: 4.0
+    batch_size: 2
+    num_workers: 8
+    train_buffer_size_gb: 2.0
     val_buffer_size_gb: 0.1

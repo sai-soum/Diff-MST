@@ -1,0 +1,331 @@
+2023-04-26 19:40:58,338 INFO    StreamThr :51859 [internal.py:wandb_internal():87] W&B internal server running at pid: 51859, started at: 2023-04-26 19:40:58.337884
+2023-04-26 19:40:58,340 DEBUG   HandlerThread:51859 [handler.py:handle_request():144] handle_request: status
+2023-04-26 19:40:58,341 INFO    WriterThread:51859 [datastore.py:open_for_write():85] open: /homes/ssv02/Diff-MST/logs/wandb/run-20230426_194058-36q76i61/run-36q76i61.wandb
+2023-04-26 19:40:58,344 DEBUG   SenderThread:51859 [sender.py:send():336] send: header
+2023-04-26 19:40:58,349 DEBUG   SenderThread:51859 [sender.py:send():336] send: run
+2023-04-26 19:40:58,748 INFO    SenderThread:51859 [dir_watcher.py:__init__():219] watching files in: /homes/ssv02/Diff-MST/logs/wandb/run-20230426_194058-36q76i61/files
+2023-04-26 19:40:58,749 INFO    SenderThread:51859 [sender.py:_start_run_threads():1078] run started: 36q76i61 with start time 1682534458.336701
+2023-04-26 19:40:58,749 DEBUG   SenderThread:51859 [sender.py:send_request():363] send_request: summary_record
+2023-04-26 19:40:58,750 DEBUG   HandlerThread:51859 [handler.py:handle_request():144] handle_request: check_version
+2023-04-26 19:40:58,750 INFO    SenderThread:51859 [sender.py:_save_file():1332] saving file wandb-summary.json with policy end
+2023-04-26 19:40:58,751 DEBUG   SenderThread:51859 [sender.py:send_request():363] send_request: check_version
+2023-04-26 19:40:58,804 DEBUG   HandlerThread:51859 [handler.py:handle_request():144] handle_request: run_start
+2023-04-26 19:40:58,811 DEBUG   HandlerThread:51859 [system_info.py:__init__():31] System info init
+2023-04-26 19:40:58,811 DEBUG   HandlerThread:51859 [system_info.py:__init__():46] System info init done
+2023-04-26 19:40:58,811 INFO    HandlerThread:51859 [system_monitor.py:start():183] Starting system monitor
+2023-04-26 19:40:58,811 INFO    SystemMonitor:51859 [system_monitor.py:_start():147] Starting system asset monitoring threads
+2023-04-26 19:40:58,811 INFO    HandlerThread:51859 [system_monitor.py:probe():204] Collecting system info
+2023-04-26 19:40:58,812 INFO    SystemMonitor:51859 [interfaces.py:start():187] Started cpu monitoring
+2023-04-26 19:40:58,812 INFO    SystemMonitor:51859 [interfaces.py:start():187] Started disk monitoring
+2023-04-26 19:40:58,812 INFO    SystemMonitor:51859 [interfaces.py:start():187] Started gpu monitoring
+2023-04-26 19:40:58,814 INFO    SystemMonitor:51859 [interfaces.py:start():187] Started memory monitoring
+2023-04-26 19:40:58,814 INFO    SystemMonitor:51859 [interfaces.py:start():187] Started network monitoring
+2023-04-26 19:40:58,865 DEBUG   HandlerThread:51859 [system_info.py:probe():195] Probing system
+2023-04-26 19:40:58,868 DEBUG   HandlerThread:51859 [system_info.py:_probe_git():180] Probing git
+2023-04-26 19:40:58,876 DEBUG   HandlerThread:51859 [system_info.py:_probe_git():188] Probing git done
+2023-04-26 19:40:58,876 DEBUG   HandlerThread:51859 [system_info.py:probe():240] Probing system done
+2023-04-26 19:40:58,876 DEBUG   HandlerThread:51859 [system_monitor.py:probe():213] {'os': 'Linux-3.10.0-1160.53.1.el7.x86_64-x86_64-with-glibc2.17', 'python': '3.10.9', 'heartbeatAt': '2023-04-26T18:40:58.865918', 'startedAt': '2023-04-26T18:40:58.320039', 'docker': None, 'cuda': '9.0.176', 'args': ('fit', '-c', 'configs/config.yaml', '-c', 'configs/optimizer.yaml', '-c', 'configs/data/medleydb.yaml', '-c', 'configs/models/ke_dmc_adv.yaml'), 'state': 'running', 'program': '/homes/ssv02/Diff-MST/main.py', 'codePath': 'main.py', 'git': {'remote': 'https://github.com/sai-soum/Diff-MST.git', 'commit': '059f919437b52de51fa79b04bb40375b87c3749a'}, 'email': None, 'root': '/homes/ssv02/Diff-MST', 'host': 'bluck', 'username': 'ssv02', 'executable': '/homes/ssv02/Diff-MST/env/bin/python', 'cpu_count': 48, 'cpu_count_logical': 96, 'cpu_freq': {'current': 1678.3229166666667, 'min': 800.0, 'max': 2101.0}, 'cpu_freq_per_core': [{'current': 1800.0, 'min': 800.0, 'max': 2101.0}, {'current': 1500.0, 'min': 800.0, 'max': 2101.0}, {'current': 1900.0, 'min': 800.0, 'max': 2101.0}, {'current': 1500.0, 'min': 800.0, 'max': 2101.0}, {'current': 1900.0, 'min': 800.0, 'max': 2101.0}, {'current': 1500.0, 'min': 800.0, 'max': 2101.0}, {'current': 800.0, 'min': 800.0, 'max': 2101.0}, {'current': 1800.0, 'min': 800.0, 'max': 2101.0}, {'current': 1900.0, 'min': 800.0, 'max': 2101.0}, {'current': 1700.0, 'min': 800.0, 'max': 2101.0}, {'current': 1000.0, 'min': 800.0, 'max': 2101.0}, {'current': 800.0, 'min': 800.0, 'max': 2101.0}, {'current': 1400.0, 'min': 800.0, 'max': 2101.0}, {'current': 1400.0, 'min': 800.0, 'max': 2101.0}, {'current': 1900.0, 'min': 800.0, 'max': 2101.0}, {'current': 1800.0, 'min': 800.0, 'max': 2101.0}, {'current': 800.0, 'min': 800.0, 'max': 2101.0}, {'current': 1900.0, 'min': 800.0, 'max': 2101.0}, {'current': 2101.0, 'min': 800.0, 'max': 2101.0}, {'current': 1900.0, 'min': 800.0, 'max': 2101.0}, {'current': 800.0, 'min': 800.0, 'max': 2101.0}, {'current': 1000.0, 'min': 800.0, 'max': 2101.0}, {'current': 2000.0, 'min': 800.0, 'max': 2101.0}, {'current': 1900.0, 'min': 800.0, 'max': 2101.0}, {'current': 2101.0, 'min': 800.0, 'max': 2101.0}, {'current': 1300.0, 'min': 800.0, 'max': 2101.0}, {'current': 1100.0, 'min': 800.0, 'max': 2101.0}, {'current': 2000.0, 'min': 800.0, 'max': 2101.0}, {'current': 2101.0, 'min': 800.0, 'max': 2101.0}, {'current': 800.0, 'min': 800.0, 'max': 2101.0}, {'current': 1900.0, 'min': 800.0, 'max': 2101.0}, {'current': 1100.0, 'min': 800.0, 'max': 2101.0}, {'current': 2101.0, 'min': 800.0, 'max': 2101.0}, {'current': 2101.0, 'min': 800.0, 'max': 2101.0}, {'current': 800.0, 'min': 800.0, 'max': 2101.0}, {'current': 1200.0, 'min': 800.0, 'max': 2101.0}, {'current': 800.0, 'min': 800.0, 'max': 2101.0}, {'current': 1200.0, 'min': 800.0, 'max': 2101.0}, {'current': 1000.0, 'min': 800.0, 'max': 2101.0}, {'current': 900.0, 'min': 800.0, 'max': 2101.0}, {'current': 1800.0, 'min': 800.0, 'max': 2101.0}, {'current': 2101.0, 'min': 800.0, 'max': 2101.0}, {'current': 800.0, 'min': 800.0, 'max': 2101.0}, {'current': 1200.0, 'min': 800.0, 'max': 2101.0}, {'current': 1800.0, 'min': 800.0, 'max': 2101.0}, {'current': 1300.0, 'min': 800.0, 'max': 2101.0}, {'current': 1500.0, 'min': 800.0, 'max': 2101.0}, {'current': 2101.0, 'min': 800.0, 'max': 2101.0}, {'current': 1700.0, 'min': 800.0, 'max': 2101.0}, {'current': 1800.0, 'min': 800.0, 'max': 2101.0}, {'current': 800.0, 'min': 800.0, 'max': 2101.0}, {'current': 1400.0, 'min': 800.0, 'max': 2101.0}, {'current': 2101.0, 'min': 800.0, 'max': 2101.0}, {'current': 1800.0, 'min': 800.0, 'max': 2101.0}, {'current': 2101.0, 'min': 800.0, 'max': 2101.0}, {'current': 1900.0, 'min': 800.0, 'max': 2101.0}, {'current': 2101.0, 'min': 800.0, 'max': 2101.0}, {'current': 1900.0, 'min': 800.0, 'max': 2101.0}, {'current': 1700.0, 'min': 800.0, 'max': 2101.0}, {'current': 1700.0, 'min': 800.0, 'max': 2101.0}, {'current': 1600.0, 'min': 800.0, 'max': 2101.0}, {'current': 1200.0, 'min': 800.0, 'max': 2101.0}, {'current': 1900.0, 'min': 800.0, 'max': 2101.0}, {'current': 1900.0, 'min': 800.0, 'max': 2101.0}, {'current': 1900.0, 'min': 800.0, 'max': 2101.0}, {'current': 1900.0, 'min': 800.0, 'max': 2101.0}, {'current': 2101.0, 'min': 800.0, 'max': 2101.0}, {'current': 1800.0, 'min': 800.0, 'max': 2101.0}, {'current': 1900.0, 'min': 800.0, 'max': 2101.0}, {'current': 1900.0, 'min': 800.0, 'max': 2101.0}, {'current': 1900.0, 'min': 800.0, 'max': 2101.0}, {'current': 2101.0, 'min': 800.0, 'max': 2101.0}, {'current': 900.0, 'min': 800.0, 'max': 2101.0}, {'current': 1800.0, 'min': 800.0, 'max': 2101.0}, {'current': 2000.0, 'min': 800.0, 'max': 2101.0}, {'current': 2000.0, 'min': 800.0, 'max': 2101.0}, {'current': 2000.0, 'min': 800.0, 'max': 2101.0}, {'current': 1900.0, 'min': 800.0, 'max': 2101.0}, {'current': 2101.0, 'min': 800.0, 'max': 2101.0}, {'current': 2101.0, 'min': 800.0, 'max': 2101.0}, {'current': 2000.0, 'min': 800.0, 'max': 2101.0}, {'current': 1900.0, 'min': 800.0, 'max': 2101.0}, {'current': 2101.0, 'min': 800.0, 'max': 2101.0}, {'current': 1600.0, 'min': 800.0, 'max': 2101.0}, {'current': 1800.0, 'min': 800.0, 'max': 2101.0}, {'current': 2101.0, 'min': 800.0, 'max': 2101.0}, {'current': 1900.0, 'min': 800.0, 'max': 2101.0}, {'current': 2101.0, 'min': 800.0, 'max': 2101.0}, {'current': 1500.0, 'min': 800.0, 'max': 2101.0}, {'current': 1900.0, 'min': 800.0, 'max': 2101.0}, {'current': 1900.0, 'min': 800.0, 'max': 2101.0}, {'current': 1800.0, 'min': 800.0, 'max': 2101.0}, {'current': 2101.0, 'min': 800.0, 'max': 2101.0}, {'current': 2000.0, 'min': 800.0, 'max': 2101.0}, {'current': 2101.0, 'min': 800.0, 'max': 2101.0}, {'current': 1800.0, 'min': 800.0, 'max': 2101.0}], 'disk': {'total': 125.86621475219727, 'used': 24.793933868408203}, 'gpu': 'NVIDIA RTX A5000', 'gpu_count': 8, 'gpu_devices': [{'name': 'NVIDIA RTX A5000', 'memory_total': 25434652672}, {'name': 'NVIDIA RTX A5000', 'memory_total': 25434652672}, {'name': 'NVIDIA RTX A5000', 'memory_total': 25434652672}, {'name': 'NVIDIA RTX A5000', 'memory_total': 25434652672}, {'name': 'NVIDIA RTX A5000', 'memory_total': 25434652672}, {'name': 'NVIDIA RTX A5000', 'memory_total': 25434652672}, {'name': 'NVIDIA RTX A5000', 'memory_total': 25434652672}, {'name': 'NVIDIA RTX A5000', 'memory_total': 25434652672}], 'memory': {'total': 251.39945220947266}}
+2023-04-26 19:40:58,876 INFO    HandlerThread:51859 [system_monitor.py:probe():214] Finished collecting system info
+2023-04-26 19:40:58,876 INFO    HandlerThread:51859 [system_monitor.py:probe():217] Publishing system info
+2023-04-26 19:40:58,876 DEBUG   HandlerThread:51859 [system_info.py:_save_pip():51] Saving list of pip packages installed into the current environment
+2023-04-26 19:40:58,878 DEBUG   HandlerThread:51859 [system_info.py:_save_pip():67] Saving pip packages done
+2023-04-26 19:40:58,880 INFO    HandlerThread:51859 [system_monitor.py:probe():219] Finished publishing system info
+2023-04-26 19:40:58,889 DEBUG   SenderThread:51859 [sender.py:send():336] send: files
+2023-04-26 19:40:58,889 INFO    SenderThread:51859 [sender.py:_save_file():1332] saving file wandb-metadata.json with policy now
+2023-04-26 19:40:58,900 DEBUG   HandlerThread:51859 [handler.py:handle_request():144] handle_request: stop_status
+2023-04-26 19:40:58,900 DEBUG   SenderThread:51859 [sender.py:send_request():363] send_request: stop_status
+2023-04-26 19:40:59,044 DEBUG   SenderThread:51859 [sender.py:send():336] send: telemetry
+2023-04-26 19:40:59,044 DEBUG   SenderThread:51859 [sender.py:send():336] send: metric
+2023-04-26 19:40:59,044 DEBUG   SenderThread:51859 [sender.py:send():336] send: telemetry
+2023-04-26 19:40:59,044 DEBUG   SenderThread:51859 [sender.py:send():336] send: metric
+2023-04-26 19:40:59,044 WARNING SenderThread:51859 [sender.py:send_metric():1283] Seen metric with glob (shouldn't happen)
+2023-04-26 19:40:59,378 INFO    wandb-upload_0:51859 [upload_job.py:push():138] Uploaded file /tmp/tmpv1uadl78wandb/b76zcnt1-wandb-metadata.json
+2023-04-26 19:40:59,752 INFO    Thread-13 :51859 [dir_watcher.py:_on_file_created():278] file/dir created: /homes/ssv02/Diff-MST/logs/wandb/run-20230426_194058-36q76i61/files/output.log
+2023-04-26 19:40:59,753 INFO    Thread-13 :51859 [dir_watcher.py:_on_file_created():278] file/dir created: /homes/ssv02/Diff-MST/logs/wandb/run-20230426_194058-36q76i61/files/wandb-metadata.json
+2023-04-26 19:40:59,753 INFO    Thread-13 :51859 [dir_watcher.py:_on_file_created():278] file/dir created: /homes/ssv02/Diff-MST/logs/wandb/run-20230426_194058-36q76i61/files/wandb-summary.json
+2023-04-26 19:40:59,754 INFO    Thread-13 :51859 [dir_watcher.py:_on_file_created():278] file/dir created: /homes/ssv02/Diff-MST/logs/wandb/run-20230426_194058-36q76i61/files/requirements.txt
+2023-04-26 19:41:00,256 DEBUG   SenderThread:51859 [sender.py:send():336] send: telemetry
+2023-04-26 19:41:01,752 INFO    Thread-13 :51859 [dir_watcher.py:_on_file_modified():295] file/dir modified: /homes/ssv02/Diff-MST/logs/wandb/run-20230426_194058-36q76i61/files/output.log
+2023-04-26 19:41:04,261 DEBUG   HandlerThread:51859 [handler.py:handle_request():144] handle_request: status_report
+2023-04-26 19:41:09,759 INFO    Thread-13 :51859 [dir_watcher.py:_on_file_modified():295] file/dir modified: /homes/ssv02/Diff-MST/logs/wandb/run-20230426_194058-36q76i61/files/output.log
+2023-04-26 19:41:09,999 DEBUG   HandlerThread:51859 [handler.py:handle_request():144] handle_request: status_report
+2023-04-26 19:41:10,215 DEBUG   SenderThread:51859 [sender.py:send():336] send: config
+2023-04-26 19:41:11,761 INFO    Thread-13 :51859 [dir_watcher.py:_on_file_modified():295] file/dir modified: /homes/ssv02/Diff-MST/logs/wandb/run-20230426_194058-36q76i61/files/output.log
+2023-04-26 19:41:12,762 INFO    Thread-13 :51859 [dir_watcher.py:_on_file_modified():295] file/dir modified: /homes/ssv02/Diff-MST/logs/wandb/run-20230426_194058-36q76i61/files/output.log
+2023-04-26 19:41:13,901 DEBUG   HandlerThread:51859 [handler.py:handle_request():144] handle_request: stop_status
+2023-04-26 19:41:13,902 DEBUG   SenderThread:51859 [sender.py:send_request():363] send_request: stop_status
+2023-04-26 19:41:15,054 DEBUG   HandlerThread:51859 [handler.py:handle_request():144] handle_request: status_report
+2023-04-26 19:41:20,055 DEBUG   HandlerThread:51859 [handler.py:handle_request():144] handle_request: status_report
+2023-04-26 19:41:25,056 DEBUG   HandlerThread:51859 [handler.py:handle_request():144] handle_request: status_report
+2023-04-26 19:41:28,903 DEBUG   HandlerThread:51859 [handler.py:handle_request():144] handle_request: stop_status
+2023-04-26 19:41:28,904 DEBUG   SenderThread:51859 [sender.py:send_request():363] send_request: stop_status
+2023-04-26 19:41:28,960 INFO    Thread-13 :51859 [dir_watcher.py:_on_file_modified():295] file/dir modified: /homes/ssv02/Diff-MST/logs/wandb/run-20230426_194058-36q76i61/files/output.log
+2023-04-26 19:41:30,069 DEBUG   HandlerThread:51859 [handler.py:handle_request():144] handle_request: status_report
+2023-04-26 19:41:30,963 INFO    Thread-13 :51859 [dir_watcher.py:_on_file_modified():295] file/dir modified: /homes/ssv02/Diff-MST/logs/wandb/run-20230426_194058-36q76i61/files/config.yaml
+2023-04-26 19:41:35,265 DEBUG   HandlerThread:51859 [handler.py:handle_request():144] handle_request: status_report
+2023-04-26 19:41:37,256 DEBUG   SenderThread:51859 [sender.py:send():336] send: files
+2023-04-26 19:41:37,257 INFO    SenderThread:51859 [sender.py:_save_file():1332] saving file media/audio/0_ref_mix_a-ref_mix_b-pred_mix_a-sum_mix_a-_0_e3ff3b68294c5bd24e82.wav with policy now
+2023-04-26 19:41:37,295 DEBUG   HandlerThread:51859 [handler.py:handle_request():144] handle_request: partial_history
+2023-04-26 19:41:37,298 DEBUG   SenderThread:51859 [sender.py:send():336] send: metric
+2023-04-26 19:41:37,298 DEBUG   SenderThread:51859 [sender.py:send():336] send: metric
+2023-04-26 19:41:37,298 DEBUG   SenderThread:51859 [sender.py:send():336] send: metric
+2023-04-26 19:41:37,298 DEBUG   SenderThread:51859 [sender.py:send():336] send: metric
+2023-04-26 19:41:37,298 DEBUG   SenderThread:51859 [sender.py:send():336] send: metric
+2023-04-26 19:41:37,298 DEBUG   SenderThread:51859 [sender.py:send():336] send: history
+2023-04-26 19:41:37,299 DEBUG   SenderThread:51859 [sender.py:send_request():363] send_request: summary_record
+2023-04-26 19:41:37,302 INFO    SenderThread:51859 [sender.py:_save_file():1332] saving file wandb-summary.json with policy end
+2023-04-26 19:41:37,371 DEBUG   HandlerThread:51859 [handler.py:handle_request():144] handle_request: partial_history
+2023-04-26 19:41:37,371 DEBUG   SenderThread:51859 [sender.py:send():336] send: files
+2023-04-26 19:41:37,373 INFO    SenderThread:51859 [sender.py:_save_file():1332] saving file media/audio/1_ref_mix_a-ref_mix_b-pred_mix_a-sum_mix_a-_1_fe4a74de86ebb78e4bf5.wav with policy now
+2023-04-26 19:41:37,373 DEBUG   SenderThread:51859 [sender.py:send():336] send: metric
+2023-04-26 19:41:37,373 DEBUG   SenderThread:51859 [sender.py:send():336] send: metric
+2023-04-26 19:41:37,373 DEBUG   SenderThread:51859 [sender.py:send():336] send: metric
+2023-04-26 19:41:37,373 DEBUG   SenderThread:51859 [sender.py:send():336] send: metric
+2023-04-26 19:41:37,374 DEBUG   SenderThread:51859 [sender.py:send():336] send: metric
+2023-04-26 19:41:37,374 DEBUG   SenderThread:51859 [sender.py:send():336] send: history
+2023-04-26 19:41:37,374 DEBUG   SenderThread:51859 [sender.py:send_request():363] send_request: summary_record
+2023-04-26 19:41:37,376 INFO    SenderThread:51859 [sender.py:_save_file():1332] saving file wandb-summary.json with policy end
+2023-04-26 19:41:37,477 DEBUG   HandlerThread:51859 [handler.py:handle_request():144] handle_request: partial_history
+2023-04-26 19:41:37,479 DEBUG   SenderThread:51859 [sender.py:send():336] send: files
+2023-04-26 19:41:37,480 INFO    SenderThread:51859 [sender.py:_save_file():1332] saving file media/audio/2_ref_mix_a-ref_mix_b-pred_mix_a-sum_mix_a-_2_54600deef7799b16419e.wav with policy now
+2023-04-26 19:41:37,480 DEBUG   SenderThread:51859 [sender.py:send():336] send: metric
+2023-04-26 19:41:37,480 DEBUG   SenderThread:51859 [sender.py:send():336] send: metric
+2023-04-26 19:41:37,481 DEBUG   SenderThread:51859 [sender.py:send():336] send: metric
+2023-04-26 19:41:37,481 DEBUG   SenderThread:51859 [sender.py:send():336] send: metric
+2023-04-26 19:41:37,481 DEBUG   SenderThread:51859 [sender.py:send():336] send: metric
+2023-04-26 19:41:37,481 DEBUG   SenderThread:51859 [sender.py:send():336] send: history
+2023-04-26 19:41:37,481 DEBUG   SenderThread:51859 [sender.py:send_request():363] send_request: summary_record
+2023-04-26 19:41:37,483 INFO    SenderThread:51859 [sender.py:_save_file():1332] saving file wandb-summary.json with policy end
+2023-04-26 19:41:37,596 DEBUG   HandlerThread:51859 [handler.py:handle_request():144] handle_request: partial_history
+2023-04-26 19:41:37,596 DEBUG   SenderThread:51859 [sender.py:send():336] send: files
+2023-04-26 19:41:37,598 INFO    SenderThread:51859 [sender.py:_save_file():1332] saving file media/audio/3_ref_mix_a-ref_mix_b-pred_mix_a-sum_mix_a-_3_817cb898aec8b24f4988.wav with policy now
+2023-04-26 19:41:37,598 DEBUG   SenderThread:51859 [sender.py:send():336] send: metric
+2023-04-26 19:41:37,598 DEBUG   SenderThread:51859 [sender.py:send():336] send: metric
+2023-04-26 19:41:37,599 DEBUG   SenderThread:51859 [sender.py:send():336] send: metric
+2023-04-26 19:41:37,599 DEBUG   SenderThread:51859 [sender.py:send():336] send: metric
+2023-04-26 19:41:37,599 DEBUG   SenderThread:51859 [sender.py:send():336] send: metric
+2023-04-26 19:41:37,599 DEBUG   SenderThread:51859 [sender.py:send():336] send: history
+2023-04-26 19:41:37,599 DEBUG   SenderThread:51859 [sender.py:send_request():363] send_request: summary_record
+2023-04-26 19:41:37,601 INFO    SenderThread:51859 [sender.py:_save_file():1332] saving file wandb-summary.json with policy end
+2023-04-26 19:41:37,968 INFO    Thread-13 :51859 [dir_watcher.py:_on_file_modified():295] file/dir modified: /homes/ssv02/Diff-MST/logs/wandb/run-20230426_194058-36q76i61/files/wandb-summary.json
+2023-04-26 19:41:37,968 INFO    Thread-13 :51859 [dir_watcher.py:_on_file_created():278] file/dir created: /homes/ssv02/Diff-MST/logs/wandb/run-20230426_194058-36q76i61/files/media/audio/3_ref_mix_a-ref_mix_b-pred_mix_a-sum_mix_a-_3_817cb898aec8b24f4988.wav
+2023-04-26 19:41:37,968 INFO    Thread-13 :51859 [dir_watcher.py:_on_file_created():278] file/dir created: /homes/ssv02/Diff-MST/logs/wandb/run-20230426_194058-36q76i61/files/media/audio/0_ref_mix_a-ref_mix_b-pred_mix_a-sum_mix_a-_0_e3ff3b68294c5bd24e82.wav
+2023-04-26 19:41:37,968 INFO    Thread-13 :51859 [dir_watcher.py:_on_file_created():278] file/dir created: /homes/ssv02/Diff-MST/logs/wandb/run-20230426_194058-36q76i61/files/media/audio/2_ref_mix_a-ref_mix_b-pred_mix_a-sum_mix_a-_2_54600deef7799b16419e.wav
+2023-04-26 19:41:37,969 INFO    Thread-13 :51859 [dir_watcher.py:_on_file_created():278] file/dir created: /homes/ssv02/Diff-MST/logs/wandb/run-20230426_194058-36q76i61/files/media/audio/1_ref_mix_a-ref_mix_b-pred_mix_a-sum_mix_a-_1_fe4a74de86ebb78e4bf5.wav
+2023-04-26 19:41:37,969 INFO    Thread-13 :51859 [dir_watcher.py:_on_file_created():278] file/dir created: /homes/ssv02/Diff-MST/logs/wandb/run-20230426_194058-36q76i61/files/media/audio
+2023-04-26 19:41:37,969 INFO    Thread-13 :51859 [dir_watcher.py:_on_file_created():278] file/dir created: /homes/ssv02/Diff-MST/logs/wandb/run-20230426_194058-36q76i61/files/media
+2023-04-26 19:41:38,520 INFO    wandb-upload_0:51859 [upload_job.py:push():138] Uploaded file /tmp/tmpv1uadl78wandb/fvymr97f-media/audio/0_ref_mix_a-ref_mix_b-pred_mix_a-sum_mix_a-_0_e3ff3b68294c5bd24e82.wav
+2023-04-26 19:41:38,642 INFO    wandb-upload_1:51859 [upload_job.py:push():138] Uploaded file /tmp/tmpv1uadl78wandb/jirtk1t2-media/audio/1_ref_mix_a-ref_mix_b-pred_mix_a-sum_mix_a-_1_fe4a74de86ebb78e4bf5.wav
+2023-04-26 19:41:38,927 INFO    wandb-upload_3:51859 [upload_job.py:push():138] Uploaded file /tmp/tmpv1uadl78wandb/iwu4r1bw-media/audio/3_ref_mix_a-ref_mix_b-pred_mix_a-sum_mix_a-_3_817cb898aec8b24f4988.wav
+2023-04-26 19:41:39,289 INFO    wandb-upload_2:51859 [upload_job.py:push():138] Uploaded file /tmp/tmpv1uadl78wandb/wvoj6pv1-media/audio/2_ref_mix_a-ref_mix_b-pred_mix_a-sum_mix_a-_2_54600deef7799b16419e.wav
+2023-04-26 19:41:40,341 DEBUG   HandlerThread:51859 [handler.py:handle_request():144] handle_request: status_report
+2023-04-26 19:41:40,376 INFO    wandb-upload_0:51859 [upload_job.py:push():138] Uploaded file /tmp/tmpv1uadl78wandb/3bvc5hhe-media/audio/0_ref_mix_a-ref_mix_b-pred_mix_a-sum_mix_a-_0_e3ff3b68294c5bd24e82.wav
+2023-04-26 19:41:40,756 INFO    wandb-upload_1:51859 [upload_job.py:push():138] Uploaded file /tmp/tmpv1uadl78wandb/ak4dses6-media/audio/1_ref_mix_a-ref_mix_b-pred_mix_a-sum_mix_a-_1_fe4a74de86ebb78e4bf5.wav
+2023-04-26 19:41:40,973 INFO    Thread-13 :51859 [dir_watcher.py:_on_file_modified():295] file/dir modified: /homes/ssv02/Diff-MST/logs/wandb/run-20230426_194058-36q76i61/files/output.log
+2023-04-26 19:41:41,731 INFO    wandb-upload_2:51859 [upload_job.py:push():138] Uploaded file /tmp/tmpv1uadl78wandb/09kkrnmm-media/audio/3_ref_mix_a-ref_mix_b-pred_mix_a-sum_mix_a-_3_817cb898aec8b24f4988.wav
+2023-04-26 19:41:41,996 INFO    wandb-upload_0:51859 [upload_job.py:push():138] Uploaded file /tmp/tmpv1uadl78wandb/jche307e-media/audio/2_ref_mix_a-ref_mix_b-pred_mix_a-sum_mix_a-_2_54600deef7799b16419e.wav
+2023-04-26 19:41:43,900 DEBUG   HandlerThread:51859 [handler.py:handle_request():144] handle_request: stop_status
+2023-04-26 19:41:43,901 DEBUG   SenderThread:51859 [sender.py:send_request():363] send_request: stop_status
+2023-04-26 19:41:46,063 DEBUG   HandlerThread:51859 [handler.py:handle_request():144] handle_request: status_report
+2023-04-26 19:41:51,064 DEBUG   HandlerThread:51859 [handler.py:handle_request():144] handle_request: status_report
+2023-04-26 19:41:56,065 DEBUG   HandlerThread:51859 [handler.py:handle_request():144] handle_request: status_report
+2023-04-26 19:41:58,814 DEBUG   SystemMonitor:51859 [system_monitor.py:_start():161] Starting system metrics aggregation loop
+2023-04-26 19:41:58,819 DEBUG   SenderThread:51859 [sender.py:send():336] send: stats
+2023-04-26 19:41:58,900 DEBUG   HandlerThread:51859 [handler.py:handle_request():144] handle_request: stop_status
+2023-04-26 19:41:58,901 DEBUG   SenderThread:51859 [sender.py:send_request():363] send_request: stop_status
+2023-04-26 19:42:02,114 DEBUG   HandlerThread:51859 [handler.py:handle_request():144] handle_request: status_report
+2023-04-26 19:42:02,997 INFO    Thread-13 :51859 [dir_watcher.py:_on_file_modified():295] file/dir modified: /homes/ssv02/Diff-MST/logs/wandb/run-20230426_194058-36q76i61/files/config.yaml
+2023-04-26 19:42:07,717 DEBUG   HandlerThread:51859 [handler.py:handle_request():144] handle_request: status_report
+2023-04-26 19:42:12,717 DEBUG   HandlerThread:51859 [handler.py:handle_request():144] handle_request: status_report
+2023-04-26 19:42:13,904 DEBUG   HandlerThread:51859 [handler.py:handle_request():144] handle_request: stop_status
+2023-04-26 19:42:13,905 DEBUG   SenderThread:51859 [sender.py:send_request():363] send_request: stop_status
+2023-04-26 19:42:17,015 INFO    Thread-13 :51859 [dir_watcher.py:_on_file_modified():295] file/dir modified: /homes/ssv02/Diff-MST/logs/wandb/run-20230426_194058-36q76i61/files/output.log
+2023-04-26 19:42:18,056 DEBUG   HandlerThread:51859 [handler.py:handle_request():144] handle_request: status_report
+2023-04-26 19:42:23,057 DEBUG   HandlerThread:51859 [handler.py:handle_request():144] handle_request: status_report
+2023-04-26 19:42:28,058 DEBUG   HandlerThread:51859 [handler.py:handle_request():144] handle_request: status_report
+2023-04-26 19:42:28,821 DEBUG   SenderThread:51859 [sender.py:send():336] send: stats
+2023-04-26 19:42:28,902 DEBUG   HandlerThread:51859 [handler.py:handle_request():144] handle_request: stop_status
+2023-04-26 19:42:28,903 DEBUG   SenderThread:51859 [sender.py:send_request():363] send_request: stop_status
+2023-04-26 19:42:33,069 DEBUG   HandlerThread:51859 [handler.py:handle_request():144] handle_request: status_report
+2023-04-26 19:42:38,070 DEBUG   HandlerThread:51859 [handler.py:handle_request():144] handle_request: status_report
+2023-04-26 19:42:43,071 DEBUG   HandlerThread:51859 [handler.py:handle_request():144] handle_request: status_report
+2023-04-26 19:42:43,902 DEBUG   HandlerThread:51859 [handler.py:handle_request():144] handle_request: stop_status
+2023-04-26 19:42:43,903 DEBUG   SenderThread:51859 [sender.py:send_request():363] send_request: stop_status
+2023-04-26 19:42:49,060 DEBUG   HandlerThread:51859 [handler.py:handle_request():144] handle_request: status_report
+2023-04-26 19:42:54,061 DEBUG   HandlerThread:51859 [handler.py:handle_request():144] handle_request: status_report
+2023-04-26 19:42:58,825 DEBUG   SenderThread:51859 [sender.py:send():336] send: stats
+2023-04-26 19:42:58,901 DEBUG   HandlerThread:51859 [handler.py:handle_request():144] handle_request: stop_status
+2023-04-26 19:42:58,902 DEBUG   SenderThread:51859 [sender.py:send_request():363] send_request: stop_status
+2023-04-26 19:43:00,057 DEBUG   HandlerThread:51859 [handler.py:handle_request():144] handle_request: status_report
+2023-04-26 19:43:05,058 DEBUG   HandlerThread:51859 [handler.py:handle_request():144] handle_request: status_report
+2023-04-26 19:43:10,060 DEBUG   HandlerThread:51859 [handler.py:handle_request():144] handle_request: status_report
+2023-04-26 19:43:13,902 DEBUG   HandlerThread:51859 [handler.py:handle_request():144] handle_request: stop_status
+2023-04-26 19:43:13,903 DEBUG   SenderThread:51859 [sender.py:send_request():363] send_request: stop_status
+2023-04-26 19:43:16,058 DEBUG   HandlerThread:51859 [handler.py:handle_request():144] handle_request: status_report
+2023-04-26 19:43:21,059 DEBUG   HandlerThread:51859 [handler.py:handle_request():144] handle_request: status_report
+2023-04-26 19:43:26,060 DEBUG   HandlerThread:51859 [handler.py:handle_request():144] handle_request: status_report
+2023-04-26 19:43:28,829 DEBUG   SenderThread:51859 [sender.py:send():336] send: stats
+2023-04-26 19:43:28,902 DEBUG   HandlerThread:51859 [handler.py:handle_request():144] handle_request: stop_status
+2023-04-26 19:43:28,903 DEBUG   SenderThread:51859 [sender.py:send_request():363] send_request: stop_status
+2023-04-26 19:43:32,058 DEBUG   HandlerThread:51859 [handler.py:handle_request():144] handle_request: status_report
+2023-04-26 19:43:37,059 DEBUG   HandlerThread:51859 [handler.py:handle_request():144] handle_request: status_report
+2023-04-26 19:43:42,060 DEBUG   HandlerThread:51859 [handler.py:handle_request():144] handle_request: status_report
+2023-04-26 19:43:43,902 DEBUG   HandlerThread:51859 [handler.py:handle_request():144] handle_request: stop_status
+2023-04-26 19:43:43,903 DEBUG   SenderThread:51859 [sender.py:send_request():363] send_request: stop_status
+2023-04-26 19:43:48,052 DEBUG   HandlerThread:51859 [handler.py:handle_request():144] handle_request: status_report
+2023-04-26 19:43:53,053 DEBUG   HandlerThread:51859 [handler.py:handle_request():144] handle_request: status_report
+2023-04-26 19:43:58,053 DEBUG   HandlerThread:51859 [handler.py:handle_request():144] handle_request: status_report
+2023-04-26 19:43:58,834 DEBUG   SenderThread:51859 [sender.py:send():336] send: stats
+2023-04-26 19:43:58,902 DEBUG   HandlerThread:51859 [handler.py:handle_request():144] handle_request: stop_status
+2023-04-26 19:43:58,902 DEBUG   SenderThread:51859 [sender.py:send_request():363] send_request: stop_status
+2023-04-26 19:44:03,059 DEBUG   HandlerThread:51859 [handler.py:handle_request():144] handle_request: status_report
+2023-04-26 19:44:08,060 DEBUG   HandlerThread:51859 [handler.py:handle_request():144] handle_request: status_report
+2023-04-26 19:44:13,064 DEBUG   HandlerThread:51859 [handler.py:handle_request():144] handle_request: status_report
+2023-04-26 19:44:13,903 DEBUG   HandlerThread:51859 [handler.py:handle_request():144] handle_request: stop_status
+2023-04-26 19:44:13,903 DEBUG   SenderThread:51859 [sender.py:send_request():363] send_request: stop_status
+2023-04-26 19:44:18,068 DEBUG   HandlerThread:51859 [handler.py:handle_request():144] handle_request: status_report
+2023-04-26 19:44:23,069 DEBUG   HandlerThread:51859 [handler.py:handle_request():144] handle_request: status_report
+2023-04-26 19:44:28,069 DEBUG   HandlerThread:51859 [handler.py:handle_request():144] handle_request: status_report
+2023-04-26 19:44:28,835 DEBUG   SenderThread:51859 [sender.py:send():336] send: stats
+2023-04-26 19:44:28,902 DEBUG   HandlerThread:51859 [handler.py:handle_request():144] handle_request: stop_status
+2023-04-26 19:44:28,903 DEBUG   SenderThread:51859 [sender.py:send_request():363] send_request: stop_status
+2023-04-26 19:44:33,081 DEBUG   HandlerThread:51859 [handler.py:handle_request():144] handle_request: status_report
+2023-04-26 19:44:38,082 DEBUG   HandlerThread:51859 [handler.py:handle_request():144] handle_request: status_report
+2023-04-26 19:44:43,083 DEBUG   HandlerThread:51859 [handler.py:handle_request():144] handle_request: status_report
+2023-04-26 19:44:43,903 DEBUG   HandlerThread:51859 [handler.py:handle_request():144] handle_request: stop_status
+2023-04-26 19:44:43,903 DEBUG   SenderThread:51859 [sender.py:send_request():363] send_request: stop_status
+2023-04-26 19:44:46,476 DEBUG   SenderThread:51859 [sender.py:send():336] send: exit
+2023-04-26 19:44:46,477 INFO    SenderThread:51859 [sender.py:send_exit():559] handling exit code: 1
+2023-04-26 19:44:46,477 INFO    SenderThread:51859 [sender.py:send_exit():561] handling runtime: 227
+2023-04-26 19:44:46,481 INFO    SenderThread:51859 [sender.py:_save_file():1332] saving file wandb-summary.json with policy end
+2023-04-26 19:44:46,482 INFO    SenderThread:51859 [sender.py:send_exit():567] send defer
+2023-04-26 19:44:46,482 DEBUG   HandlerThread:51859 [handler.py:handle_request():144] handle_request: defer
+2023-04-26 19:44:46,483 INFO    HandlerThread:51859 [handler.py:handle_request_defer():170] handle defer: 0
+2023-04-26 19:44:46,483 DEBUG   SenderThread:51859 [sender.py:send_request():363] send_request: defer
+2023-04-26 19:44:46,483 INFO    SenderThread:51859 [sender.py:send_request_defer():583] handle sender defer: 0
+2023-04-26 19:44:46,483 INFO    SenderThread:51859 [sender.py:transition_state():587] send defer: 1
+2023-04-26 19:44:46,483 DEBUG   HandlerThread:51859 [handler.py:handle_request():144] handle_request: defer
+2023-04-26 19:44:46,483 INFO    HandlerThread:51859 [handler.py:handle_request_defer():170] handle defer: 1
+2023-04-26 19:44:46,484 DEBUG   SenderThread:51859 [sender.py:send_request():363] send_request: defer
+2023-04-26 19:44:46,484 INFO    SenderThread:51859 [sender.py:send_request_defer():583] handle sender defer: 1
+2023-04-26 19:44:46,484 INFO    SenderThread:51859 [sender.py:transition_state():587] send defer: 2
+2023-04-26 19:44:46,484 DEBUG   HandlerThread:51859 [handler.py:handle_request():144] handle_request: defer
+2023-04-26 19:44:46,484 INFO    HandlerThread:51859 [handler.py:handle_request_defer():170] handle defer: 2
+2023-04-26 19:44:46,484 INFO    HandlerThread:51859 [system_monitor.py:finish():193] Stopping system monitor
+2023-04-26 19:44:46,486 DEBUG   SystemMonitor:51859 [system_monitor.py:_start():168] Finished system metrics aggregation loop
+2023-04-26 19:44:46,486 DEBUG   SystemMonitor:51859 [system_monitor.py:_start():172] Publishing last batch of metrics
+2023-04-26 19:44:46,490 INFO    HandlerThread:51859 [interfaces.py:finish():199] Joined cpu monitor
+2023-04-26 19:44:46,490 INFO    HandlerThread:51859 [interfaces.py:finish():199] Joined disk monitor
+2023-04-26 19:44:47,186 INFO    Thread-13 :51859 [dir_watcher.py:_on_file_modified():295] file/dir modified: /homes/ssv02/Diff-MST/logs/wandb/run-20230426_194058-36q76i61/files/wandb-summary.json
+2023-04-26 19:44:48,189 INFO    Thread-13 :51859 [dir_watcher.py:_on_file_modified():295] file/dir modified: /homes/ssv02/Diff-MST/logs/wandb/run-20230426_194058-36q76i61/files/output.log
+2023-04-26 19:44:48,483 INFO    HandlerThread:51859 [interfaces.py:finish():199] Joined gpu monitor
+2023-04-26 19:44:48,484 INFO    HandlerThread:51859 [interfaces.py:finish():199] Joined memory monitor
+2023-04-26 19:44:48,484 INFO    HandlerThread:51859 [interfaces.py:finish():199] Joined network monitor
+2023-04-26 19:44:48,484 DEBUG   HandlerThread:51859 [handler.py:handle_request():144] handle_request: poll_exit
+2023-04-26 19:44:48,485 DEBUG   SenderThread:51859 [sender.py:send_request():363] send_request: defer
+2023-04-26 19:44:48,485 INFO    SenderThread:51859 [sender.py:send_request_defer():583] handle sender defer: 2
+2023-04-26 19:44:48,485 INFO    SenderThread:51859 [sender.py:transition_state():587] send defer: 3
+2023-04-26 19:44:48,486 DEBUG   SenderThread:51859 [sender.py:send():336] send: stats
+2023-04-26 19:44:48,488 DEBUG   SenderThread:51859 [sender.py:send_request():363] send_request: poll_exit
+2023-04-26 19:44:48,488 DEBUG   HandlerThread:51859 [handler.py:handle_request():144] handle_request: defer
+2023-04-26 19:44:48,489 INFO    HandlerThread:51859 [handler.py:handle_request_defer():170] handle defer: 3
+2023-04-26 19:44:48,489 DEBUG   HandlerThread:51859 [handler.py:handle_request():144] handle_request: status_report
+2023-04-26 19:44:48,489 DEBUG   SenderThread:51859 [sender.py:send_request():363] send_request: defer
+2023-04-26 19:44:48,489 INFO    SenderThread:51859 [sender.py:send_request_defer():583] handle sender defer: 3
+2023-04-26 19:44:48,490 INFO    SenderThread:51859 [sender.py:transition_state():587] send defer: 4
+2023-04-26 19:44:48,490 DEBUG   HandlerThread:51859 [handler.py:handle_request():144] handle_request: defer
+2023-04-26 19:44:48,490 INFO    HandlerThread:51859 [handler.py:handle_request_defer():170] handle defer: 4
+2023-04-26 19:44:48,490 DEBUG   SenderThread:51859 [sender.py:send_request():363] send_request: defer
+2023-04-26 19:44:48,490 INFO    SenderThread:51859 [sender.py:send_request_defer():583] handle sender defer: 4
+2023-04-26 19:44:48,491 INFO    SenderThread:51859 [sender.py:transition_state():587] send defer: 5
+2023-04-26 19:44:48,491 DEBUG   HandlerThread:51859 [handler.py:handle_request():144] handle_request: defer
+2023-04-26 19:44:48,491 INFO    HandlerThread:51859 [handler.py:handle_request_defer():170] handle defer: 5
+2023-04-26 19:44:48,492 DEBUG   SenderThread:51859 [sender.py:send():336] send: summary
+2023-04-26 19:44:48,494 INFO    SenderThread:51859 [sender.py:_save_file():1332] saving file wandb-summary.json with policy end
+2023-04-26 19:44:48,494 DEBUG   SenderThread:51859 [sender.py:send_request():363] send_request: defer
+2023-04-26 19:44:48,494 INFO    SenderThread:51859 [sender.py:send_request_defer():583] handle sender defer: 5
+2023-04-26 19:44:48,494 INFO    SenderThread:51859 [sender.py:transition_state():587] send defer: 6
+2023-04-26 19:44:48,495 DEBUG   HandlerThread:51859 [handler.py:handle_request():144] handle_request: defer
+2023-04-26 19:44:48,495 INFO    HandlerThread:51859 [handler.py:handle_request_defer():170] handle defer: 6
+2023-04-26 19:44:48,495 DEBUG   SenderThread:51859 [sender.py:send_request():363] send_request: defer
+2023-04-26 19:44:48,495 INFO    SenderThread:51859 [sender.py:send_request_defer():583] handle sender defer: 6
+2023-04-26 19:44:48,495 INFO    SenderThread:51859 [sender.py:transition_state():587] send defer: 7
+2023-04-26 19:44:48,495 DEBUG   HandlerThread:51859 [handler.py:handle_request():144] handle_request: status_report
+2023-04-26 19:44:48,496 DEBUG   HandlerThread:51859 [handler.py:handle_request():144] handle_request: defer
+2023-04-26 19:44:48,496 INFO    HandlerThread:51859 [handler.py:handle_request_defer():170] handle defer: 7
+2023-04-26 19:44:48,496 DEBUG   SenderThread:51859 [sender.py:send_request():363] send_request: defer
+2023-04-26 19:44:48,496 INFO    SenderThread:51859 [sender.py:send_request_defer():583] handle sender defer: 7
+2023-04-26 19:44:49,190 INFO    Thread-13 :51859 [dir_watcher.py:_on_file_modified():295] file/dir modified: /homes/ssv02/Diff-MST/logs/wandb/run-20230426_194058-36q76i61/files/wandb-summary.json
+2023-04-26 19:44:50,297 INFO    SenderThread:51859 [sender.py:transition_state():587] send defer: 8
+2023-04-26 19:44:50,298 DEBUG   HandlerThread:51859 [handler.py:handle_request():144] handle_request: defer
+2023-04-26 19:44:50,298 INFO    HandlerThread:51859 [handler.py:handle_request_defer():170] handle defer: 8
+2023-04-26 19:44:50,298 DEBUG   SenderThread:51859 [sender.py:send_request():363] send_request: defer
+2023-04-26 19:44:50,299 INFO    SenderThread:51859 [sender.py:send_request_defer():583] handle sender defer: 8
+2023-04-26 19:44:50,314 INFO    SenderThread:51859 [sender.py:transition_state():587] send defer: 9
+2023-04-26 19:44:50,315 DEBUG   HandlerThread:51859 [handler.py:handle_request():144] handle_request: defer
+2023-04-26 19:44:50,315 DEBUG   SenderThread:51859 [sender.py:send():336] send: artifact
+2023-04-26 19:44:50,315 INFO    HandlerThread:51859 [handler.py:handle_request_defer():170] handle defer: 9
+2023-04-26 19:44:51,193 INFO    SenderThread:51859 [sender.py:send_artifact():1428] sent artifact job-https___github.com_sai-soum_Diff-MST.git_main.py - {'id': 'QXJ0aWZhY3Q6NDM0MTc3MDM4', 'digest': '767681bc4c99c6d5d18cc637bb1c63e7', 'state': 'COMMITTED', 'aliases': [{'artifactCollectionName': 'job-https___github.com_sai-soum_Diff-MST.git_main.py', 'alias': 'latest'}, {'artifactCollectionName': 'job-https___github.com_sai-soum_Diff-MST.git_main.py', 'alias': 'v3'}], 'artifactSequence': {'id': 'QXJ0aWZhY3RDb2xsZWN0aW9uOjY0NzQ3MTk1', 'latestArtifact': {'id': 'QXJ0aWZhY3Q6NDM0MTc3MDM4', 'versionIndex': 3}}, 'version': 'v3'}
+2023-04-26 19:44:51,193 DEBUG   SenderThread:51859 [sender.py:send_request():363] send_request: defer
+2023-04-26 19:44:51,193 INFO    SenderThread:51859 [sender.py:send_request_defer():583] handle sender defer: 9
+2023-04-26 19:44:51,193 INFO    SenderThread:51859 [dir_watcher.py:finish():365] shutting down directory watcher
+2023-04-26 19:44:51,194 INFO    Thread-13 :51859 [dir_watcher.py:_on_file_modified():295] file/dir modified: /homes/ssv02/Diff-MST/logs/wandb/run-20230426_194058-36q76i61/files/output.log
+2023-04-26 19:44:51,195 INFO    SenderThread:51859 [dir_watcher.py:finish():395] scan: /homes/ssv02/Diff-MST/logs/wandb/run-20230426_194058-36q76i61/files
+2023-04-26 19:44:51,195 INFO    SenderThread:51859 [dir_watcher.py:finish():409] scan save: /homes/ssv02/Diff-MST/logs/wandb/run-20230426_194058-36q76i61/files/requirements.txt requirements.txt
+2023-04-26 19:44:51,195 INFO    SenderThread:51859 [dir_watcher.py:finish():409] scan save: /homes/ssv02/Diff-MST/logs/wandb/run-20230426_194058-36q76i61/files/output.log output.log
+2023-04-26 19:44:51,195 INFO    SenderThread:51859 [dir_watcher.py:finish():409] scan save: /homes/ssv02/Diff-MST/logs/wandb/run-20230426_194058-36q76i61/files/config.yaml config.yaml
+2023-04-26 19:44:51,203 INFO    SenderThread:51859 [dir_watcher.py:finish():409] scan save: /homes/ssv02/Diff-MST/logs/wandb/run-20230426_194058-36q76i61/files/wandb-metadata.json wandb-metadata.json
+2023-04-26 19:44:51,203 INFO    SenderThread:51859 [dir_watcher.py:finish():409] scan save: /homes/ssv02/Diff-MST/logs/wandb/run-20230426_194058-36q76i61/files/wandb-summary.json wandb-summary.json
+2023-04-26 19:44:51,215 INFO    SenderThread:51859 [dir_watcher.py:finish():409] scan save: /homes/ssv02/Diff-MST/logs/wandb/run-20230426_194058-36q76i61/files/media/audio/3_ref_mix_a-ref_mix_b-pred_mix_a-sum_mix_a-_3_817cb898aec8b24f4988.wav media/audio/3_ref_mix_a-ref_mix_b-pred_mix_a-sum_mix_a-_3_817cb898aec8b24f4988.wav
+2023-04-26 19:44:51,216 INFO    SenderThread:51859 [dir_watcher.py:finish():409] scan save: /homes/ssv02/Diff-MST/logs/wandb/run-20230426_194058-36q76i61/files/media/audio/1_ref_mix_a-ref_mix_b-pred_mix_a-sum_mix_a-_1_fe4a74de86ebb78e4bf5.wav media/audio/1_ref_mix_a-ref_mix_b-pred_mix_a-sum_mix_a-_1_fe4a74de86ebb78e4bf5.wav
+2023-04-26 19:44:51,217 INFO    SenderThread:51859 [dir_watcher.py:finish():409] scan save: /homes/ssv02/Diff-MST/logs/wandb/run-20230426_194058-36q76i61/files/media/audio/0_ref_mix_a-ref_mix_b-pred_mix_a-sum_mix_a-_0_e3ff3b68294c5bd24e82.wav media/audio/0_ref_mix_a-ref_mix_b-pred_mix_a-sum_mix_a-_0_e3ff3b68294c5bd24e82.wav
+2023-04-26 19:44:51,217 INFO    SenderThread:51859 [dir_watcher.py:finish():409] scan save: /homes/ssv02/Diff-MST/logs/wandb/run-20230426_194058-36q76i61/files/media/audio/2_ref_mix_a-ref_mix_b-pred_mix_a-sum_mix_a-_2_54600deef7799b16419e.wav media/audio/2_ref_mix_a-ref_mix_b-pred_mix_a-sum_mix_a-_2_54600deef7799b16419e.wav
+2023-04-26 19:44:51,217 INFO    SenderThread:51859 [sender.py:transition_state():587] send defer: 10
+2023-04-26 19:44:51,218 DEBUG   HandlerThread:51859 [handler.py:handle_request():144] handle_request: defer
+2023-04-26 19:44:51,218 INFO    HandlerThread:51859 [handler.py:handle_request_defer():170] handle defer: 10
+2023-04-26 19:44:51,219 DEBUG   SenderThread:51859 [sender.py:send_request():363] send_request: defer
+2023-04-26 19:44:51,219 INFO    SenderThread:51859 [sender.py:send_request_defer():583] handle sender defer: 10
+2023-04-26 19:44:51,219 INFO    SenderThread:51859 [file_pusher.py:finish():164] shutting down file pusher
+2023-04-26 19:44:51,681 INFO    wandb-upload_1:51859 [upload_job.py:push():138] Uploaded file /homes/ssv02/Diff-MST/logs/wandb/run-20230426_194058-36q76i61/files/requirements.txt
+2023-04-26 19:44:51,693 INFO    wandb-upload_2:51859 [upload_job.py:push():138] Uploaded file /homes/ssv02/Diff-MST/logs/wandb/run-20230426_194058-36q76i61/files/wandb-summary.json
+2023-04-26 19:44:51,693 INFO    wandb-upload_0:51859 [upload_job.py:push():138] Uploaded file /homes/ssv02/Diff-MST/logs/wandb/run-20230426_194058-36q76i61/files/config.yaml
+2023-04-26 19:44:51,693 INFO    wandb-upload_3:51859 [upload_job.py:push():138] Uploaded file /homes/ssv02/Diff-MST/logs/wandb/run-20230426_194058-36q76i61/files/output.log
+2023-04-26 19:44:51,894 INFO    Thread-12 (_thread_body):51859 [sender.py:transition_state():587] send defer: 11
+2023-04-26 19:44:51,895 DEBUG   HandlerThread:51859 [handler.py:handle_request():144] handle_request: defer
+2023-04-26 19:44:51,895 INFO    HandlerThread:51859 [handler.py:handle_request_defer():170] handle defer: 11
+2023-04-26 19:44:51,896 DEBUG   SenderThread:51859 [sender.py:send_request():363] send_request: defer
+2023-04-26 19:44:51,896 INFO    SenderThread:51859 [sender.py:send_request_defer():583] handle sender defer: 11
+2023-04-26 19:44:51,896 INFO    SenderThread:51859 [file_pusher.py:join():169] waiting for file pusher
+2023-04-26 19:44:51,896 INFO    SenderThread:51859 [sender.py:transition_state():587] send defer: 12
+2023-04-26 19:44:51,897 DEBUG   HandlerThread:51859 [handler.py:handle_request():144] handle_request: defer
+2023-04-26 19:44:51,897 INFO    HandlerThread:51859 [handler.py:handle_request_defer():170] handle defer: 12
+2023-04-26 19:44:51,897 DEBUG   SenderThread:51859 [sender.py:send_request():363] send_request: defer
+2023-04-26 19:44:51,897 INFO    SenderThread:51859 [sender.py:send_request_defer():583] handle sender defer: 12
+2023-04-26 19:44:52,479 DEBUG   HandlerThread:51859 [handler.py:handle_request():144] handle_request: keepalive
+2023-04-26 19:44:52,717 INFO    SenderThread:51859 [sender.py:transition_state():587] send defer: 13
+2023-04-26 19:44:52,717 DEBUG   HandlerThread:51859 [handler.py:handle_request():144] handle_request: defer
+2023-04-26 19:44:52,717 INFO    HandlerThread:51859 [handler.py:handle_request_defer():170] handle defer: 13
+2023-04-26 19:44:52,718 DEBUG   SenderThread:51859 [sender.py:send_request():363] send_request: defer
+2023-04-26 19:44:52,718 INFO    SenderThread:51859 [sender.py:send_request_defer():583] handle sender defer: 13
+2023-04-26 19:44:52,718 INFO    SenderThread:51859 [sender.py:transition_state():587] send defer: 14
+2023-04-26 19:44:52,719 DEBUG   HandlerThread:51859 [handler.py:handle_request():144] handle_request: defer
+2023-04-26 19:44:52,719 DEBUG   SenderThread:51859 [sender.py:send():336] send: final
+2023-04-26 19:44:52,719 INFO    HandlerThread:51859 [handler.py:handle_request_defer():170] handle defer: 14
+2023-04-26 19:44:52,720 DEBUG   SenderThread:51859 [sender.py:send():336] send: footer
+2023-04-26 19:44:52,720 DEBUG   SenderThread:51859 [sender.py:send_request():363] send_request: defer
+2023-04-26 19:44:52,720 INFO    SenderThread:51859 [sender.py:send_request_defer():583] handle sender defer: 14
+2023-04-26 19:44:52,721 DEBUG   HandlerThread:51859 [handler.py:handle_request():144] handle_request: poll_exit
+2023-04-26 19:44:52,722 DEBUG   HandlerThread:51859 [handler.py:handle_request():144] handle_request: server_info
+2023-04-26 19:44:52,722 DEBUG   HandlerThread:51859 [handler.py:handle_request():144] handle_request: get_summary
+2023-04-26 19:44:52,723 DEBUG   HandlerThread:51859 [handler.py:handle_request():144] handle_request: sampled_history
+2023-04-26 19:44:52,723 DEBUG   SenderThread:51859 [sender.py:send_request():363] send_request: poll_exit
+2023-04-26 19:44:52,724 DEBUG   SenderThread:51859 [sender.py:send_request():363] send_request: server_info
+2023-04-26 19:44:52,876 INFO    MainThread:51859 [wandb_run.py:_footer_history_summary_info():3422] rendering history
+2023-04-26 19:44:52,876 INFO    MainThread:51859 [wandb_run.py:_footer_history_summary_info():3454] rendering summary
+2023-04-26 19:44:52,876 INFO    MainThread:51859 [wandb_run.py:_footer_sync_info():3380] logging synced files
+2023-04-26 19:44:52,877 DEBUG   HandlerThread:51859 [handler.py:handle_request():144] handle_request: shutdown
+2023-04-26 19:44:52,878 INFO    HandlerThread:51859 [handler.py:finish():842] shutting down handler
+2023-04-26 19:44:53,723 INFO    WriterThread:51859 [datastore.py:close():298] close: /homes/ssv02/Diff-MST/logs/wandb/run-20230426_194058-36q76i61/run-36q76i61.wandb
+2023-04-26 19:44:53,875 INFO    SenderThread:51859 [sender.py:finish():1504] shutting down sender
+2023-04-26 19:44:53,876 INFO    SenderThread:51859 [file_pusher.py:finish():164] shutting down file pusher
+2023-04-26 19:44:53,876 INFO    SenderThread:51859 [file_pusher.py:join():169] waiting for file pusher

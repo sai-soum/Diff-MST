@@ -173,7 +173,7 @@ class CambridgeDataset(torch.utils.data.Dataset):
 
 
         for mix_dir in pbar:
-            print(mix_dir)
+            #print(mix_dir)
         
             #mix_id = os.path.basename(mix_dir)
             #print(mix_id)
@@ -303,6 +303,7 @@ class CambridgeDataset(torch.utils.data.Dataset):
 
         # select an example at random
         example_idx = np.random.randint(0, len(self.examples))
+        #print("example_idx",example_idx)
         example = self.examples[example_idx]
         #print(example["songname"])
         # read tracks from RAM
@@ -364,7 +365,7 @@ class CambridgeDataModule(pl.LightningDataModule):
         if stage == "fit":
             self.train_dataset = CambridgeDataset(
                 root_dirs=self.hparams.root_dirs,
-                indices='train',
+                indices=[0,150],
                 length=self.hparams.length,
                 buffer_size_gb=self.hparams.train_buffer_size_gb,
                 num_examples_per_epoch=10000,
@@ -373,7 +374,7 @@ class CambridgeDataModule(pl.LightningDataModule):
         if stage == "validate" or stage == "fit":
             self.val_dataset = CambridgeDataset(
                 root_dirs=self.hparams.root_dirs,
-                indices='val',
+                indices=[150,200],
                 length=self.hparams.length,
                 buffer_size_gb=self.hparams.val_buffer_size_gb,
                 num_examples_per_epoch=1000,

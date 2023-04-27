@@ -1,0 +1,147 @@
+{
+    "os": "Linux-3.10.0-1160.11.1.el7.x86_64-x86_64-with-glibc2.17",
+    "python": "3.10.9",
+    "heartbeatAt": "2023-04-26T16:56:11.395902",
+    "startedAt": "2023-04-26T16:56:10.889576",
+    "docker": null,
+    "cuda": null,
+    "args": [
+        "fit",
+        "-c",
+        "configs/config.yaml",
+        "-c",
+        "configs/optimizer.yaml",
+        "-c",
+        "configs/data/cambridge.yaml",
+        "-c",
+        "configs/models/ke_dmc_adv.yaml"
+    ],
+    "state": "running",
+    "program": "/homes/ssv02/Diff-MST/main.py",
+    "codePath": "main.py",
+    "git": {
+        "remote": "https://github.com/sai-soum/Diff-MST.git",
+        "commit": "059f919437b52de51fa79b04bb40375b87c3749a"
+    },
+    "email": null,
+    "root": "/homes/ssv02/Diff-MST",
+    "host": "buxton",
+    "username": "ssv02",
+    "executable": "/homes/ssv02/Diff-MST/env/bin/python",
+    "cpu_count": 8,
+    "cpu_count_logical": 16,
+    "cpu_freq": {
+        "current": 2826.0455625,
+        "min": 1200.0,
+        "max": 3700.0
+    },
+    "cpu_freq_per_core": [
+        {
+            "current": 1315.917,
+            "min": 1200.0,
+            "max": 3700.0
+        },
+        {
+            "current": 3603.393,
+            "min": 1200.0,
+            "max": 3700.0
+        },
+        {
+            "current": 3653.167,
+            "min": 1200.0,
+            "max": 3700.0
+        },
+        {
+            "current": 3290.863,
+            "min": 1200.0,
+            "max": 3700.0
+        },
+        {
+            "current": 3499.786,
+            "min": 1200.0,
+            "max": 3700.0
+        },
+        {
+            "current": 1394.104,
+            "min": 1200.0,
+            "max": 3700.0
+        },
+        {
+            "current": 3599.975,
+            "min": 1200.0,
+            "max": 3700.0
+        },
+        {
+            "current": 2092.01,
+            "min": 1200.0,
+            "max": 3700.0
+        },
+        {
+            "current": 1992.462,
+            "min": 1200.0,
+            "max": 3700.0
+        },
+        {
+            "current": 3648.468,
+            "min": 1200.0,
+            "max": 3700.0
+        },
+        {
+            "current": 3646.118,
+            "min": 1200.0,
+            "max": 3700.0
+        },
+        {
+            "current": 3485.687,
+            "min": 1200.0,
+            "max": 3700.0
+        },
+        {
+            "current": 3500.0,
+            "min": 1200.0,
+            "max": 3700.0
+        },
+        {
+            "current": 1228.118,
+            "min": 1200.0,
+            "max": 3700.0
+        },
+        {
+            "current": 3650.817,
+            "min": 1200.0,
+            "max": 3700.0
+        },
+        {
+            "current": 1713.043,
+            "min": 1200.0,
+            "max": 3700.0
+        }
+    ],
+    "disk": {
+        "total": 124.44637680053711,
+        "used": 25.950698852539062
+    },
+    "gpu": "GeForce RTX 2080 Ti",
+    "gpu_count": 4,
+    "gpu_devices": [
+        {
+            "name": "GeForce RTX 2080 Ti",
+            "memory_total": 11554717696
+        },
+        {
+            "name": "GeForce RTX 2080 Ti",
+            "memory_total": 11554717696
+        },
+        {
+            "name": "GeForce RTX 2080 Ti",
+            "memory_total": 11554717696
+        },
+        {
+            "name": "GeForce RTX 2080 Ti",
+            "memory_total": 11554717696
+        }
+    ],
+    "memory": {
+        "total": 125.6551742553711
+    }
+}

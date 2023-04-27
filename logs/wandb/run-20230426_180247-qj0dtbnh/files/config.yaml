@@ -1,0 +1,57 @@
+wandb_version: 1
+
+_wandb:
+  desc: null
+  value:
+    cli_version: 0.14.0
+    framework: lightning
+    is_jupyter_run: false
+    is_kaggle_kernel: false
+    m:
+    - 1: trainer/global_step
+      6:
+      - 3
+    python_version: 3.10.9
+    start_time: 1682528567.234127
+    t:
+      1:
+      - 1
+      - 5
+      - 9
+      - 41
+      - 53
+      - 55
+      2:
+      - 1
+      - 5
+      - 9
+      - 41
+      - 50
+      - 53
+      - 55
+      3:
+      - 7
+      - 23
+      4: 3.10.9
+      5: 0.14.0
+      8:
+      - 5
+batch_size:
+  desc: null
+  value: 8
+length:
+  desc: null
+  value: 524288
+num_workers:
+  desc: null
+  value: 4
+root_dirs:
+  desc: null
+  value:
+  - /import/c4dm-multitrack-private/C4DM Multitrack Collection/mixing-secrets
+train_buffer_size_gb:
+  desc: null
+  value: 4.0
+val_buffer_size_gb:
+  desc: null
+  value: 0.1

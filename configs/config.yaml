@@ -5,14 +5,14 @@ trainer:
     class_path: pytorch_lightning.loggers.WandbLogger
     init_args:
       project: DiffMST
-      save_dir: /fsx/home-csteinmetz1/logs/DiffMST
+      save_dir: /homes/ssv02/Diff-MST/logs
   enable_checkpointing: true
   callbacks:
     - class_path: mst.callbacks.audio.LogAudioCallback
   default_root_dir: null
   gradient_clip_val: 4.0
-  gpus: 1
-  track_grad_norm: -1
+  devices: [4]
+  #track_grad_norm: -1
   check_val_every_n_epoch: 1
   max_steps: 100000
   log_every_n_steps: 50
@@ -23,5 +23,5 @@ trainer:
   enable_model_summary: true
   num_sanity_val_steps: 2
   benchmark: true
-  amp_backend: native
-  multiple_trainloader_mode: max_size_cycle
+  #amp_backend: native
+  #multiple_trainloader_mode: max_size_cycle
