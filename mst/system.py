@@ -1,10 +1,14 @@
 import os
+import json
+import yaml
 import torch
 import auraloss
 import pytorch_lightning as pl
 from argparse import ArgumentParser
 
 from typing import Callable
+from mst.mixing import knowledge_engineering_mix
+from mst.modules import causal_crop
 
 
 class System(pl.LightningModule):
@@ -14,6 +18,8 @@ class System(pl.LightningModule):
         generate_mix_console: torch.nn.Module,
         mix_fn: Callable,
         loss: torch.nn.Module,
+        instrument_id_json: str = "data/instrument_name2id.json",
+        knowledge_engineering_yaml: str = "data/knowledge_engineering.yaml",
         **kwargs,
     ) -> None:
         super().__init__()
@@ -33,6 +39,17 @@ class System(pl.LightningModule):
             w_lin_mag=1.0,
             w_log_mag=1.0,
         )
+
+        # load configuration files
+        if mix_fn is knowledge_engineering_mix:
+            with open(instrument_id_json, "r") as f:
+                self.instrument_number_lookup = json.load(f)
+
+            with open(knowledge_engineering_yaml, "r") as f:
+                self.knowledge_engineering_dict = yaml.safe_load(f)
+        else:
+            self.instrument_number_lookup = None
+            self.knowledge_engineering_dict = None
 
     def forward(self, tracks: torch.Tensor, ref_mix: torch.Tensor) -> torch.Tensor:
         """Apply model to audio waveform tracks.
@@ -63,7 +80,12 @@ class System(pl.LightningModule):
 
         # create a random mix (on GPU, if applicable)
         ref_mix, ref_param_dict = self.mix_fn(
-            tracks, self.generate_mix_console, instrument_id, stereo_info
+            tracks,
+            self.generate_mix_console,
+            instrument_id,
+            stereo_info,
+            self.instrument_number_lookup,
+            self.knowledge_engineering_dict,
         )
 
         if torch.isnan(ref_mix).any():
@@ -80,7 +102,11 @@ class System(pl.LightningModule):
         # process tracks from section A using reference mix from section B
         pred_mix_a, pred_param_dict = self(tracks_a, ref_mix_b)
 
-        # compute loss on the predicted section A mix verus the ground truth reference mix
+        # crop the target mix if it is longer than the predicted mix
+        if ref_mix_a.shape[-1] > pred_mix_a.shape[-1]:
+            ref_mix_a = causal_crop(ref_mix_a, pred_mix_a.shape[-1])
+
+        # compute loss on the predicted section A mix vs the ground truth reference mix
         loss = self.loss(pred_mix_a, ref_mix_a)
 
         # log the overall loss
