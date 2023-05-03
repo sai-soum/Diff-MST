@@ -84,8 +84,6 @@ class TCNMixConsole(torch.nn.Module):
         # apply effects in series and all tracks in parallel
         bs, num_tracks, seq_len = tracks.size()
 
-        print(tracks.shape, mix_params.shape)
-
         # move tracks and conditioning to the batch dim
         tracks = tracks.view(bs * num_tracks, 1, -1)
         mix_params = mix_params.reshape(bs * num_tracks, self.num_control_params)
@@ -585,7 +583,6 @@ class TCN(torch.nn.Module):
     def forward(
         self, x: torch.Tensor, cond: Optional[torch.Tensor] = None
     ) -> torch.Tensor:
-        print(x.shape, cond.shape)
         assert x.ndim == 3  # (batch_size, in_ch, samples)
         if self.is_conditional():
             assert cond is not None
