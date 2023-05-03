@@ -42,6 +42,7 @@ class MixStyleTransferModel(torch.nn.Module):
 def denormalize(norm_val, max_val, min_val):
     return (norm_val * (max_val - min_val)) + min_val
 
+
 def normalize(val, min_val, max_val):
     return (val - min_val) / (max_val - min_val)
 
@@ -68,24 +69,52 @@ def denormalize_parameters(param_dict: dict, param_ranges: dict):
 
 
 class TCNMixConsole(torch.nn.Module):
-    def __init__(self, tcn: torch.nn.Module) -> None:
+    def __init__(
+        self,
+        sample_rate: float,
+        tcn: torch.nn.Module,
+    ) -> None:
         super().__init__()
         self.tcn = tcn
+        self.sample_rate = sample_rate
+        self.num_control_params = tcn.cond_dim
 
-    def forward(self, tracks: torch.Tensor, cond: torch.Tensor):
+    def forward_mix_console(self, tracks: torch.Tensor, mix_params: torch.Tensor):
+        """Apply the mix console to a set of tracks."""
+        # apply effects in series and all tracks in parallel
         bs, num_tracks, seq_len = tracks.size()
+
+        print(tracks.shape, mix_params.shape)
+
         # move tracks and conditioning to the batch dim
         tracks = tracks.view(bs * num_tracks, 1, -1)
-        cond = cond.view(bs * num_tracks, 1, -1)
+        mix_params = mix_params.reshape(bs * num_tracks, self.num_control_params)
 
         # process all tracks in parallel
-        tracks = self.tcn(tracks, cond)
+        tracks = self.tcn(tracks, mix_params)
 
         # move tracks back to track dim (with stereo output)
         tracks = tracks.view(bs, num_tracks, 2, -1)
 
         # create mix by sum (bs, 2, seq_len)
         return tracks.sum(dim=1)
+
+    def forward(self, tracks: torch.Tensor, mix_params: torch.torch.Tensor):
+        """Create a mix given a set of tracks and corresponding mixing parameters (0,1)
+
+        Args:
+            tracks (torch.torch.Tensor): Audio tracks with shape (bs, num_tracks, seq_len)
+            mix_params (torch.torch.Tensor): Parameter torch.Tensor with shape (bs, num_tracks, num_control_params)
+
+        Returns:
+            mix (torch.torch.Tensor): Final stereo mix of the input tracks with shape (bs, 2, seq_len)
+            param_dict (dict): Denormalized parameter values.
+        """
+        param_dict = {}
+        for n in range(self.num_control_params):
+            param_dict[f"param_{n}"] = mix_params[:, :, n]
+        mix = self.forward_mix_console(tracks, mix_params)
+        return mix, param_dict
 
 
 class BasicMixConsole(torch.nn.Module):
@@ -108,9 +137,7 @@ class BasicMixConsole(torch.nn.Module):
     def forward_mix_console(self, tracks: torch.Tensor, param_dict: dict):
         """Expects the param_dict has denormalized parameters."""
         # apply effects in series and all tracks in parallel
-        
         bs, chs, seq_len = tracks.size()
-        
         tracks = gain(tracks, **param_dict["input_gain"])
         tracks = stereo_panner(tracks, **param_dict["stereo_panner"])
         return tracks.sum(dim=2)
@@ -129,10 +156,10 @@ class BasicMixConsole(torch.nn.Module):
         # extract and denormalize the parameters
         param_dict = {
             "input_gain": {
-                "gain_db": mix_params[:,:, 0],  # bs, num_tracks, 1
+                "gain_db": mix_params[:, :, 0],  # bs, num_tracks, 1
             },
             "stereo_panner": {
-                "pan": mix_params[:,:, 1],
+                "pan": mix_params[:, :, 1],
             },
         }
         param_dict = denormalize_parameters(param_dict, self.param_ranges)
@@ -189,18 +216,11 @@ class AdvancedMixConsole(torch.nn.Module):
 
     def forward_mix_console(self, tracks: torch.torch.Tensor, param_dict: dict):
         bs, num_tracks, seq_len = tracks.shape
-
         # apply effects in series but all tracks at once
-        
         tracks = gain(tracks, **param_dict["input_gain"])
-        
         tracks = parametric_eq(tracks, self.sample_rate, **param_dict["parametric_eq"])
-        
         tracks = compressor(tracks, self.sample_rate, **param_dict["compressor"])
-        
         tracks = stereo_panner(tracks, **param_dict["stereo_panner"])
-        
-
         return tracks.sum(dim=2)
 
     def forward(self, tracks: torch.torch.Tensor, mix_params: torch.torch.Tensor):
@@ -229,11 +249,11 @@ class AdvancedMixConsole(torch.nn.Module):
                 "high_shelf_cutoff_freq": mix_params[..., 17],
                 "high_shelf_q_factor": mix_params[..., 18],
             },
-            #release and attack time must be the same
+            # release and attack time must be the same
             "compressor": {
                 "threshold_db": mix_params[..., 19],
                 "ratio": mix_params[..., 20],
-                "attack_ms": mix_params[..., 21], 
+                "attack_ms": mix_params[..., 21],
                 "release_ms": mix_params[..., 22],
                 "knee_db": mix_params[..., 23],
                 "makeup_gain_db": mix_params[..., 24],
@@ -565,6 +585,7 @@ class TCN(torch.nn.Module):
     def forward(
         self, x: torch.Tensor, cond: Optional[torch.Tensor] = None
     ) -> torch.Tensor:
+        print(x.shape, cond.shape)
         assert x.ndim == 3  # (batch_size, in_ch, samples)
         if self.is_conditional():
             assert cond is not None
