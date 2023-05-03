@@ -2,6 +2,16 @@ model:
   class_path: mst.system.System
   init_args:
     mix_fn: mst.mixing.naive_random_mix
+    generate_mix_console:
+      class_path: mst.modules.AdvancedMixConsole
+      init_args:
+        sample_rate: 44100
+        min_gain_db: -80.0
+        max_gain_db: 24.0
+        eq_min_gain_db: -12.0
+        eq_max_gain_db: 12.0
+        min_pan: 0.0
+        max_pan: 1.0
     model:
       class_path: mst.modules.MixStyleTransferModel
       init_args:
@@ -33,21 +43,12 @@ model:
             tcn:
               class_path: mst.modules.TCN
               init_args:
-                out_channels: [64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 2]
-                dilations: [1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1]
+                out_channels: [32, 32, 32,  32,  2]
+                dilations:    [1,   8, 64, 512,  1]
                 in_ch: 1
                 kernel_size: 13
                 cond_dim: 32 # this defines number of control parameters
                 use_film_bn: true
-
-    generate_mix_console:
-      class_path: mst.modules.BasicMixConsole
-      init_args:
-        sample_rate: 44100
-        min_gain_db: -80.0
-        max_gain_db: 24.0
-        min_pan: 0.0
-        max_pan: 1.0
 
     loss: 
       class_path: auraloss.freq.MultiResolutionSTFTLoss
