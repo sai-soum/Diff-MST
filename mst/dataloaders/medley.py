@@ -27,7 +27,7 @@ class MedleyDBDataset(torch.utils.data.Dataset):
         dataset_split_yaml: str = "./data/medley_split.yaml",
         sample_rate: float = 44100,
         min_tracks: int = 4,
-        max_tracks: int = 20,
+        max_tracks: int = 8,
         length: float = 524288,
         subset: str = "test",
         buffer_reload_rate: int = 4000,
@@ -290,6 +290,8 @@ class MedleyDBDataModule(pl.LightningDataModule):
         self,
         root_dirs: List[str],
         length: int,
+        min_tracks: int = 4,
+        max_tracks: int = 20,
         num_workers: int = 4,
         batch_size: int = 16,
         train_buffer_size_gb: float = 2.0,
@@ -303,6 +305,8 @@ class MedleyDBDataModule(pl.LightningDataModule):
             self.train_dataset = MedleyDBDataset(
                 root_dirs=self.hparams.root_dirs,
                 subset="train",
+                min_tracks=self.hparams.min_tracks,
+                max_tracks=self.hparams.max_tracks,
                 length=self.hparams.length,
                 buffer_size_gb=self.hparams.train_buffer_size_gb,
                 num_examples_per_epoch=10000,
@@ -312,8 +316,21 @@ class MedleyDBDataModule(pl.LightningDataModule):
             self.val_dataset = MedleyDBDataset(
                 root_dirs=self.hparams.root_dirs,
                 subset="val",
+                min_tracks=self.hparams.min_tracks,
+                max_tracks=self.hparams.max_tracks,
                 length=self.hparams.length,
                 buffer_size_gb=self.hparams.val_buffer_size_gb,
+                num_examples_per_epoch=1000,
+            )
+
+        if stage == "test":
+            self.test_dataset = MedleyDBDataset(
+                root_dirs=self.hparams.root_dirs,
+                subset="test",
+                min_tracks=self.hparams.min_tracks,
+                max_tracks=self.hparams.max_tracks,
+                length=self.hparams.length,
+                buffer_size_gb=self.hparams.test_buffer_size_gb,
                 num_examples_per_epoch=1000,
             )
 
@@ -330,5 +347,12 @@ class MedleyDBDataModule(pl.LightningDataModule):
         return torch.utils.data.DataLoader(
             self.val_dataset,
             batch_size=self.hparams.batch_size,
-            num_workers=4,
+            num_workers=1,
+        )
+
+    def test_dataloader(self):
+        return torch.utils.data.DataLoader(
+            self.test_dataset,
+            batch_size=1,
+            num_workers=1,
         )

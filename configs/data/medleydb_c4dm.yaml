@@ -5,6 +5,8 @@ data:
     - /import/c4dm-datasets/MedleyDB_V1/V1
     - /import/c4dm-datasets/MedleyDB_V2/V2
     length: 262144
+    min_tracks: 4
+    max_tracks: 20 
     batch_size: 2
     num_workers: 4
     train_buffer_size_gb: 0.1
