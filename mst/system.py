@@ -18,6 +18,8 @@ class System(pl.LightningModule):
         generate_mix_console: torch.nn.Module,
         mix_fn: Callable,
         loss: torch.nn.Module,
+        use_track_loss: bool = True,
+        use_mix_loss: bool = True,
         instrument_id_json: str = "data/instrument_name2id.json",
         knowledge_engineering_yaml: str = "data/knowledge_engineering.yaml",
         **kwargs,
@@ -27,6 +29,8 @@ class System(pl.LightningModule):
         self.generate_mix_console = generate_mix_console
         self.mix_fn = mix_fn
         self.loss = loss
+        self.use_track_loss = use_track_loss
+        self.use_mix_loss = use_mix_loss
 
         # losses for evaluation
         self.sisdr = auraloss.time.SISDRLoss()
@@ -77,9 +81,10 @@ class System(pl.LightningModule):
             train (bool): Wether step is called during training (True) or validation (False).
         """
         tracks, instrument_id, stereo_info = batch
+        bs, num_tracks, seq_len = tracks.shape
 
         # create a random mix (on GPU, if applicable)
-        ref_mix, ref_param_dict = self.mix_fn(
+        ref_mix_tracks, ref_mix, ref_param_dict = self.mix_fn(
             tracks,
             self.generate_mix_console,
             instrument_id,
@@ -94,22 +99,37 @@ class System(pl.LightningModule):
 
         # now split into A and B sections
         middle_idx = ref_mix.shape[-1] // 2
+
         ref_mix_a = ref_mix[..., :middle_idx]
+        ref_mix_tracks_a = ref_mix_tracks[..., :middle_idx]
         ref_mix_b = ref_mix[..., middle_idx:]
+        ref_mix_tracks_b = ref_mix_tracks[..., middle_idx:]
         tracks_a = tracks[..., :middle_idx]
         tracks_b = tracks[..., middle_idx:]  # not used currently
 
         # process tracks from section A using reference mix from section B
-        pred_mix_a, pred_param_dict = self(tracks_a, ref_mix_b)
+        pred_mix_tracks_a, pred_mix_a, pred_param_dict = self(tracks_a, ref_mix_b)
 
         # crop the target mix if it is longer than the predicted mix
         if ref_mix_a.shape[-1] > pred_mix_a.shape[-1]:
+            seq_len = pred_mix_a.shape[-1]
+            ref_mix_tracks_a = causal_crop(ref_mix_tracks_a, pred_mix_a.shape[-1])
             ref_mix_a = causal_crop(ref_mix_a, pred_mix_a.shape[-1])
 
         # compute loss on the predicted section A mix vs the ground truth reference mix
-        loss = self.loss(pred_mix_a, ref_mix_a)
+        loss = 0
+        if self.use_mix_loss:
+            mix_loss = self.loss(pred_mix_a, ref_mix_a)
+            loss += mix_loss
 
-        # log the overall loss
+        if self.use_track_loss:
+            track_loss = self.loss(
+                pred_mix_tracks_a.view(-1, 1, seq_len),
+                ref_mix_tracks_a.view(-1, 1, seq_len),
+            )
+            loss += track_loss
+
+        # log the losses
         self.log(
             ("train" if train else "val") + "/loss",
             loss,

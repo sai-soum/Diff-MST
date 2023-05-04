@@ -63,10 +63,14 @@ def naive_random_mix(tracks: torch.Tensor, mix_console: torch.nn.Module, *args):
     mix_params = mix_params.type_as(tracks)
 
     # generate a mix of the tracks
-    mix, param_dict = mix_console(tracks, mix_params)
-    mix /= mix.abs().max().clamp(min=1e-8)
+    mix_tracks, mix, param_dict = mix_console(tracks, mix_params)
 
-    return mix, param_dict
+    # normalize mix
+    gain_lin = 1 / mix.abs().max().clamp(min=1e-8)
+    mix *= gain_lin
+    mix_tracks *= gain_lin
+
+    return mix_tracks, mix, param_dict
 
 
 def knowledge_engineering_mix(

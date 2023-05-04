@@ -48,6 +48,8 @@ model:
                 cond_dim: 32 # this defines number of control parameters
                 use_film_bn: true
 
+    use_track_loss: true
+    use_mix_loss: true
     loss: 
       class_path: auraloss.freq.MultiResolutionSTFTLoss
       init_args:
