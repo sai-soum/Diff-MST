@@ -33,19 +33,25 @@ model:
           class_path: mst.modules.TransformerController
           init_args:
             embed_dim: 128
-            num_control_params: 26
+            num_control_params: 32
             num_layers: 6
             nhead: 8
         mix_console:
-          class_path: mst.modules.AdvancedMixConsole
+          class_path: mst.modules.TCNMixConsole
           init_args:
             sample_rate: 44100
-            min_gain_db: -80.0
-            max_gain_db: 24.0
-            eq_min_gain_db: -24.0
-            eq_max_gain_db: 24.0
-            min_pan: 0.0
-            max_pan: 1.0
+            tcn:
+              class_path: mst.modules.TCN
+              init_args:
+                out_channels: [32, 32, 32,  32,  2]
+                dilations:    [1,   8, 64, 512,  1]
+                in_ch: 1
+                kernel_size: 13
+                cond_dim: 32 # this defines number of control parameters
+                use_film_bn: true
+
+    use_track_loss: true
+    use_mix_loss: true
     loss: 
       class_path: auraloss.freq.MultiResolutionSTFTLoss
       init_args:

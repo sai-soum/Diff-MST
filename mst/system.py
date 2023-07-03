@@ -1,10 +1,14 @@
 import os
+import json
+import yaml
 import torch
 import auraloss
 import pytorch_lightning as pl
 from argparse import ArgumentParser
 
 from typing import Callable
+from mst.mixing import knowledge_engineering_mix
+from mst.modules import causal_crop
 
 
 class System(pl.LightningModule):
@@ -14,6 +18,10 @@ class System(pl.LightningModule):
         generate_mix_console: torch.nn.Module,
         mix_fn: Callable,
         loss: torch.nn.Module,
+        use_track_loss: bool = True,
+        use_mix_loss: bool = True,
+        instrument_id_json: str = "data/instrument_name2id.json",
+        knowledge_engineering_yaml: str = "data/knowledge_engineering.yaml",
         **kwargs,
     ) -> None:
         super().__init__()
@@ -21,6 +29,8 @@ class System(pl.LightningModule):
         self.generate_mix_console = generate_mix_console
         self.mix_fn = mix_fn
         self.loss = loss
+        self.use_track_loss = use_track_loss
+        self.use_mix_loss = use_mix_loss
 
         # losses for evaluation
         self.sisdr = auraloss.time.SISDRLoss()
@@ -33,6 +43,17 @@ class System(pl.LightningModule):
             w_lin_mag=1.0,
             w_log_mag=1.0,
         )
+
+        # load configuration files
+        if mix_fn is knowledge_engineering_mix:
+            with open(instrument_id_json, "r") as f:
+                self.instrument_number_lookup = json.load(f)
+
+            with open(knowledge_engineering_yaml, "r") as f:
+                self.knowledge_engineering_dict = yaml.safe_load(f)
+        else:
+            self.instrument_number_lookup = None
+            self.knowledge_engineering_dict = None
 
     def forward(self, tracks: torch.Tensor, ref_mix: torch.Tensor) -> torch.Tensor:
         """Apply model to audio waveform tracks.
@@ -62,8 +83,13 @@ class System(pl.LightningModule):
         tracks, instrument_id, stereo_info = batch
 
         # create a random mix (on GPU, if applicable)
-        ref_mix, ref_param_dict = self.mix_fn(
-            tracks, self.generate_mix_console, instrument_id, stereo_info
+        ref_mix_tracks, ref_mix, ref_param_dict = self.mix_fn(
+            tracks,
+            self.generate_mix_console,
+            instrument_id,
+            stereo_info,
+            self.instrument_number_lookup,
+            self.knowledge_engineering_dict,
         )
 
         if torch.isnan(ref_mix).any():
@@ -72,18 +98,39 @@ class System(pl.LightningModule):
 
         # now split into A and B sections
         middle_idx = ref_mix.shape[-1] // 2
+
         ref_mix_a = ref_mix[..., :middle_idx]
+        ref_mix_tracks_a = ref_mix_tracks[..., :middle_idx]
         ref_mix_b = ref_mix[..., middle_idx:]
+        ref_mix_tracks_b = ref_mix_tracks[..., middle_idx:]
         tracks_a = tracks[..., :middle_idx]
         tracks_b = tracks[..., middle_idx:]  # not used currently
 
+        bs, num_tracks, seq_len = tracks_a.shape
+
         # process tracks from section A using reference mix from section B
-        pred_mix_a, pred_param_dict = self(tracks_a, ref_mix_b)
+        pred_mix_tracks_a, pred_mix_a, pred_param_dict = self(tracks_a, ref_mix_b)
 
-        # compute loss on the predicted section A mix verus the ground truth reference mix
-        loss = self.loss(pred_mix_a, ref_mix_a)
+        # crop the target mix if it is longer than the predicted mix
+        if ref_mix_a.shape[-1] > pred_mix_a.shape[-1]:
+            seq_len = pred_mix_a.shape[-1]
+            ref_mix_tracks_a = causal_crop(ref_mix_tracks_a, pred_mix_a.shape[-1])
+            ref_mix_a = causal_crop(ref_mix_a, pred_mix_a.shape[-1])
 
-        # log the overall loss
+        # compute loss on the predicted section A mix vs the ground truth reference mix
+        loss = 0
+        if self.use_mix_loss:
+            mix_loss = self.loss(pred_mix_a, ref_mix_a)
+            loss += mix_loss
+
+        if self.use_track_loss:
+            track_loss = self.loss(
+                pred_mix_tracks_a.view(bs, num_tracks * 2, seq_len),
+                ref_mix_tracks_a.view(bs, num_tracks * 2, seq_len),
+            )
+            loss += track_loss
+
+        # log the losses
         self.log(
             ("train" if train else "val") + "/loss",
             loss,
