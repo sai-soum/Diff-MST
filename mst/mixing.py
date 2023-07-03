@@ -56,6 +56,7 @@ def naive_random_mix(tracks: torch.Tensor, mix_console: torch.nn.Module, *args):
     # generate random parameter tensor
     mix_params = torch.rand(bs, num_tracks, mix_console.num_control_params)
     mix_params = mix_params.type_as(tracks)
+    #print("mix_params in the dataset making:", mix_params)
 
     # generate a mix of the tracks
     mix, param_dict = mix_console(tracks, mix_params)
@@ -133,32 +134,32 @@ def knowledge_engineering_mix(
 
         eq_lowshelf_params = torch.full((bs, num_tracks, 3),0)
         eq_lowshelf_params[:,:,1] = 100
-        eq_lowshelf_params[:,:,2] = 0.1
+        eq_lowshelf_params[:,:,2] = 1.0
         
         eq_bandpass0_params = torch.full((bs, num_tracks, 3),0)
         eq_bandpass0_params[:,:,1] = 500
-        eq_bandpass0_params[:,:,2] = 0.1
+        eq_bandpass0_params[:,:,2] = 1.0
         
         eq_bandpass1_params = torch.full((bs, num_tracks, 3),0)
         eq_bandpass1_params[:,:,1] = 3000
-        eq_bandpass1_params[:,:,2] = 0.1
+        eq_bandpass1_params[:,:,2] = 1.0
         
         eq_bandpass2_params = torch.full((bs, num_tracks, 3),0)
         eq_bandpass2_params[:,:,1] = 10000
-        eq_bandpass2_params[:,:,2] = 0.1
+        eq_bandpass2_params[:,:,2] = 1.0
     
         eq_bandpass3_params = torch.full((bs, num_tracks, 3),0)
         eq_bandpass3_params[:,:,1] = 13000
-        eq_bandpass3_params[:,:,2] = 0.1
+        eq_bandpass3_params[:,:,2] = 1.0
         
         eq_highshelf_params = torch.full((bs, num_tracks, 3),0)
         eq_highshelf_params[:,:,1] = 10000
-        eq_highshelf_params[:,:,2] = 0.1
+        eq_highshelf_params[:,:,2] = 1.0
     
         comp_params = torch.full((bs, num_tracks, 6),-5)
         comp_params[:,:,1] = 1.0
-        comp_params[:,:,2] = 1.0
-        comp_params[:,:,3] = 1.0
+        comp_params[:,:,2] = 10.0
+        comp_params[:,:,3] = 10.0
         comp_params[:,:,4] = 3.0
         comp_params[:,:,5] = 0.0
 
@@ -461,27 +462,30 @@ def knowledge_engineering_mix(
 #         # print(instrument_id)
 #         # print(stereo)
         
-#         naive_mix, param_dict = naive_random_mix(track, mix_console)
-#         print("naive_mix", naive_mix.size())
+#         # naive_mix, param_dict = naive_random_mix(track, mix_console)
+#         #print("naive_mix", naive_mix.size())
 #         mix, param_dict = knowledge_engineering_mix(track, mix_console, instrument_id, stereo)
+#         #if mix contains nan, then print
+#         if torch.isnan(mix).any():
+#             print("nan")
+#             print(param_dict)
+#         # track = track.view(batch_size,num_tracks,1, seq_len)
+#         # #print("track", track.size())
         
-#         track = track.view(batch_size,num_tracks,1, seq_len)
-#         #print("track", track.size())
         
-        
-#         sum_mix =  torch.sum(track, dim=1)
-#         # print("mix", mix.size())
-#         #print("sum_mix", sum_mix.size())
+#         # sum_mix =  torch.sum(track, dim=1)
+#         # # print("mix", mix.size())
+#         # #print("sum_mix", sum_mix.size())
        
-#         if not os.path.exists("mix_KE_adv"):
-#             os.mkdir("mix_KE_adv")
-#         save_dir = "mix_KE_adv/"
+#         # if not os.path.exists("mix_KE_adv"):
+#         #     os.mkdir("mix_KE_adv")
+#         # save_dir = "mix_KE_adv/"
 
 #         #export audio
-#         for j in range(batch_size):
-#             torchaudio.save(os.path.join(save_dir,"mix_"+str(j)+".wav"), mix[j], 44100)
-#             torchaudio.save(os.path.join(save_dir,"sum"+str(j)+".wav"), sum_mix[j], 44100)
-#             torchaudio.save(os.path.join(save_dir,"naive"+str(j)+".wav"), naive_mix[j], 44100)
-#         print("mix", mix.size())
-#         if i==0:
-#             break
+#         # for j in range(batch_size):
+#         #     torchaudio.save(os.path.join(save_dir,"mix_"+str(j)+".wav"), mix[j], 44100)
+#         #     torchaudio.save(os.path.join(save_dir,"sum"+str(j)+".wav"), sum_mix[j], 44100)
+#         #     torchaudio.save(os.path.join(save_dir,"naive"+str(j)+".wav"), naive_mix[j], 44100)
+#         # print("mix", mix.size())
+#         # if i==0:
+#         #     break

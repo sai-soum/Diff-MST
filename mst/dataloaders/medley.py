@@ -125,8 +125,12 @@ class MedleyDBDataset(torch.utils.data.Dataset):
             # save only a random subset of this song so we can load more songs
             silent = True
             counter = 0
+            num_frames = torchaudio.info(mix_filepath).num_frames
+            if num_frames < self.length:
+                    continue
+            
             while silent:
-                num_frames = torchaudio.info(mix_filepath).num_frames
+                
                 offset = np.random.randint(0, num_frames - self.buffer_frames - 1)
 
                 # now check the length of the mix
@@ -183,7 +187,9 @@ class MedleyDBDataset(torch.utils.data.Dataset):
                 #print(track_filepath)
                 # if track.shape[-1] != self.buffer_frames:
                 #     continue
-
+                if track.shape[-1] != self.buffer_frames:
+                    continue  # not sure why we need this yet, but it seems to be necessary
+                
                 # loudness normalization
                 track_lufs_db = self.meter.integrated_loudness(y.permute(1, 0).numpy())
 

@@ -98,7 +98,7 @@ class CambridgeDataset(torch.utils.data.Dataset):
         indices: List[int] = [0,150],
         buffer_reload_rate: int = 4000,
         num_examples_per_epoch: int = 10000,
-        buffer_size_gb: float = 0.02,
+        buffer_size_gb: float = 0.2,
         target_track_lufs_db: float = -32.0,
     ) -> None:
         super().__init__()
@@ -178,11 +178,14 @@ class CambridgeDataset(torch.utils.data.Dataset):
             #mix_id = os.path.basename(mix_dir)
             #print(mix_id)
             track_filepaths = glob.glob(os.path.join(mix_dir, "*.wav"))
-            
+            #print(os.path.basename(mix_dir))
             metadata_track = extract_metadata(track_filepaths)
             
             
             num_frames = torchaudio.info(track_filepaths[0]).num_frames
+            if num_frames < self.length:
+                continue
+            #print(num_frames)
             offset = np.random.randint(0, num_frames - self.buffer_frames - 1)
             tracks = []
             solo_tracks = []
@@ -396,21 +399,11 @@ class CambridgeDataModule(pl.LightningDataModule):
             num_workers=4,
         )
 
-# if __name__ == "__main__":
-#     dataset = CambridgeDataset(root_dirs=["/import/c4dm-multitrack-private/C4DM Multitrack Collection/mixing-secrets"])
-#     print(len(dataset))
+if __name__ == "__main__":
+    dataset = CambridgeDataset(root_dirs=["/import/c4dm-multitrack-private/C4DM Multitrack Collection/mixing-secrets"],indices=[0,150],buffer_size_gb =4.0)
+    print(len(dataset))
 
-#     dataloader = torch.utils.data.DataLoader(dataset, batch_size=4, shuffle=False)
+    dataloader = torch.utils.data.DataLoader(dataset, batch_size=2, shuffle=True, drop_last = True, num_workers=4)
 
-#     for i, (track, instrument_id, stereo) in enumerate(dataloader):
-#         print(track.shape)
-#         #print(track.shape)
-#         print(instrument_id)
-#         print(stereo)
-#         # print(genre)
-#         # print(track.size())
-        
-
-#         if i == 1:
-
-#              break
+    for i, (track, instrument_id, stereo) in enumerate(dataloader):
+       print(i)

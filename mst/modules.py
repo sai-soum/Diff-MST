@@ -32,7 +32,9 @@ class MixStyleTransferModel(torch.nn.Module):
 
         # controller will predict mix parameters for each stem based on embeds
         mix_params = self.controller(track_embeds, mix_embeds)
-
+        #print(mix_params.shape)
+        #mix_params = mix_params.type_as(tracks)
+        #print("after as type tracks:", mix_params.shape)
         # create a mix using the predicted parameters
         pred_mix, mix_params = self.mix_console(tracks, mix_params)
 
@@ -342,8 +344,9 @@ class TransformerController(torch.nn.Module):
 
         # generate output embeds with transformer, project and bound 0 - 1
         pred_params = torch.sigmoid(self.projection(self.transformer_encoder(embeds)))
+        #print(pred_params.shape)
         pred_params = pred_params[:, :num_tracks, :]  # ignore the outputs of mix embeds
-
+        #print(pred_params.shape)
         return pred_params
 
 
