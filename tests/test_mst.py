@@ -10,12 +10,19 @@ from mst.modules import (
 
 sample_rate = 44100
 embed_dim = 128
-num_control_params = 26
+num_track_control_params = 27
+num_fx_bus_control_params = 25
+num_master_bus_control_params = 24 
+use_fx_bus = True
+use_master_bus = True
 
 track_encoder = SpectrogramResNetEncoder()
 mix_encoder = SpectrogramResNetEncoder()
 controller = TransformerController(
-    embed_dim=embed_dim, num_control_params=num_control_params
+    embed_dim=embed_dim,
+    num_track_control_params=num_track_control_params,
+    num_fx_bus_control_params=num_fx_bus_control_params,
+    num_master_bus_control_params=num_master_bus_control_params,
 )
 
 
