@@ -81,7 +81,6 @@ class System(pl.LightningModule):
             train (bool): Wether step is called during training (True) or validation (False).
         """
         tracks, instrument_id, stereo_info = batch
-        bs, num_tracks, seq_len = tracks.shape
 
         # create a random mix (on GPU, if applicable)
         ref_mix_tracks, ref_mix, ref_param_dict = self.mix_fn(
@@ -107,6 +106,8 @@ class System(pl.LightningModule):
         tracks_a = tracks[..., :middle_idx]
         tracks_b = tracks[..., middle_idx:]  # not used currently
 
+        bs, num_tracks, seq_len = tracks_a.shape
+
         # process tracks from section A using reference mix from section B
         pred_mix_tracks_a, pred_mix_a, pred_param_dict = self(tracks_a, ref_mix_b)
 
@@ -124,8 +125,8 @@ class System(pl.LightningModule):
 
         if self.use_track_loss:
             track_loss = self.loss(
-                pred_mix_tracks_a.view(-1, 1, seq_len),
-                ref_mix_tracks_a.view(-1, 1, seq_len),
+                pred_mix_tracks_a.view(bs, num_tracks * 2, seq_len),
+                ref_mix_tracks_a.view(bs, num_tracks * 2, seq_len),
             )
             loss += track_loss
 
