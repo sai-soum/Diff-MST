@@ -58,19 +58,38 @@ def naive_random_mix(tracks: torch.Tensor, mix_console: torch.nn.Module, *args):
     """
     bs, num_tracks, seq_len = tracks.size()
 
-    # generate random parameter tensor
-    mix_params = torch.rand(bs, num_tracks, mix_console.num_control_params)
+    # generate random parameter tensors
+    mix_params = torch.rand(bs, num_tracks, mix_console.num_track_control_params)
     mix_params = mix_params.type_as(tracks)
 
+    fx_bus_params = torch.rand(bs, mix_console.num_fx_bus_control_params)
+    fx_bus_params = fx_bus_params.type_as(tracks)
+
+    master_bus_params = torch.rand(bs, mix_console.num_master_bus_control_params)
+    master_bus_params = master_bus_params.type_as(tracks)
+
+    # randomly activate/decative processors
+    use_track_gain = False
+    use_track_eq = np.random.rand() > 0.5
+    use_track_compressor = np.random.rand() > 0.5
+    use_master_bus = np.random.rand() > 0.5
+    use_fx_bus = np.random.rand() > 0.5
+
     # generate a mix of the tracks
-    mix_tracks, mix, param_dict = mix_console(tracks, mix_params)
+    (
+        mixed_tracks,
+        mix,
+        track_param_dict,
+        fx_bus_param_dict,
+        master_bus_param_dict,
+    ) = mix_console(tracks, mix_params, fx_bus_params, master_bus_params, use_track_gain, use_track_eq, use_track_compressor, use_master_bus, use_fx_bus)
 
     # normalize mix
     gain_lin = 1 / mix.abs().max().clamp(min=1e-8)
     mix *= gain_lin
-    mix_tracks *= gain_lin
+    mixed_tracks *= gain_lin
 
-    return mix_tracks, mix, param_dict
+    return mixed_tracks, mix, track_param_dict, fx_bus_param_dict, master_bus_param_dict
 
 
 def knowledge_engineering_mix(
