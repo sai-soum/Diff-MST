@@ -82,7 +82,17 @@ def naive_random_mix(tracks: torch.Tensor, mix_console: torch.nn.Module, *args):
         track_param_dict,
         fx_bus_param_dict,
         master_bus_param_dict,
-    ) = mix_console(tracks, mix_params, fx_bus_params, master_bus_params, use_track_gain, use_track_eq, use_track_compressor, use_master_bus, use_fx_bus)
+    ) = mix_console(
+        tracks,
+        mix_params,
+        fx_bus_params,
+        master_bus_params,
+        use_track_gain,
+        use_track_eq,
+        use_track_compressor,
+        use_master_bus,
+        use_fx_bus,
+    )
 
     # normalize mix
     gain_lin = 1 / mix.abs().max().clamp(min=1e-8)

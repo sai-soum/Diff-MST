@@ -288,8 +288,9 @@ class AdvancedMixConsole(torch.nn.Module):
         use_track_gain: bool = True,
         use_track_eq: bool = True,
         use_track_compressor: bool = True,
-        use_master_bus: bool = True,
+        use_track_panner: bool = True,
         use_fx_bus: bool = True,
+        use_master_bus: bool = True,
     ):
         """
 
@@ -313,7 +314,8 @@ class AdvancedMixConsole(torch.nn.Module):
                 tracks, self.sample_rate, **track_param_dict["compressor"]
             )
 
-        tracks = stereo_panner(tracks, **track_param_dict["stereo_panner"])
+        if use_track_panner:
+            tracks = stereo_panner(tracks, **track_param_dict["stereo_panner"])
 
         # create stereo bus via summing
         master_bus = tracks.sum(dim=2)
@@ -347,7 +349,7 @@ class AdvancedMixConsole(torch.nn.Module):
             )
 
         # recompose stereo mix
-        master_bus = torch.stack((master_bus_L, master_bus_R), dim=1)
+        master_bus = torch.cat((master_bus_L, master_bus_R), dim=1)
 
         return tracks, master_bus
 
