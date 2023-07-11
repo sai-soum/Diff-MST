@@ -54,7 +54,7 @@ if __name__ == "__main__":
     dataset = CombinedDataset()
     print(len(dataset))
 
-    dataloader = torch.utils.data.DataLoader(dataset, batch_size=2, shuffle=True, drop_last = True, num_workers=4)
+    dataloader = torch.utils.data.DataLoader(dataset, batch_size=1, shuffle=True, drop_last = True, num_workers=4)
 
     for i, (track, instrument_id, stereo) in enumerate(dataloader):
        print(i)

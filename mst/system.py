@@ -18,7 +18,7 @@ class System(pl.LightningModule):
         generate_mix_console: torch.nn.Module,
         mix_fn: Callable,
         loss: torch.nn.Module,
-        use_track_loss: bool = True,
+        use_track_loss: bool = False,
         use_mix_loss: bool = True,
         instrument_id_json: str = "data/instrument_name2id.json",
         knowledge_engineering_yaml: str = "data/knowledge_engineering.yaml",
@@ -83,7 +83,13 @@ class System(pl.LightningModule):
         tracks, instrument_id, stereo_info = batch
 
         # create a random mix (on GPU, if applicable)
-        ref_mix_tracks, ref_mix, ref_param_dict = self.mix_fn(
+        (
+            ref_mix_tracks,
+            ref_mix,
+            ref_track_param_dict,
+            ref_fx_bus_param_dict,
+            ref_master_bus_param_dict,
+        ) = self.mix_fn(
             tracks,
             self.generate_mix_console,
             instrument_id,
@@ -93,7 +99,7 @@ class System(pl.LightningModule):
         )
 
         if torch.isnan(ref_mix).any():
-            print(ref_param_dict)
+            print(ref_track_param_dict)
             raise ValueError("Found nan in ref_mix")
 
         # now split into A and B sections
@@ -109,7 +115,13 @@ class System(pl.LightningModule):
         bs, num_tracks, seq_len = tracks_a.shape
 
         # process tracks from section A using reference mix from section B
-        pred_mix_tracks_a, pred_mix_a, pred_param_dict = self(tracks_a, ref_mix_b)
+        (
+            pred_mix_tracks_a,
+            pred_mix_a,
+            pred_track_param_dict,
+            fx_bus_param_dict,
+            ref_master_bus_param_dict,
+        ) = self(tracks_a, ref_mix_b)
 
         # crop the target mix if it is longer than the predicted mix
         if ref_mix_a.shape[-1] > pred_mix_a.shape[-1]:
@@ -204,7 +216,6 @@ class System(pl.LightningModule):
             )
         else:
             return optimizer
-
         lr_schedulers = {"scheduler": scheduler, "interval": "epoch", "frequency": 1}
 
         return [optimizer], lr_schedulers

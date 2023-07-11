@@ -33,7 +33,7 @@ class MedleyDBDataset(torch.utils.data.Dataset):
         buffer_reload_rate: int = 4000,
         num_examples_per_epoch: int = 10000,
         buffer_size_gb: float = 0.2,
-        target_track_lufs_db: float = -12.0,
+        target_track_lufs_db: float = -32.0,
     ) -> None:
         super().__init__()
         torchaudio.set_audio_backend("sox_io")
