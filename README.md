@@ -51,7 +51,7 @@ git pull
 First update the paths in the configuration file for both the logger and the dataset root directory.
 Then call the `main.py` script passing in the configuration file. 
 ```
-python main.py fit --config=configs/medleydb_resnet_dmc.yaml
+python main.py fit -c configs/config.yaml -c configs/optimizer.yaml -c configs/data/medleydb.yaml -c configs/models/naive_dmc_adv.yaml
 ```
 
 ```
@@ -62,5 +62,7 @@ cd medleydb
 aws s3 sync s3://stability-aws/MedleyDB ./
 tar -xvf MedleyDB_v1.tar
 tar -xvf MedleyDB_v2.tar
-python main.py fit -c configs/config.yaml -c configs/optimizer.yaml -c configs/data/medleydb.yaml -c configs/models/naive_dmc_adv.yaml --ckpt_path /fsx/home-csteinmetz1/logs/DiffMST/DiffMST/xdbmdx06/checkpoints/epoch=18-step=47500.ckpt
+python main.py fit -c configs/config.yaml -c configs/optimizer.yaml -c configs/data/medleydb.yaml -c configs/models/naive_dmc_adv.yaml
+CUDA_VISIBLE_DEVICES=7 python main.py fit -c configs/config_cjs.yaml -c configs/optimizer.yaml -c configs/data/medleydb_c4dm.yaml -c configs/models/ke_dmc_adv.yaml
+
 ```
