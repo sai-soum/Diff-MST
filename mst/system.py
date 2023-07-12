@@ -82,7 +82,7 @@ class System(pl.LightningModule):
         """
         tracks, instrument_id, stereo_info = batch
 
-        # create a random mix (on GPU, if applicable)
+        # --------- create a random mix (on GPU, if applicable) ---------
         (
             ref_mix_tracks,
             ref_mix,
