@@ -45,12 +45,23 @@ def instrument_metadata(
     return mdata
 
 
-def naive_random_mix(tracks: torch.Tensor, mix_console: torch.nn.Module, *args):
+def naive_random_mix(
+    tracks: torch.Tensor,
+    mix_console: torch.nn.Module,
+    use_track_gain: bool = True,
+    use_track_eq: bool = True,
+    use_track_compressor: bool = True,
+    use_track_panner: bool = True,
+    use_fx_bus: bool = True,
+    use_master_bus: bool = True,
+    **kwargs,
+):
     """Generate a random mix by sampling parameters uniformly on the parameter ranges.
 
     Args:
         tracks (torch.Tensor):
         mix_console (torch.nn.Module):
+        global_step (int): Global step of the training loop. Used to determine the effects that are active.
 
     Returns:
         mix (torch.Tensor)
@@ -68,14 +79,7 @@ def naive_random_mix(tracks: torch.Tensor, mix_console: torch.nn.Module, *args):
     master_bus_params = torch.rand(bs, mix_console.num_master_bus_control_params)
     master_bus_params = master_bus_params.type_as(tracks)
 
-    # randomly activate/decative processors
-    use_track_gain = False
-    use_track_eq = np.random.rand() > 0.5
-    use_track_compressor = np.random.rand() > 0.5
-    use_master_bus = np.random.rand() > 0.5
-    use_fx_bus = np.random.rand() > 0.5
-
-    # generate a mix of the tracks
+    # ------------ generate a mix of the tracks ------------
     (
         mixed_tracks,
         mix,
@@ -90,8 +94,9 @@ def naive_random_mix(tracks: torch.Tensor, mix_console: torch.nn.Module, *args):
         use_track_gain,
         use_track_eq,
         use_track_compressor,
-        use_master_bus,
+        use_track_panner,
         use_fx_bus,
+        use_master_bus,
     )
 
     # normalize mix

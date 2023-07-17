@@ -11,4 +11,8 @@ dasp-pytorch/
 mix_KE_adv/**
 .vscode/
 logs/**
-```
+checkpoints/
+debug
+dasp-pytorch
+*.wav
+*.png

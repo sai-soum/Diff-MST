@@ -1,6 +1,92 @@
+import os
+import yaml
 import torch
 import random
 import numpy as np
+from importlib import import_module
+from mst.modules import MixStyleTransferModel
+
+
+def load_model(config_path: str, ckpt_path: str, map_location: str = "cpu"):
+    with open(config_path) as f:
+        config = yaml.safe_load(f)
+
+    # print(config)
+    core_model_configs = config["model"]["init_args"]["model"]
+
+    module_path, class_name = core_model_configs["class_path"].rsplit(".", 1)
+    module = import_module(module_path)
+    model = getattr(module, class_name)(**core_model_configs["init_args"])
+
+    submodule_configs = core_model_configs["init_args"]
+
+    # create track encoder module
+    module_path, class_name = submodule_configs["track_encoder"]["class_path"].rsplit(
+        ".", 1
+    )
+    module = import_module(module_path)
+    track_encoder = getattr(module, class_name)(
+        **submodule_configs["track_encoder"]["init_args"]
+    )
+
+    # create mix encoder module
+    module_path, class_name = submodule_configs["mix_encoder"]["class_path"].rsplit(
+        ".", 1
+    )
+    module = import_module(module_path)
+    mix_encoder = getattr(module, class_name)(
+        **submodule_configs["mix_encoder"]["init_args"]
+    )
+
+    # create controller module
+    module_path, class_name = submodule_configs["controller"]["class_path"].rsplit(
+        ".", 1
+    )
+    module = import_module(module_path)
+    controller = getattr(module, class_name)(
+        **submodule_configs["controller"]["init_args"]
+    )
+
+    # create mix console module
+    module_path, class_name = submodule_configs["mix_console"]["class_path"].rsplit(
+        ".", 1
+    )
+    module = import_module(module_path)
+    mix_console = getattr(module, class_name)(
+        **submodule_configs["mix_console"]["init_args"]
+    )
+
+    checkpoint = torch.load(ckpt_path, map_location=map_location)
+
+    # load state dicts
+    state_dict = {}
+    for k, v in checkpoint["state_dict"].items():
+        if k.startswith("model.track_encoder"):
+            state_dict[k.replace("model.track_encoder.", "", 1)] = v
+    track_encoder.load_state_dict(state_dict)
+
+    state_dict = {}
+    for k, v in checkpoint["state_dict"].items():
+        if k.startswith("model.mix_encoder"):
+            state_dict[k.replace("model.mix_encoder.", "", 1)] = v
+    mix_encoder.load_state_dict(state_dict)
+
+    state_dict = {}
+    for k, v in checkpoint["state_dict"].items():
+        if k.startswith("model.controller"):
+            state_dict[k.replace("model.controller.", "", 1)] = v
+    controller.load_state_dict(state_dict)
+
+    state_dict = {}
+    for k, v in checkpoint["state_dict"].items():
+        if k.startswith("model.mix_console"):
+            state_dict[k.replace("model.mix_console.", "", 1)] = v
+    mix_console.load_state_dict(state_dict)
+
+    model = MixStyleTransferModel(track_encoder, mix_encoder, controller, mix_console)
+    model.eval()
+
+    return model
 
 
 def denorm(p, p_min=0.0, p_max=1.0):
