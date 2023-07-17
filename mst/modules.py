@@ -26,7 +26,17 @@ class MixStyleTransferModel(torch.nn.Module):
         self.controller = controller
         self.mix_console = mix_console
 
-    def forward(self, tracks: torch.torch.Tensor, ref_mix: torch.torch.Tensor):
+    def forward(
+        self,
+        tracks: torch.torch.Tensor,
+        ref_mix: torch.torch.Tensor,
+        use_track_gain: bool = True,
+        use_track_panner: bool = True,
+        use_track_eq: bool = True,
+        use_track_compressor: bool = True,
+        use_fx_bus: bool = True,
+        use_master_bus: bool = True,
+    ):
         bs, num_tracks, seq_len = tracks.size()
 
         # first process the tracks
@@ -49,7 +59,18 @@ class MixStyleTransferModel(torch.nn.Module):
             track_param_dict,
             fx_bus_param_dict,
             master_bus_param_dict,
-        ) = self.mix_console(tracks, track_params, fx_bus_params, master_bus_params)
+        ) = self.mix_console(
+            tracks,
+            track_params,
+            fx_bus_params,
+            master_bus_params,
+            use_track_gain=use_track_gain,
+            use_track_panner=use_track_panner,
+            use_track_eq=use_track_eq,
+            use_track_compressor=use_track_compressor,
+            use_fx_bus=use_fx_bus,
+            use_master_bus=use_master_bus,
+        )
 
         return (
             mixed_tracks,
@@ -374,6 +395,7 @@ class AdvancedMixConsole(torch.nn.Module):
         use_track_gain: bool = True,
         use_track_eq: bool = True,
         use_track_compressor: bool = True,
+        use_track_panner: bool = True,
         use_master_bus: bool = True,
         use_fx_bus: bool = True,
     ):
@@ -506,6 +528,7 @@ class AdvancedMixConsole(torch.nn.Module):
             use_track_gain,
             use_track_eq,
             use_track_compressor,
+            use_track_panner,
             use_fx_bus,
             use_master_bus,
         )
