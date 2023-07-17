@@ -26,7 +26,17 @@ class MixStyleTransferModel(torch.nn.Module):
         self.controller = controller
         self.mix_console = mix_console
 
-    def forward(self, tracks: torch.torch.Tensor, ref_mix: torch.torch.Tensor):
+    def forward(
+        self,
+        tracks: torch.torch.Tensor,
+        ref_mix: torch.torch.Tensor,
+        use_track_gain: bool = True,
+        use_track_panner: bool = True,
+        use_track_eq: bool = True,
+        use_track_compressor: bool = True,
+        use_fx_bus: bool = True,
+        use_master_bus: bool = True,
+    ):
         bs, num_tracks, seq_len = tracks.size()
 
         # first process the tracks
@@ -49,7 +59,18 @@ class MixStyleTransferModel(torch.nn.Module):
             track_param_dict,
             fx_bus_param_dict,
             master_bus_param_dict,
-        ) = self.mix_console(tracks, track_params, fx_bus_params, master_bus_params)
+        ) = self.mix_console(
+            tracks,
+            track_params,
+            fx_bus_params,
+            master_bus_params,
+            use_track_gain=use_track_gain,
+            use_track_panner=use_track_panner,
+            use_track_eq=use_track_eq,
+            use_track_compressor=use_track_compressor,
+            use_fx_bus=use_fx_bus,
+            use_master_bus=use_master_bus,
+        )
 
         return (
             mixed_tracks,
@@ -296,10 +317,20 @@ class AdvancedMixConsole(torch.nn.Module):
 
         Args:
             tracks (torch.torch.Tensor): Audio tracks with shape (bs, num_tracks, seq_len)
-            param_dict (dict): Denormalized parameter values.
+            track_param_dict (dict): Denormalized parameter values for the gain, eq, compressor, and panner
+            fx_bus_param_dict (dict): Denormalized parameter values for the fx bus
+            master_bus_param_dict (dict): Denormalized parameter values for the master bus
+            use_track_gain (bool): Whether to apply gain to the tracks
+            use_track_eq (bool): Whether to apply eq to the tracks
+            use_track_compressor (bool): Whether to apply compressor to the tracks
+            use_track_panner (bool): Whether to apply panner to the tracks
+            use_fx_bus (bool): Whether to apply fx bus to the tracks
+            use_master_bus (bool): Whether to apply master bus to the tracks
+
         Returns:
             mixed_tracks (torch.Tensor): Mixed tracks with shape (bs, num_tracks, seq_len)
-            mix (torch.Tensor): Final stereo mix of the input tracks with shape (bs, 2, seq_len)
+            master_bus (torch.Tensor): Final stereo mix of the input tracks with shape (bs, 2, seq_len)
+
         """
         bs, num_tracks, seq_len = tracks.shape
         # apply effects in series but all tracks at once
@@ -316,6 +347,8 @@ class AdvancedMixConsole(torch.nn.Module):
 
         if use_track_panner:
             tracks = stereo_panner(tracks, **track_param_dict["stereo_panner"])
+        else:
+            tracks = tracks.unsqueeze(1).repeat(1, 2, 1)
 
         # create stereo bus via summing
         master_bus = tracks.sum(dim=2)
@@ -362,6 +395,7 @@ class AdvancedMixConsole(torch.nn.Module):
         use_track_gain: bool = True,
         use_track_eq: bool = True,
         use_track_compressor: bool = True,
+        use_track_panner: bool = True,
         use_master_bus: bool = True,
         use_fx_bus: bool = True,
     ):
@@ -494,6 +528,7 @@ class AdvancedMixConsole(torch.nn.Module):
             use_track_gain,
             use_track_eq,
             use_track_compressor,
+            use_track_panner,
             use_fx_bus,
             use_master_bus,
         )
