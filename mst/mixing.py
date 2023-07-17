@@ -48,7 +48,6 @@ def instrument_metadata(
 def naive_random_mix(
     tracks: torch.Tensor,
     mix_console: torch.nn.Module,
-    global_step: int = 0,
     use_track_gain: bool = True,
     use_track_eq: bool = True,
     use_track_compressor: bool = True,
