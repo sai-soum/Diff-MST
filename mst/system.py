@@ -22,6 +22,10 @@ class System(pl.LightningModule):
         use_mix_loss: bool = True,
         instrument_id_json: str = "data/instrument_name2id.json",
         knowledge_engineering_yaml: str = "data/knowledge_engineering.yaml",
+        active_eq_step: int = 0,
+        active_compressor_step: int = 0,
+        active_fx_bus_step: int = 0,
+        active_master_bus_step: int = 0,
         **kwargs,
     ) -> None:
         super().__init__()
@@ -31,6 +35,10 @@ class System(pl.LightningModule):
         self.loss = loss
         self.use_track_loss = use_track_loss
         self.use_mix_loss = use_mix_loss
+        self.active_eq_step = active_eq_step
+        self.active_compressor_step = active_compressor_step
+        self.active_fx_bus_step = active_fx_bus_step
+        self.active_master_bus_step = active_master_bus_step
 
         # losses for evaluation
         self.sisdr = auraloss.time.SISDRLoss()
@@ -82,6 +90,15 @@ class System(pl.LightningModule):
         """
         tracks, instrument_id, stereo_info = batch
 
+        # disable parts of the mix console based on global step
+        use_track_eq = True if self.global_step >= self.active_eq_step else False
+        use_track_compressor = (
+            True if self.global_step >= self.active_compressor_step else False
+        )
+        use_fx_bus = True if self.global_step >= self.active_fx_bus_step else False
+        use_master_bus = (
+            True if self.global_step >= self.active_master_bus_step else False
+        )
         # --------- create a random mix (on GPU, if applicable) ---------
         (
             ref_mix_tracks,
@@ -92,10 +109,16 @@ class System(pl.LightningModule):
         ) = self.mix_fn(
             tracks,
             self.generate_mix_console,
-            instrument_id,
-            stereo_info,
-            self.instrument_number_lookup,
-            self.knowledge_engineering_dict,
+            use_track_gain=True,
+            use_track_panner=True,
+            use_track_eq=use_track_eq,
+            use_track_compressor=use_track_compressor,
+            use_fx_bus=use_fx_bus,
+            use_master_bus=use_master_bus,
+            instrument_id=instrument_id,
+            stereo_info=stereo_info,
+            instrument_number_lookup=self.instrument_number_lookup,
+            knowledge_engineering_dict=self.knowledge_engineering_dict,
         )
 
         if torch.isnan(ref_mix).any():
@@ -114,14 +137,23 @@ class System(pl.LightningModule):
 
         bs, num_tracks, seq_len = tracks_a.shape
 
-        # process tracks from section A using reference mix from section B
+        #  ---- run model with tracks from section A using reference mix from section B ----
         (
             pred_mix_tracks_a,
             pred_mix_a,
             pred_track_param_dict,
             fx_bus_param_dict,
             ref_master_bus_param_dict,
-        ) = self(tracks_a, ref_mix_b)
+        ) = self.model(
+            tracks_a,
+            ref_mix_b,
+            use_track_gain=True,
+            use_track_panner=True,
+            use_track_eq=use_track_eq,
+            use_track_compressor=use_track_compressor,
+            use_fx_bus=use_fx_bus,
+            use_master_bus=use_master_bus,
+        )
 
         # crop the target mix if it is longer than the predicted mix
         if ref_mix_a.shape[-1] > pred_mix_a.shape[-1]:
