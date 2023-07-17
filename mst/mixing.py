@@ -49,11 +49,13 @@ def naive_random_mix(
     tracks: torch.Tensor,
     mix_console: torch.nn.Module,
     global_step: int = 0,
-    active_eq_step: int = -1,
-    active_compressor_step: int = -1,
-    active_panner_step: int = -1,
-    active_fx_bus_step: int = -1,
-    active_master_bus_step: int = -1,
+    use_track_gain: bool = True,
+    use_track_eq: bool = True,
+    use_track_compressor: bool = True,
+    use_track_panner: bool = True,
+    use_fx_bus: bool = True,
+    use_master_bus: bool = True,
+    **kwargs,
 ):
     """Generate a random mix by sampling parameters uniformly on the parameter ranges.
 
@@ -77,35 +79,6 @@ def naive_random_mix(
 
     master_bus_params = torch.rand(bs, mix_console.num_master_bus_control_params)
     master_bus_params = master_bus_params.type_as(tracks)
-
-    # randomly activate/decative processors based on training progress
-    use_track_gain = False
-
-    if global_step >= active_eq_step:
-        use_track_eq = np.random.rand() > 0.5
-    else:
-        use_track_eq = False
-
-    if global_step >= active_compressor_step:
-        use_track_compressor = np.random.rand() > 0.5
-    else:
-        use_track_compressor = False
-
-    if global_step >= active_panner_step:
-        use_track_panner = np.random.rand() > 0.5
-    else:
-        use_track_panner = False
-
-    if global_step >= active_fx_bus_step:
-        use_fx_bus = np.random.rand() > 0.5
-    else:
-        use_fx_bus = False
-
-    if global_step >= active_master_bus_step:
-        use_master_bus = np.random.rand() > 0.5
-    else:
-        use_master_bus = False
-
 
     # ------------ generate a mix of the tracks ------------
     (
