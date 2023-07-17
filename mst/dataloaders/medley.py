@@ -29,7 +29,7 @@ class MedleyDBDataset(torch.utils.data.Dataset):
         min_tracks: int = 4,
         max_tracks: int = 8,
         length: float = 524288,
-        subset: str = "test",
+        subset: str = "train",
         buffer_reload_rate: int = 4000,
         num_examples_per_epoch: int = 10000,
         buffer_size_gb: float = 0.2,
@@ -298,7 +298,7 @@ class MedleyDBDataModule(pl.LightningDataModule):
         max_tracks: int = 20,
         num_workers: int = 4,
         batch_size: int = 16,
-        train_buffer_size_gb: float = 2.0,
+        train_buffer_size_gb: float = 0.01,
         val_buffer_size_gb: float = 0.1,
     ):
         super().__init__()

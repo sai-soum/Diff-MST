@@ -98,7 +98,7 @@ class CambridgeDataset(torch.utils.data.Dataset):
         indices: List[int] = [0,150],
         buffer_reload_rate: int = 4000,
         num_examples_per_epoch: int = 10000,
-        buffer_size_gb: float = 0.2,
+        buffer_size_gb: float = 0.01,
         target_track_lufs_db: float = -32.0,
     ) -> None:
         super().__init__()
@@ -151,7 +151,7 @@ class CambridgeDataset(torch.utils.data.Dataset):
             # print(song_dir)
         self.mix_dirs = self.mix_dirs[self.indices[0]:self.indices[1]]
         print(f"{len(self.mix_dirs)} directories found with at least {self.min_tracks} tracks and at most {self.max_tracks} tracks.")
-        self.instrument_ids = json.load(open("/homes/ssv02/Diff-MST/inst_id.txt"))
+        self.instrument_ids = json.load(open("/homes/ssv02/Diff-MST/data/instrument_name2id.json"))
             # print(raw_tracks_dir)
             
 
@@ -357,7 +357,7 @@ class CambridgeDataModule(pl.LightningDataModule):
         length: int,
         num_workers: int = 4,
         batch_size: int = 16,
-        train_buffer_size_gb: float = 2.0,
+        train_buffer_size_gb: float = 0.01,
         val_buffer_size_gb: float = 0.1,
     ):
         super().__init__()
@@ -399,11 +399,14 @@ class CambridgeDataModule(pl.LightningDataModule):
             num_workers=4,
         )
 
-if __name__ == "__main__":
-    dataset = CambridgeDataset(root_dirs=["/import/c4dm-multitrack-private/C4DM Multitrack Collection/mixing-secrets"],indices=[0,150],buffer_size_gb =4.0)
-    print(len(dataset))
+# if __name__ == "__main__":
+#     dataset = CambridgeDataset(root_dirs=["/import/c4dm-multitrack-private/C4DM Multitrack Collection/mixing-secrets"],indices=[0,150],buffer_size_gb =4.0)
+#     print(dataset)
+#     print(len(dataset))
 
-    dataloader = torch.utils.data.DataLoader(dataset, batch_size=2, shuffle=True, drop_last = True, num_workers=4)
+#     dataloader = torch.utils.data.DataLoader(dataset, batch_size=2, shuffle=True, drop_last = True, num_workers=4)
+#     print(dataloader)
+#     print(dataloader[0])
 
-    for i, (track, instrument_id, stereo) in enumerate(dataloader):
-       print(i)
+#     for i, (track, instrument_id, stereo) in enumerate(dataloader):
+#        print(i)
