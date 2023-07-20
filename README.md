@@ -49,7 +49,7 @@ git pull
 First update the paths in the configuration file for both the logger and the dataset root directory.
 Then call the `main.py` script passing in the configuration file. 
 ```
-CUDA_VISIBLE_DEVICES=7 python main.py fit -c configs/config_cjs.yaml -c configs/optimizer.yaml -c configs/data/medleydb_c4dm.yaml -c configs/models/naive_dmc_adv.yaml
+CUDA_VISIBLE_DEVICES=1 python main.py fit -c configs/config.yaml -c configs/optimizer.yaml -c configs/data/combined.yaml -c configs/models/naive_dmc_adv.yaml
 ```
 
 

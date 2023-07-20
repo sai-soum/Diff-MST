@@ -1,21 +1,10 @@
 data:
   class_path: mst.dataloaders.combined.CombinedDataModule
   init_args:
-    train_dataset_1:
-      class_path: mst.dataloaders.cambridge.CambridgeDataset
-      init_args:
-        root_dirs: 
-        - /import/c4dm-multitrack-private/C4DM Multitrack Collection/mixing-secrets
-    train_dataset_2:  
-      class_path: mst.dataloaders.medley.MedleyDBDataset
-      init_args:
-        root_dirs: 
-        - /import/c4dm-datasets/MedleyDB_V1/V1
-        - /import/c4dm-datasets/MedleyDB_V2/V2 
     length: 524288
     min_tracks: 4
     max_tracks: 20
-    batch_size: 2
-    num_workers: 4
-    train_buffer_size_gb: 2.0
-    val_buffer_size_gb: 0.1
+    batch_size: 4
+    num_workers: 0
+    train_buffer_size_gb: 0.5
+    val_buffer_size_gb: 0.2

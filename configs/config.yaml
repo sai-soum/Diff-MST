@@ -5,7 +5,7 @@ trainer:
     class_path: pytorch_lightning.loggers.WandbLogger
     init_args:
       project: DiffMST
-      save_dir: /homes/ssv02/Diff-MST/logs
+      save_dir: /import/c4dm-datasets-ext/Diff-MST
   enable_checkpointing: true
   callbacks:
     - class_path: mst.callbacks.audio.LogAudioCallback
