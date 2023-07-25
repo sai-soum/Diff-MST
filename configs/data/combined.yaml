@@ -4,7 +4,7 @@ data:
     length: 524288
     min_tracks: 4
     max_tracks: 20
-    batch_size: 4
-    num_workers: 0
-    train_buffer_size_gb: 0.5
-    val_buffer_size_gb: 0.2
+    batch_size: 2
+    num_workers: 4
+    train_buffer_size_gb: 0.1
+    val_buffer_size_gb: 0.1

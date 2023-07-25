@@ -116,9 +116,10 @@ class System(pl.LightningModule):
             use_fx_bus=use_fx_bus,
             use_master_bus=use_master_bus,
             instrument_id=instrument_id,
-            stereo_info=stereo_info,
-            instrument_number_lookup=self.instrument_number_lookup,
-            knowledge_engineering_dict=self.knowledge_engineering_dict,
+            stereo_id=stereo_info,
+            instrument_number_file=self.instrument_number_lookup,
+            ke_dict=self.knowledge_engineering_dict,
+            
         )
 
         if torch.isnan(ref_mix).any():

@@ -85,6 +85,10 @@ bass_drum:
     makeup_gain_db:
       - 2.0
       - 5.0
+ 
+  
+
+    
 
 
 #mid frequency percussions
@@ -1608,6 +1612,168 @@ misc:
     makeup_gain_db:
       - 0.0
       - 0.5
+
+fx_bus:
+  reverb_gain:
+    band_0:
+      - 0.0
+      - 1.0
+    band_1:
+      - 0.0
+      - 1.0
+    band_2:
+      - 0.0
+      - 1.0
+    band_3:
+      - 0.0
+      - 1.0
+    band_4:
+      - 0.0
+      - 1.0
+    band_5:
+      - 0.0
+      - 1.0
+    band_6:
+      - 0.0
+      - 1.0
+    band_7:
+      - 0.0
+      - 1.0
+    band_8:
+      - 0.0
+      - 1.0
+    band_9:
+      - 0.0
+      - 1.0
+    band_10:
+      - 0.0
+      - 1.0
+    band_11:
+      - 0.0
+      - 1.0
+    
+  reverb_decay:
+    band_0:
+      - 0.0
+      - 1.0
+    band_1:
+      - 0.0
+      - 1.0
+    band_2:
+      - 0.0
+      - 1.0
+    band_3:
+      - 0.0
+      - 1.0
+    band_4:
+      - 0.0
+      - 1.0
+    band_5:
+      - 0.0
+      - 1.0
+    band_6:
+      - 0.0
+      - 1.0
+    band_7:
+      - 0.0
+      - 1.0
+    band_8:
+      - 0.0
+      - 1.0
+    band_9:
+      - 0.0
+      - 1.0
+    band_10:
+      - 0.0
+      - 1.0
+    band_11:
+      - 0.0
+      - 1.0
+    
+  mix:
+    - 0.0
+    - 1.0
+  send_db:
+    - -80.0
+    - 12.0
+
+master_bus:
+  eq:
+    eq_lowshelf_gain : 
+      - -3.0
+      - -1.0
+    eq_lowshelf_freq :
+      - 40
+      - 170
+    eq_lowshelf_q :
+      - 1.5
+      - 2.5
+    eq_band0_gain :
+      - 1.0
+      - 3.0
+    eq_band0_freq :
+      - 200
+      - 500
+    eq_band0_q :
+      - 1.5
+      - 2.0
+    eq_band1_gain : 
+      - -4.0
+      - -2.0
+    eq_band1_freq : 
+      - 3000
+      - 8000
+    eq_band1_q :
+      - 1.0
+      - 2.5
+    eq_band2_gain :
+      - 1.0
+      - 2.5
+    eq_band2_freq : 
+      - 8000
+      - 12000
+    eq_band2_q :
+      - 1.0
+      - 1.0 
+    eq_band3_gain :
+      - 0.0
+      - 0.3
+    eq_band3_freq : 
+      - 12000
+      - 20000
+    eq_band3_q :
+      - 1.0
+      - 1.5
+    eq_highshelf_gain : 
+      - - 1.0
+      - 0.0
+    eq_highshelf_freq :
+      - 6000
+      - 20000
+    eq_highshelf_q : 
+      - 1.0
+      - 1.5
+  compressor:
+    threshold_db :
+      - -20.0
+      - -15.0
+    ratio:
+      - 2.0
+      - 3.0
+    attack_ms:
+      - 10.0
+      - 100.0
+    release_ms:
+      - 10.0
+      - 100.0
+    knee_db:
+      - 3.0
+      - 6.0
+    makeup_gain_db:
+      - 1.0
+      - 3.0
+
+
 
 
 
