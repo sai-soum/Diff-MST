@@ -309,7 +309,7 @@ class CambridgeDataset(torch.utils.data.Dataset):
             self.reload_buffer()
 
         # select an example at random
-        print(len(self.examples))
+        #print(len(self.examples))
         example_idx = np.random.randint(0, len(self.examples))
         #print("example_idx",example_idx)
         example = self.examples[example_idx]

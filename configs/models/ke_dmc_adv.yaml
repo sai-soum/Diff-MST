@@ -3,8 +3,8 @@ model:
   init_args:
     active_eq_step: 100000
     active_compressor_step: 150000
-    active_fx_bus_step: 250000
-    active_master_bus_step: 200000
+    active_fx_bus_step: 200000
+    active_master_bus_step: 250000
     mix_fn: mst.mixing.knowledge_engineering_mix
     generate_mix_console:
       class_path: mst.modules.AdvancedMixConsole

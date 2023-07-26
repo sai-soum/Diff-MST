@@ -1614,6 +1614,8 @@ misc:
       - 0.5
 
 fx_bus:
+  instruments:
+    - fx_bus_console
   reverb_gain:
     band_0:
       - 0.0
@@ -1698,6 +1700,8 @@ fx_bus:
     - 12.0
 
 master_bus:
+  instruments:
+    - master_bus_console
   eq:
     eq_lowshelf_gain : 
       - -3.0
@@ -1745,7 +1749,7 @@ master_bus:
       - 1.0
       - 1.5
     eq_highshelf_gain : 
-      - - 1.0
+      - -1.0
       - 0.0
     eq_highshelf_freq :
       - 6000
