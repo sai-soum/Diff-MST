@@ -4,7 +4,7 @@ data:
     root_dirs: 
     - /import/c4dm-multitrack-private/C4DM Multitrack Collection/mixing-secrets
     length: 524288
-    batch_size: 4
-    num_workers: 4
-    train_buffer_size_gb: 4.0
+    batch_size: 2
+    num_workers: 8
+    train_buffer_size_gb: 2.0
     val_buffer_size_gb: 0.1

@@ -9,11 +9,12 @@ trainer:
   enable_checkpointing: true
   callbacks:
     - class_path: mst.callbacks.audio.LogAudioCallback
+    
   default_root_dir: null
   gradient_clip_val: 4.0
   devices: 1
   check_val_every_n_epoch: 1
-  max_steps: 100000
+  max_steps: 500000
   log_every_n_steps: 50
   accelerator: gpu
   strategy: ddp_find_unused_parameters_true
@@ -22,3 +23,4 @@ trainer:
   enable_model_summary: true
   num_sanity_val_steps: 2
   benchmark: true
+  

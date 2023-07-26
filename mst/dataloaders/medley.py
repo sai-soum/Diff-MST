@@ -29,7 +29,7 @@ class MedleyDBDataset(torch.utils.data.Dataset):
         min_tracks: int = 4,
         max_tracks: int = 8,
         length: float = 524288,
-        subset: str = "test",
+        subset: str = "train",
         buffer_reload_rate: int = 4000,
         num_examples_per_epoch: int = 10000,
         buffer_size_gb: float = 0.2,
@@ -123,8 +123,12 @@ class MedleyDBDataset(torch.utils.data.Dataset):
             # save only a random subset of this song so we can load more songs
             silent = True
             counter = 0
+            num_frames = torchaudio.info(mix_filepath).num_frames
+            if num_frames < self.length:
+                    continue
+            
             while silent:
-                num_frames = torchaudio.info(mix_filepath).num_frames
+                
                 offset = np.random.randint(0, num_frames - self.buffer_frames - 1)
 
                 # now check the length of the mix
@@ -294,7 +298,7 @@ class MedleyDBDataModule(pl.LightningDataModule):
         max_tracks: int = 20,
         num_workers: int = 4,
         batch_size: int = 16,
-        train_buffer_size_gb: float = 2.0,
+        train_buffer_size_gb: float = 0.01,
         val_buffer_size_gb: float = 0.1,
     ):
         super().__init__()

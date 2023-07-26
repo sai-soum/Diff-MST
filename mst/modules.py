@@ -344,7 +344,7 @@ class AdvancedMixConsole(torch.nn.Module):
             tracks = compressor(
                 tracks, self.sample_rate, **track_param_dict["compressor"]
             )
-
+        
         if use_track_panner:
             tracks = stereo_panner(tracks, **track_param_dict["stereo_panner"])
         else:

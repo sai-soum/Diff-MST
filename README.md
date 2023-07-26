@@ -10,8 +10,6 @@
 </div>
 
 Mixing style transfer using reference mix. 
-Given the tracks of a song and the corresponding reference mix, the model can predict mixing console parameter values for each of the tracks.
-
 There are two mixing console configurations (in `modules.py`)
 1. `BasicMixConsole`: Gain + Pan
 2. `AdvancedMixConsole`: Gain + Pan + Diff EQ + Diff Compressor
