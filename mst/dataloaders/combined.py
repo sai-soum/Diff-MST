@@ -48,16 +48,16 @@ class CombinedDataModule(pl.LightningDataModule):
     def setup(self, stage=None):
 
         if stage == "fit":
-            # train_dataset =CombinedDataset(CambridgeDataset(root_dirs=["/import/c4dm-multitrack-private/C4DM Multitrack Collection/mixing-secrets"]),
-            #                  MedleyDBDataset(["/import/c4dm-datasets/MedleyDB_V1/V1", "/import/c4dm-datasets/MedleyDB_V2/V2"]))
-            self.train_dataset =CombinedDataset(CambridgeDataset(root_dirs=["/import/c4dm-multitrack-private/C4DM Multitrack Collection/mixing-secrets"],
+            # train_dataset =CombinedDataset(CambridgeDataset(root_dirs=["/data/scratch/acw639/Cambridge/mixing-secrets"]),
+            #                  MedleyDBDataset(["/data/scratch/acw639/Medley/V1", "/data/scratch/acw639/Medley/MedleyDB_V2/V2"]))
+            self.train_dataset =CombinedDataset(CambridgeDataset(root_dirs=["/data/scratch/acw639/Cambridge/mixing-secrets"],
                                                         indices = [0,150],
                                                         min_tracks = self.hparams.min_tracks,
                                                         max_tracks = self.hparams.max_tracks,
                                                         length = self.hparams.length,
                                                         buffer_size_gb=self.hparams.train_buffer_size_gb,
                                                         num_examples_per_epoch=10000,
-                                                        ), MedleyDBDataset(root_dirs=["/import/c4dm-datasets/MedleyDB_V1/V1", "/import/c4dm-datasets/MedleyDB_V2/V2"],
+                                                        ), MedleyDBDataset(root_dirs=["/data/scratch/acw639/Medley/V1", "/data/scratch/acw639/Medley/MedleyDB_V2/V2"],
                                                         subset = "train",
                                                         min_tracks = self.hparams.min_tracks, 
                                                         max_tracks = self.hparams.max_tracks, 
@@ -69,14 +69,14 @@ class CombinedDataModule(pl.LightningDataModule):
             
 
         if stage == "validate" or stage == "fit":
-            self.val_dataset =CombinedDataset (CambridgeDataset(root_dirs= ["/import/c4dm-multitrack-private/C4DM Multitrack Collection/mixing-secrets"],
+            self.val_dataset =CombinedDataset (CambridgeDataset(root_dirs= ["/data/scratch/acw639/Cambridge/mixing-secrets"],
                                                         indices = [150,200],
                                                         min_tracks = self.hparams.min_tracks,
                                                         max_tracks = self.hparams.max_tracks,
                                                         length = self.hparams.length,
                                                         buffer_size_gb=self.hparams.train_buffer_size_gb,
                                                         num_examples_per_epoch=1000,
-                                                        ), MedleyDBDataset(root_dirs=["/import/c4dm-datasets/MedleyDB_V1/V1", "/import/c4dm-datasets/MedleyDB_V2/V2"],
+                                                        ), MedleyDBDataset(root_dirs=["/data/scratch/acw639/Medley/V1", "/data/scratch/acw639/Medley/MedleyDB_V2/V2"],
                                                         subset = "val",
                                                         min_tracks = self.hparams.min_tracks, 
                                                         max_tracks = self.hparams.max_tracks, 
@@ -86,14 +86,14 @@ class CombinedDataModule(pl.LightningDataModule):
                                                         ))
         
         if stage == "validate" or stage == "fit":
-            self.test_dataset =CombinedDataset (CambridgeDataset(root_dirs= ["/import/c4dm-multitrack-private/C4DM Multitrack Collection/mixing-secrets"],
+            self.test_dataset =CombinedDataset (CambridgeDataset(root_dirs= ["/data/scratch/acw639/Cambridge/mixing-secrets"],
                                                         indices = [150,200],
                                                         min_tracks = self.hparams.min_tracks,
                                                         max_tracks = self.hparams.max_tracks,
                                                         length = self.hparams.length,
                                                         buffer_size_gb=self.hparams.train_buffer_size_gb,
                                                         num_examples_per_epoch=1000,
-                                                        ), MedleyDBDataset(root_dirs=["/import/c4dm-datasets/MedleyDB_V1/V1", "/import/c4dm-datasets/MedleyDB_V2/V2"],
+                                                        ), MedleyDBDataset(root_dirs=["/data/scratch/acw639/Medley/V1", "/data/scratch/acw639/Medley/MedleyDB_V2/V2"],
                                                         subset = "test",
                                                         min_tracks = self.hparams.min_tracks, 
                                                         max_tracks = self.hparams.max_tracks, 
@@ -104,8 +104,8 @@ class CombinedDataModule(pl.LightningDataModule):
             
 
     def train_dataloader(self):
-        # dataset =CombinedDataset(CambridgeDataset(root_dirs=["/import/c4dm-multitrack-private/C4DM Multitrack Collection/mixing-secrets"]),
-        #                      MedleyDBDataset(["/import/c4dm-datasets/MedleyDB_V1/V1", "/import/c4dm-datasets/MedleyDB_V2/V2"]))
+        # dataset =CombinedDataset(CambridgeDataset(root_dirs=["/data/scratch/acw639/Cambridge/mixing-secrets"]),
+        #                      MedleyDBDataset(["/data/scratch/acw639/Medley/V1", "/data/scratch/acw639/Medley/MedleyDB_V2/V2"]))
         #print(len(self.train_dataset))
         loader = torch.utils.data.DataLoader(self.train_dataset,
                                              batch_size=self.hparams.batch_size, 
@@ -133,8 +133,8 @@ class CombinedDataModule(pl.LightningDataModule):
         
     # if __name__ == "__main__":
         
-    #     train_dataset =CombinedDataset(CambridgeDataset(root_dirs=["/import/c4dm-multitrack-private/C4DM Multitrack Collection/mixing-secrets"]),
-    #                                     MedleyDBDataset(["/import/c4dm-datasets/MedleyDB_V1/V1", "/import/c4dm-datasets/MedleyDB_V2/V2"]))
+    #     train_dataset =CombinedDataset(CambridgeDataset(root_dirs=["/data/scratch/acw639/Cambridge/mixing-secrets"]),
+    #                                     MedleyDBDataset(["/data/scratch/acw639/Medley/V1", "/data/scratch/acw639/Medley/MedleyDB_V2/V2"]))
     #     print(len(train_dataset))
     #     loader = torch.utils.data.DataLoader(train_dataset,batch_size=4, shuffle=True, drop_last = True, num_workers=0)
     #     print("dataloader")

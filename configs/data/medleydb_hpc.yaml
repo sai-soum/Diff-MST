@@ -1,0 +1,11 @@
+data:
+  class_path: mst.dataloaders.medley.MedleyDBDataModule
+  init_args:
+    root_dirs: 
+    - /data/scratch/acw639/Medley/V1
+    - /data/scratch/acw639/Medley/MedleyDB_V2/V2
+    length: 524288
+    batch_size: 2
+    num_workers: 8
+    train_buffer_size_gb: 0.01
+    val_buffer_size_gb: 0.001

@@ -1,6 +1,7 @@
 import os
 import glob
 import torch
+import yaml
 import random
 import itertools
 import torchaudio
@@ -95,7 +96,8 @@ class CambridgeDataset(torch.utils.data.Dataset):
         min_tracks: int = 4,
         max_tracks: int = 20,
         length: float = 524288,
-        indices: List[int] = [0,150],
+        subset: str = "train",
+        dataset_split_yaml: str = "./data/cambridge_split.yaml",
         buffer_reload_rate: int = 4000,
         num_examples_per_epoch: int = 10000,
         buffer_size_gb: float = 0.01,
@@ -109,11 +111,12 @@ class CambridgeDataset(torch.utils.data.Dataset):
         self.buffer_reload_rate = buffer_reload_rate
         self.num_examples_per_epoch = num_examples_per_epoch
         self.buffer_size_gb = buffer_size_gb
+        self.subset = subset
         self.buffer_frames = (
             self.length
         )  # load examples with same size as the train length
         self.target_track_lufs_db = target_track_lufs_db
-        self.indices = indices
+        
         self.meter = pyln.Meter(sample_rate)  # create BS.1770 meter
 
         self.mix_dirs = []
@@ -123,8 +126,15 @@ class CambridgeDataset(torch.utils.data.Dataset):
        
         
         self.mix_dirs = []
+        with open(dataset_split_yaml, "r") as f:
+            self.cambridge_split = yaml.safe_load(f)
         paths = glob.glob(os.path.join(root_dirs[0], "*"))
         print(f"Found {len(paths)} mix directories in {root_dirs}.")
+        subset_dir = []
+        for path in paths:
+            if path in self.cambridge_split[self.subset]:
+                subset_dir.append(path)
+        self.paths = subset_dir
         for path in paths:
             
             if os.path.basename(path) == "00275":
@@ -148,12 +158,14 @@ class CambridgeDataset(torch.utils.data.Dataset):
                 #print(f"Found {len(raw_tracks)} tracks in {root_dirs[0]}.")
                 if len(raw_tracks)>=self.min_tracks and len(raw_tracks)<=self.max_tracks:   
                     self.mix_dirs.append(mix_dirs)
-                    
+                
+        
+        print(f"Found {len(self.mix_dirs)} mix directories in {self.subset} set.")
         #print(f"{len(self.mix_dirs)} with at least {self.min_tracks} tracks and at most {self.max_tracks} tracks.")
-        self.mix_dirs = self.mix_dirs[self.indices[0]:self.indices[1]]
-        if len(self.mix_dirs) == 0:
-            print("No songs found in this range")
-            exit()
+        #self.mix_dirs = self.mix_dirs[self.indices[0]:self.indices[1]]
+        # if len(self.mix_dirs) == 0:
+        #     print("No songs found in this range")
+        #     exit()
         print(f"{len(self.mix_dirs)} directories found with at least {self.min_tracks} tracks and at most {self.max_tracks} tracks.")
         self.instrument_ids = json.load(open("/homes/ssv02/Diff-MST/data/instrument_name2id.json"))
             # print(raw_tracks_dir)
