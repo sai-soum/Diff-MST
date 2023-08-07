@@ -26,7 +26,6 @@ class LogAudioCallback(pl.callbacks.Callback):
         outputs,
         batch,
         batch_idx,
-        
     ):
         """Called when the validation batch ends."""
         if outputs is not None:
@@ -61,6 +60,9 @@ class LogAudioCallback(pl.callbacks.Callback):
         total_samples = 0
         # put all audio in file
         for key, audio in outputs.items():
+            if "dict" in key:  # skip parameters
+                continue
+
             x = audio[batch_idx, ...].float()
             x = x.permute(1, 0)
             x /= x.abs().max()
@@ -86,3 +88,28 @@ class LogAudioCallback(pl.callbacks.Callback):
                 )
             }
         )
+
+        # now try to log parameters
+        for key, param_dict in outputs.items():
+            if "dict" not in key:  # skip audio
+                continue
+
+            column_names = None
+            rows = []
+            for effect_name, effect_params in param_dict.items():
+                for param_name, param_val in effect_params.items():
+                    row = []
+                    row_name = f"{effect_name}.{param_name}"
+                    row.append(row_name)
+
+                    if column_names is None:
+                        column_names = ["parameter"]
+                        for i in range(param_val.shape[1]):
+                            column_names.append(f"{i}")
+
+                    for i in range(param_val.shape[1]):
+                        row.append(param_val[batch_idx, i].item())
+                    rows.append(row)
+
+            wandb_table = wandb.Table(data=rows, columns=column_names)
+            logger.experiment.log({f"batch={batch_idx}_parameters": wandb_table})

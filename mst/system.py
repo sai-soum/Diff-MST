@@ -119,7 +119,6 @@ class System(pl.LightningModule):
             stereo_id=stereo_info,
             instrument_number_file=self.instrument_number_lookup,
             ke_dict=self.knowledge_engineering_dict,
-            
         )
 
         if torch.isnan(ref_mix).any():
@@ -216,6 +215,7 @@ class System(pl.LightningModule):
             "ref_mix_b": ref_mix_b.detach().float().cpu(),
             "pred_mix_a": pred_mix_a.detach().float().cpu(),
             "sum_mix_a": tracks_a.sum(dim=1, keepdim=True).detach().float().cpu(),
+            "pred_track_param_dict": pred_track_param_dict,
         }
 
         return loss, data_dict
