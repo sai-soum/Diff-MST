@@ -9,7 +9,6 @@ trainer:
   enable_checkpointing: true
   callbacks:
     - class_path: mst.callbacks.audio.LogAudioCallback
-    
   default_root_dir: null
   gradient_clip_val: 4.0
   devices: 1
@@ -23,4 +22,6 @@ trainer:
   enable_model_summary: true
   num_sanity_val_steps: 2
   benchmark: true
+  accumulate_grad_batches: 4
+  
   

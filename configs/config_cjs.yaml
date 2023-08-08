@@ -13,10 +13,10 @@ trainer:
       init_args: 
         max_depth: 2
   default_root_dir: null
-  gradient_clip_val: 4.0
+  gradient_clip_val: 10.0
   devices: 1
   check_val_every_n_epoch: 1
-  max_steps: 100000
+  max_steps: 300000
   log_every_n_steps: 50
   accelerator: gpu
   strategy: ddp_find_unused_parameters_true
