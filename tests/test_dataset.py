@@ -9,12 +9,12 @@ from mst.dataloaders.medley import MedleyDBDataModule
 datamodule = MedleyDBDataModule(
     ["/import/c4dm-datasets/MedleyDB_V1/V1", "/import/c4dm-datasets/MedleyDB_V1/V2"],
     524288,
-    4,
-    16,
     1,
     1,
-    0.5,
-    0.5,
+    1,
+    1,
+    0.1,
+    0.1,
 )
 datamodule.setup("fit")
 
