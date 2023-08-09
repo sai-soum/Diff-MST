@@ -3,7 +3,7 @@ model:
   init_args:
     active_eq_step: 0
     active_compressor_step: 0
-    active_fx_bus_step: 100000
+    active_fx_bus_step: 1000000
     active_master_bus_step: 0
     mix_fn: mst.mixing.naive_random_mix
     generate_mix_console:
@@ -46,10 +46,10 @@ model:
           class_path: mst.modules.AdvancedMixConsole
           init_args:
             sample_rate: 44100
-            min_gain_db: -80.0
-            max_gain_db: 80.0
-            eq_min_gain_db: -24.0
-            eq_max_gain_db: 24.0
+            min_gain_db: -24.0
+            max_gain_db: 24.0
+            eq_min_gain_db: -12.0
+            eq_max_gain_db: 12.0
             min_pan: 0.0
             max_pan: 1.0
     loss: 

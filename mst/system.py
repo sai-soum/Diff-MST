@@ -162,20 +162,23 @@ class System(pl.LightningModule):
             use_master_bus=use_master_bus,
         )
 
-        # crop the target mix if it is longer than the predicted mix
-        if ref_mix_a.shape[-1] > pred_mix_b.shape[-1]:
-            seq_len = pred_mix_b.shape[-1]
-            ref_mix_tracks_b = ref_mix_tracks_b[..., :seq_len]
-            ref_mix_b = ref_mix_b[..., :seq_len]
-
         # don't compute error on start of the audio (warmup)
-        pred_mix_b = pred_mix_b[..., self.warmup :]
         ref_mix_b = ref_mix_b[..., self.warmup :]
+        pred_mix_b = pred_mix_b[..., self.warmup :]
+
+        # peak normalize mixes
+        gain_lin = ref_mix_b.abs().max(dim=-1, keepdim=True)[0]
+        gain_lin = gain_lin.max(dim=-2, keepdim=True)[0]
+        ref_mix_b_norm = ref_mix_b / gain_lin.clamp(min=1e-8)
+
+        gain_lin = pred_mix_b.abs().max(dim=-1, keepdim=True)[0]
+        gain_lin = gain_lin.max(dim=-2, keepdim=True)[0]
+        pred_mix_b_norm = pred_mix_b / gain_lin.clamp(min=1e-8)
 
         # compute loss on the predicted section A mix vs the ground truth reference mix
         loss = 0
         if self.use_mix_loss:
-            mix_loss = self.loss(pred_mix_b, ref_mix_b)
+            mix_loss = self.loss(pred_mix_b_norm, ref_mix_b_norm)
             loss += mix_loss
 
         if self.use_track_loss:
@@ -196,7 +199,7 @@ class System(pl.LightningModule):
             sync_dist=True,
         )
 
-        sisdr_error = -self.sisdr(pred_mix_b, ref_mix_b)
+        sisdr_error = -self.sisdr(pred_mix_b_norm, ref_mix_b_norm)
         # log the SI-SDR error
         self.log(
             ("train" if train else "val") + "/si-sdr",
@@ -208,7 +211,7 @@ class System(pl.LightningModule):
             sync_dist=True,
         )
 
-        mrstft_error = self.mrstft(pred_mix_b, ref_mix_b)
+        mrstft_error = self.mrstft(pred_mix_b_norm, ref_mix_b_norm)
         # log the MR-STFT error
         self.log(
             ("train" if train else "val") + "/mrstft",
@@ -223,8 +226,8 @@ class System(pl.LightningModule):
         # for plotting down the line
         data_dict = {
             "ref_mix_a": ref_mix_a.detach().float().cpu(),
-            "ref_mix_b": ref_mix_b.detach().float().cpu(),
-            "pred_mix_b": pred_mix_b.detach().float().cpu(),
+            "ref_mix_b_norm": ref_mix_b_norm.detach().float().cpu(),
+            "pred_mix_b_norm": pred_mix_b_norm.detach().float().cpu(),
             "sum_mix_a": tracks_a.sum(dim=1, keepdim=True).detach().float().cpu(),
             "ref_track_param_dict": ref_track_param_dict,
             "pred_track_param_dict": pred_track_param_dict,

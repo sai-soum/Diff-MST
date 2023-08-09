@@ -16,7 +16,7 @@ trainer:
   gradient_clip_val: 10.0
   devices: 1
   check_val_every_n_epoch: 1
-  max_steps: 300000
+  max_steps: 1000000
   log_every_n_steps: 50
   accelerator: gpu
   strategy: ddp_find_unused_parameters_true
@@ -26,3 +26,5 @@ trainer:
   num_sanity_val_steps: 2
   benchmark: true
   accumulate_grad_batches: 4
+  reload_dataloaders_every_n_epochs: 1
+
