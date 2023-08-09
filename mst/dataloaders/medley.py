@@ -308,7 +308,7 @@ class MedleyDBDataModule(pl.LightningDataModule):
         if stage == "validate" or stage == "fit":
             self.val_dataset = MedleyDBDataset(
                 root_dirs=self.hparams.root_dirs,
-                subset="train",  # NOTE THIS IS TEMPOARY FOR DEBUGGING
+                subset="val",
                 min_tracks=self.hparams.min_tracks,
                 max_tracks=self.hparams.max_tracks,
                 length=self.hparams.length,
