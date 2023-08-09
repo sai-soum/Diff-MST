@@ -26,7 +26,6 @@ class LogAudioCallback(pl.callbacks.Callback):
         outputs,
         batch,
         batch_idx,
-        
     ):
         """Called when the validation batch ends."""
         if outputs is not None:
@@ -61,9 +60,12 @@ class LogAudioCallback(pl.callbacks.Callback):
         total_samples = 0
         # put all audio in file
         for key, audio in outputs.items():
+            if "dict" in key:  # skip parameters
+                continue
+
             x = audio[batch_idx, ...].float()
             x = x.permute(1, 0)
-            x /= x.abs().max()
+            # x /= x.abs().max()
             audio_files.append(x)
             audio_keys.append(key)
             total_samples += x.shape[0]
@@ -86,3 +88,46 @@ class LogAudioCallback(pl.callbacks.Callback):
                 )
             }
         )
+
+        # now try to log parameters
+        pred_track_param_dict = outputs["pred_track_param_dict"]
+        ref_track_param_dict = outputs["ref_track_param_dict"]
+
+        pred_fx_bus_param_dict = outputs["pred_fx_bus_param_dict"]
+        ref_fx_bus_param_dict = outputs["ref_fx_bus_param_dict"]
+
+        pred_master_bus_param_dict = outputs["pred_master_bus_param_dict"]
+        ref_master_bus_param_dict = outputs["ref_master_bus_param_dict"]
+
+        effect_names = list(pred_track_param_dict.keys())
+
+        column_names = None
+        rows = []
+        for effect_name in effect_names:
+            param_names = list(pred_track_param_dict[effect_name].keys())
+            for param_name in param_names:
+                pred_param_val = pred_track_param_dict[effect_name][param_name]
+                ref_param_val = ref_track_param_dict[effect_name][param_name]
+
+                row = []
+                row_name = f"{effect_name}.{param_name}"
+                row.append(row_name)
+
+                if column_names is None:
+                    column_names = ["parameter"]
+                    for i in range(pred_param_val.shape[1]):
+                        column_names.append(f"{i}_pred")
+                        column_names.append(f"{i}_ref")
+                    # column_names.append("master_bus_pred")
+                    # column_names.append("master_bus_ref")
+
+                for i in range(pred_param_val.shape[1]):
+                    row.append(pred_param_val[batch_idx, i].item())
+                    row.append(ref_param_val[batch_idx, i].item())
+
+                # row.append(pred_master_bus_param_dict[effect_name][batch_idx].item())
+
+                rows.append(row)
+
+        wandb_table = wandb.Table(data=rows, columns=column_names)
+        logger.experiment.log({f"batch={batch_idx}_parameters": wandb_table})

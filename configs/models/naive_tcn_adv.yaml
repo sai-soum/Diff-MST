@@ -1,6 +1,10 @@
 model:
   class_path: mst.system.System
   init_args:
+    active_eq_step: 100000
+    active_compressor_step: 100000
+    active_fx_bus_step: 100000
+    active_master_bus_step: 100000
     mix_fn: mst.mixing.naive_random_mix
     generate_mix_console:
       class_path: mst.modules.AdvancedMixConsole
@@ -33,7 +37,9 @@ model:
           class_path: mst.modules.TransformerController
           init_args:
             embed_dim: 128
-            num_control_params: 32
+            num_track_control_params: 32
+            num_fx_bus_control_params: 25
+            num_master_bus_control_params: 24
             num_layers: 6
             nhead: 8
         mix_console:
@@ -50,7 +56,7 @@ model:
                 cond_dim: 32 # this defines number of control parameters
                 use_film_bn: true
 
-    use_track_loss: true
+    use_track_loss: false
     use_mix_loss: true
     loss: 
       class_path: auraloss.freq.MultiResolutionSTFTLoss

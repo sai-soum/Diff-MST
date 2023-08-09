@@ -30,7 +30,7 @@ class MedleyDBDataset(torch.utils.data.Dataset):
         max_tracks: int = 8,
         length: float = 524288,
         subset: str = "train",
-        buffer_reload_rate: int = 4000,
+        buffer_reload_rate: int = 10000,
         num_examples_per_epoch: int = 10000,
         buffer_size_gb: float = 0.2,
         target_track_lufs_db: float = -32.0,
@@ -84,18 +84,10 @@ class MedleyDBDataset(torch.utils.data.Dataset):
 
         for mix_dir in tqdm(self.mix_dirs):
             mix_id = os.path.basename(mix_dir)
-            track_filepaths = glob.glob(os.path.join(mix_dir, f"{mix_id}_RAW", "*.wav"))
-            # remove all mixes that have more tracks than 16 and less than 4 requested
-            if (
-                len(track_filepaths) <= self.max_tracks
-                and len(track_filepaths) >= self.min_tracks
-            ):
-                filtered_mix_dirs.append(mix_dir)
+            filtered_mix_dirs.append(mix_dir)
 
         self.mix_dirs = filtered_mix_dirs
-        print(
-            f"Found {len(self.mix_dirs)} mix directories with tracks less than {self.max_tracks} and more than {self.min_tracks}."
-        )
+        print(f"Found {len(self.mix_dirs)} mix directories.")
         self.items_since_load = self.buffer_reload_rate
 
     def reload_buffer(self):
@@ -125,10 +117,9 @@ class MedleyDBDataset(torch.utils.data.Dataset):
             counter = 0
             num_frames = torchaudio.info(mix_filepath).num_frames
             if num_frames < self.length:
-                    continue
-            
+                continue
+
             while silent:
-                
                 offset = np.random.randint(0, num_frames - self.buffer_frames - 1)
 
                 # now check the length of the mix
@@ -173,9 +164,11 @@ class MedleyDBDataset(torch.utils.data.Dataset):
                     continue  # not sure why we need this yet, but it seems to be necessary
 
                 # loudness normalization
-                track_lufs_db = self.meter.integrated_loudness(y.permute(1, 0).numpy())
+                track_lufs_db = self.meter.integrated_loudness(
+                    track.permute(1, 0).numpy()
+                )
 
-                if track_lufs_db == float("-inf"):
+                if track_lufs_db < -48.0 or track_lufs_db == float("-inf"):
                     continue
 
                 delta_lufs_db = torch.tensor(
@@ -184,30 +177,23 @@ class MedleyDBDataset(torch.utils.data.Dataset):
                 gain_lin = 10.0 ** (delta_lufs_db.clamp(-120, 40.0) / 20.0)
                 track = gain_lin * track
 
-                # loudness normalization
-                track_lufs_db = self.meter.integrated_loudness(y.permute(1, 0).numpy())
-
-                if track_lufs_db == float("-inf"):
-                    continue
-
-                delta_lufs_db = torch.tensor(
-                    [self.target_track_lufs_db - track_lufs_db]
-                ).float()
-                gain_lin = 10.0 ** (delta_lufs_db.clamp(-120, 40.0) / 20.0)
-                track = gain_lin * track
-
-                tracks.append(track)
-                # get the instrumnet name from the metadata file
-                instru_id = mdata[os.path.basename(track_filepath)]
-                # assign the instrument id based on the instrument name
-
-                inst_id = self.instrument_ids[instru_id]
-                metadata.append(inst_id)
-                if track.shape[-2] == 2:
+                # add each channel as a separate track
+                for ch_idx in range(track.shape[0]):
+                    tracks.append(track[ch_idx : ch_idx + 1, :])
+                    # get the instrumnet name from the metadata file
+                    instru_id = mdata[os.path.basename(track_filepath)]
+                    # assign the instrument id based on the instrument name
+                    inst_id = self.instrument_ids[instru_id]
                     metadata.append(inst_id)
+
+                    if len(tracks) >= self.max_tracks:
+                        break
 
                 nbytes = track.element_size() * track.nelement()
                 nbytes_loaded += nbytes
+
+                if len(tracks) >= self.max_tracks:
+                    break
 
             if len(tracks) < self.min_tracks:
                 continue
@@ -252,31 +238,29 @@ class MedleyDBDataset(torch.utils.data.Dataset):
         tracks = torch.zeros(self.max_tracks, self.length)
         instrument_id = example["metadata"]
 
-        stereo_info = []
-        track_idx = 0
-
+        # not sure what this code does?
         num_silent_tracks = self.max_tracks - len(instrument_id)
         for i in range(num_silent_tracks):
             instrument_id.append(0)
             i += 1
 
-        stereo = 0
+        stereo_info = []
+        track_idx = 0
+
         for track in example["tracks"]:
             if track.shape[0] == 2:
                 stereo = 1
-            # print(track.shape)
-            # print(len(instrument_id))
+            else:
+                stereo = 0
+
+            # add each channel as a separate track
             for ch_idx in range(track.shape[0]):
                 if track_idx == self.max_tracks:
                     break
                 else:
                     tracks[track_idx, :] = track[ch_idx, :]
                     track_idx += 1
-                    if stereo == 1:
-                        stereo_info.append(stereo)
-                        stereo = 0
-                    else:
-                        stereo_info.append(stereo)
+                    stereo_info.append(stereo)
 
         # print(tracks.shape)
         if len(stereo_info) != len(instrument_id):
@@ -300,45 +284,43 @@ class MedleyDBDataModule(pl.LightningDataModule):
         batch_size: int = 16,
         train_buffer_size_gb: float = 0.01,
         val_buffer_size_gb: float = 0.1,
+        num_examples_per_epoch: int = 10000,
     ):
         super().__init__()
         self.save_hyperparameters()
+        self.current_epoch = -1
+        self.max_tracks = 1
 
     def setup(self, stage=None):
-        if stage == "fit":
-            self.train_dataset = MedleyDBDataset(
-                root_dirs=self.hparams.root_dirs,
-                subset="train",
-                min_tracks=self.hparams.min_tracks,
-                max_tracks=self.hparams.max_tracks,
-                length=self.hparams.length,
-                buffer_size_gb=self.hparams.train_buffer_size_gb,
-                num_examples_per_epoch=10000,
-            )
-
-        if stage == "validate" or stage == "fit":
-            self.val_dataset = MedleyDBDataset(
-                root_dirs=self.hparams.root_dirs,
-                subset="val",
-                min_tracks=self.hparams.min_tracks,
-                max_tracks=self.hparams.max_tracks,
-                length=self.hparams.length,
-                buffer_size_gb=self.hparams.val_buffer_size_gb,
-                num_examples_per_epoch=1000,
-            )
-
-        if stage == "test":
-            self.test_dataset = MedleyDBDataset(
-                root_dirs=self.hparams.root_dirs,
-                subset="test",
-                min_tracks=self.hparams.min_tracks,
-                max_tracks=self.hparams.max_tracks,
-                length=self.hparams.length,
-                buffer_size_gb=self.hparams.test_buffer_size_gb,
-                num_examples_per_epoch=1000,
-            )
+        pass
 
     def train_dataloader(self):
+        # count number of times setup is called
+        self.current_epoch += 1
+
+        # set the max number of tracks (increase every 10 epochs)
+        self.max_tracks = (self.current_epoch // 10) + 1
+
+        if self.max_tracks > self.hparams.max_tracks:
+            self.max_tracks = self.hparams.max_tracks
+
+        # batch_size = (self.hparams.max_tracks // self.max_tracks) // 2
+        # if batch_size < 1:
+        #    batch_size = 1
+
+        print()
+        print(f"Current epoch: {self.current_epoch} with max_tracks: {self.max_tracks}")
+
+        self.train_dataset = MedleyDBDataset(
+            root_dirs=self.hparams.root_dirs,
+            subset="train",
+            min_tracks=self.hparams.min_tracks,
+            max_tracks=self.max_tracks,
+            length=self.hparams.length,
+            buffer_size_gb=self.hparams.train_buffer_size_gb,
+            num_examples_per_epoch=self.hparams.num_examples_per_epoch,
+        )
+
         return torch.utils.data.DataLoader(
             self.train_dataset,
             batch_size=self.hparams.batch_size,
@@ -348,6 +330,16 @@ class MedleyDBDataModule(pl.LightningDataModule):
         )
 
     def val_dataloader(self):
+        self.val_dataset = MedleyDBDataset(
+            root_dirs=self.hparams.root_dirs,
+            subset="val",
+            min_tracks=self.hparams.min_tracks,
+            max_tracks=self.max_tracks,
+            length=self.hparams.length,
+            buffer_size_gb=self.hparams.val_buffer_size_gb,
+            num_examples_per_epoch=int(self.hparams.num_examples_per_epoch / 10),
+        )
+
         return torch.utils.data.DataLoader(
             self.val_dataset,
             batch_size=self.hparams.batch_size,
@@ -355,6 +347,16 @@ class MedleyDBDataModule(pl.LightningDataModule):
         )
 
     def test_dataloader(self):
+        self.test_dataset = MedleyDBDataset(
+            root_dirs=self.hparams.root_dirs,
+            subset="test",
+            min_tracks=self.hparams.min_tracks,
+            max_tracks=self.max_tracks,
+            length=self.hparams.length,
+            buffer_size_gb=self.hparams.test_buffer_size_gb,
+            num_examples_per_epoch=int(self.hparams.num_examples_per_epoch / 10),
+        )
+
         return torch.utils.data.DataLoader(
             self.test_dataset,
             batch_size=1,
