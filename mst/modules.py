@@ -2,6 +2,9 @@ import torch
 import torchvision
 from typing import Callable, Optional, List
 import torchaudio
+
+from mst.panns import Cnn14
+
 from dasp_pytorch.functional import (
     gain,
     stereo_panner,
@@ -43,9 +46,14 @@ class MixStyleTransferModel(torch.nn.Module):
         track_embeds = self.track_encoder(tracks.view(bs * num_tracks, -1))
         track_embeds = track_embeds.view(bs, num_tracks, -1)  # restore
 
+        # compute mid/side from the reference mix
+        ref_mix_mid = ref_mix.sum(dim=1)
+        ref_mix_side = ref_mix[..., 0, :] - ref_mix[..., 1, :]
+
         # process the reference mix
-        mix_embeds = self.mix_encoder(ref_mix.view(bs * 2, -1))
-        mix_embeds = mix_embeds.view(bs, 2, -1)  # restore
+        mid_embeds = self.mix_encoder(ref_mix_mid)
+        side_embeds = self.mix_encoder(ref_mix_side)
+        mix_embeds = torch.stack((mid_embeds, side_embeds), dim=1)
 
         # controller will predict mix parameters for each stem based on embeds
         track_params, fx_bus_params, master_bus_params = self.controller(
@@ -171,7 +179,7 @@ class BasicMixConsole(torch.nn.Module):
         super().__init__()
         self.sample_rate = sample_rate
         self.param_ranges = {
-            "input_gain": {"gain_db": (min_gain_db, max_gain_db)},
+            "fader": {"gain_db": (min_gain_db, max_gain_db)},
             "stereo_panner": {"pan": (min_pan, max_pan)},
         }
         self.num_control_params = 2
@@ -187,7 +195,7 @@ class BasicMixConsole(torch.nn.Module):
         """
         # apply effects in series and all tracks in parallel
         bs, chs, seq_len = tracks.size()
-        tracks = gain(tracks, **param_dict["input_gain"])
+        tracks = gain(tracks, **param_dict["fader"])
         tracks = stereo_panner(tracks, **param_dict["stereo_panner"])
         return tracks, tracks.sum(dim=2)
 
@@ -205,7 +213,7 @@ class BasicMixConsole(torch.nn.Module):
         """
         # extract and denormalize the parameters
         param_dict = {
-            "input_gain": {
+            "fader": {
                 "gain_db": mix_params[:, :, 0],  # bs, num_tracks, 1
             },
             "stereo_panner": {
@@ -237,7 +245,7 @@ class AdvancedMixConsole(torch.nn.Module):
         super().__init__()
         self.sample_rate = sample_rate
         self.param_ranges = {
-            "input_gain": {"gain_db": (min_gain_db, max_gain_db)},
+            "fader": {"gain_db": (min_gain_db, max_gain_db)},
             "parametric_eq": {
                 "low_shelf_gain_db": (eq_min_gain_db, eq_max_gain_db),
                 "low_shelf_cutoff_freq": (20, 2000),
@@ -298,7 +306,7 @@ class AdvancedMixConsole(torch.nn.Module):
         }
         self.num_track_control_params = 27
         self.num_fx_bus_control_params = 25
-        self.num_master_bus_control_params = 24
+        self.num_master_bus_control_params = 25
 
     def forward_mix_console(
         self,
@@ -335,7 +343,7 @@ class AdvancedMixConsole(torch.nn.Module):
         bs, num_tracks, seq_len = tracks.shape
         # apply effects in series but all tracks at once
         if use_track_gain:
-            tracks = gain(tracks, **track_param_dict["input_gain"])
+            tracks = gain(tracks, **track_param_dict["fader"])
         if use_track_eq:
             tracks = parametric_eq(
                 tracks, self.sample_rate, **track_param_dict["parametric_eq"]
@@ -344,7 +352,7 @@ class AdvancedMixConsole(torch.nn.Module):
             tracks = compressor(
                 tracks, self.sample_rate, **track_param_dict["compressor"]
             )
-        
+
         if use_track_panner:
             tracks = stereo_panner(tracks, **track_param_dict["stereo_panner"])
         else:
@@ -357,7 +365,11 @@ class AdvancedMixConsole(torch.nn.Module):
         if use_fx_bus:
             fx_bus = stereo_bus(tracks, **track_param_dict["fx_bus"])
             fx_bus = noise_shaped_reverberation(
-                fx_bus, self.sample_rate, **fx_bus_param_dict["reverberation"]
+                fx_bus,
+                self.sample_rate,
+                **fx_bus_param_dict["reverberation"],
+                num_samples=65536,
+                num_bandpass_taps=1023,
             )
             master_bus += fx_bus
 
@@ -373,6 +385,7 @@ class AdvancedMixConsole(torch.nn.Module):
             master_bus_L = compressor(
                 master_bus_L, self.sample_rate, **master_bus_param_dict["compressor"]
             )
+            master_bus_L = gain(master_bus_L, **master_bus_param_dict["fader"])
             # process Right channel
             master_bus_R = parametric_eq(
                 master_bus_R, self.sample_rate, **master_bus_param_dict["parametric_eq"]
@@ -380,6 +393,7 @@ class AdvancedMixConsole(torch.nn.Module):
             master_bus_R = compressor(
                 master_bus_R, self.sample_rate, **master_bus_param_dict["compressor"]
             )
+            master_bus_R = gain(master_bus_R, **master_bus_param_dict["fader"])
 
         # recompose stereo mix
         master_bus = torch.cat((master_bus_L, master_bus_R), dim=1)
@@ -412,7 +426,7 @@ class AdvancedMixConsole(torch.nn.Module):
         """
         # extract and denormalize the parameters
         track_param_dict = {
-            "input_gain": {
+            "fader": {
                 "gain_db": track_params[..., 0],
             },
             "parametric_eq": {
@@ -478,7 +492,7 @@ class AdvancedMixConsole(torch.nn.Module):
                 "band9_decay": fx_bus_params[..., 21],
                 "band10_decay": fx_bus_params[..., 22],
                 "band11_decay": fx_bus_params[..., 23],
-                "mix": fx_bus_params[..., 24],
+                "mix": torch.ones_like(fx_bus_params[..., 24]),
             },
         }
 
@@ -512,6 +526,9 @@ class AdvancedMixConsole(torch.nn.Module):
                 "knee_db": master_bus_params[..., 22],
                 "makeup_gain_db": master_bus_params[..., 23],
             },
+            "fader": {
+                "gain_db": master_bus_params[..., 24],
+            },
         }
 
         track_param_dict = denormalize_parameters(track_param_dict, self.param_ranges)
@@ -525,12 +542,12 @@ class AdvancedMixConsole(torch.nn.Module):
             track_param_dict,
             fx_bus_param_dict,
             master_bus_param_dict,
-            use_track_gain,
-            use_track_eq,
-            use_track_compressor,
-            use_track_panner,
-            use_fx_bus,
-            use_master_bus,
+            use_track_gain=use_track_gain,
+            use_track_eq=use_track_eq,
+            use_track_compressor=use_track_compressor,
+            use_track_panner=use_track_panner,
+            use_fx_bus=use_fx_bus,
+            use_master_bus=use_master_bus,
         )
         return (
             mixed_tracks,
@@ -556,7 +573,10 @@ class SpectrogramResNetEncoder(torch.nn.Module):
         self.input_batchnorm = input_batchnorm
         window_length = int(n_fft)
         self.register_buffer("window", torch.hann_window(window_length=window_length))
-        self.model = torchvision.models.resnet.resnet18(num_classes=embed_dim)
+
+        # self.model = torchvision.models.resnet.resnet18(num_classes=embed_dim)
+        self.model = Cnn14(num_classes=embed_dim, use_batchnorm=False)
+
         if self.input_batchnorm:
             self.bn = torch.nn.BatchNorm2d(3)
 
@@ -580,7 +600,7 @@ class SpectrogramResNetEncoder(torch.nn.Module):
         )
         X = X.view(bs, 1, X.shape[-2], X.shape[-1])
         X = torch.pow(X.abs() + 1e-8, 0.3)
-        X = X.repeat(1, 3, 1, 1)  # add dummy channels (3)
+        # X = X.repeat(1, 3, 1, 1)  # add dummy channels (3)
 
         # apply normalization
         if self.input_batchnorm:
@@ -629,9 +649,7 @@ class TransformerController(torch.nn.Module):
         self.master_bus_embedding = torch.nn.Parameter(torch.randn(1, 1, embed_dim))
 
         encoder_layer = torch.nn.TransformerEncoderLayer(
-            d_model=embed_dim,
-            nhead=nhead,
-            batch_first=True,
+            d_model=embed_dim, nhead=nhead, batch_first=True, dropout=0.0
         )
         self.transformer_encoder = torch.nn.TransformerEncoder(
             encoder_layer,
