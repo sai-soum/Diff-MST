@@ -145,8 +145,8 @@ class CombinedDataModule(pl.LightningDataModule):
         
     # if __name__ == "__main__":
         
-    #     train_dataset =CombinedDataset(CambridgeDataset(root_dirs=["/import/c4dm-multitrack-private/C4DM Multitrack Collection/mixing-secrets"]),
-    #                                     MedleyDBDataset(["/import/c4dm-datasets/MedleyDB_V1/V1", "/import/c4dm-datasets/MedleyDB_V2/V2"]))
+    #     train_dataset =CombinedDataset(CambridgeDataset(root_dirs=["/data/scratch/acw639/Cambridge/mixing-secrets"]),
+    #                                     MedleyDBDataset(["/data/scratch/acw639/Medley/V1", "/data/scratch/acw639/Medley/MedleyDB_V2/V2"]))
     #     print(len(train_dataset))
     #     loader = torch.utils.data.DataLoader(train_dataset,batch_size=4, shuffle=True, drop_last = True, num_workers=0)
     #     print("dataloader")
