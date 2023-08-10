@@ -26,6 +26,7 @@ class System(pl.LightningModule):
         active_compressor_step: int = 0,
         active_fx_bus_step: int = 0,
         active_master_bus_step: int = 0,
+        warmup: int = 4096,
         **kwargs,
     ) -> None:
         super().__init__()
@@ -39,6 +40,7 @@ class System(pl.LightningModule):
         self.active_compressor_step = active_compressor_step
         self.active_fx_bus_step = active_fx_bus_step
         self.active_master_bus_step = active_master_bus_step
+        self.warmup = warmup
 
         # losses for evaluation
         self.sisdr = auraloss.time.SISDRLoss()
@@ -99,6 +101,7 @@ class System(pl.LightningModule):
         use_master_bus = (
             True if self.global_step >= self.active_master_bus_step else False
         )
+
         # --------- create a random mix (on GPU, if applicable) ---------
         (
             ref_mix_tracks,
@@ -119,35 +122,38 @@ class System(pl.LightningModule):
             stereo_id=stereo_info,
             instrument_number_file=self.instrument_number_lookup,
             ke_dict=self.knowledge_engineering_dict,
-            
+            warmup=self.warmup,
         )
 
         if torch.isnan(ref_mix).any():
             print(ref_track_param_dict)
             raise ValueError("Found nan in ref_mix")
 
-        # now split into A and B sections
-        middle_idx = ref_mix.shape[-1] // 2
+        # now split into A and B sections (accounting for warmup)
+        ref_middle_idx = (tracks.shape[-1] // 2) - self.warmup
+        input_middle_idx = tracks.shape[-1] // 2
 
-        ref_mix_a = ref_mix[..., :middle_idx]
-        ref_mix_tracks_a = ref_mix_tracks[..., :middle_idx]
-        ref_mix_b = ref_mix[..., middle_idx:]
-        ref_mix_tracks_b = ref_mix_tracks[..., middle_idx:]
-        tracks_a = tracks[..., :middle_idx]
-        tracks_b = tracks[..., middle_idx:]  # not used currently
+        ref_mix_a = ref_mix[..., :ref_middle_idx]
+        ref_mix_tracks_a = ref_mix_tracks[..., :ref_middle_idx]
+
+        ref_mix_b = ref_mix[..., ref_middle_idx:]
+        ref_mix_tracks_b = ref_mix_tracks[..., ref_middle_idx:]
+
+        tracks_a = tracks[..., :input_middle_idx]
+        tracks_b = tracks[..., input_middle_idx:]  # not used currently
 
         bs, num_tracks, seq_len = tracks_a.shape
 
         #  ---- run model with tracks from section A using reference mix from section B ----
         (
-            pred_mix_tracks_a,
-            pred_mix_a,
+            pred_mix_tracks_b,
+            pred_mix_b,
             pred_track_param_dict,
-            fx_bus_param_dict,
-            ref_master_bus_param_dict,
+            pred_fx_bus_param_dict,
+            pred_master_bus_param_dict,
         ) = self.model(
-            tracks_a,
-            ref_mix_b,
+            tracks_b,
+            ref_mix_a,
             use_track_gain=True,
             use_track_panner=True,
             use_track_eq=use_track_eq,
@@ -156,22 +162,29 @@ class System(pl.LightningModule):
             use_master_bus=use_master_bus,
         )
 
-        # crop the target mix if it is longer than the predicted mix
-        if ref_mix_a.shape[-1] > pred_mix_a.shape[-1]:
-            seq_len = pred_mix_a.shape[-1]
-            ref_mix_tracks_a = causal_crop(ref_mix_tracks_a, pred_mix_a.shape[-1])
-            ref_mix_a = causal_crop(ref_mix_a, pred_mix_a.shape[-1])
+        # don't compute error on start of the audio (warmup)
+        ref_mix_b = ref_mix_b[..., self.warmup :]
+        pred_mix_b = pred_mix_b[..., self.warmup :]
+
+        # peak normalize mixes
+        gain_lin = ref_mix_b.abs().max(dim=-1, keepdim=True)[0]
+        gain_lin = gain_lin.max(dim=-2, keepdim=True)[0]
+        ref_mix_b_norm = ref_mix_b / gain_lin.clamp(min=1e-8)
+
+        gain_lin = pred_mix_b.abs().max(dim=-1, keepdim=True)[0]
+        gain_lin = gain_lin.max(dim=-2, keepdim=True)[0]
+        pred_mix_b_norm = pred_mix_b / gain_lin.clamp(min=1e-8)
 
         # compute loss on the predicted section A mix vs the ground truth reference mix
         loss = 0
         if self.use_mix_loss:
-            mix_loss = self.loss(pred_mix_a, ref_mix_a)
+            mix_loss = self.loss(pred_mix_b_norm, ref_mix_b_norm)
             loss += mix_loss
 
         if self.use_track_loss:
             track_loss = self.loss(
-                pred_mix_tracks_a.view(bs, num_tracks * 2, seq_len),
-                ref_mix_tracks_a.view(bs, num_tracks * 2, seq_len),
+                pred_mix_tracks_b.view(bs, num_tracks * 2, seq_len),
+                ref_mix_tracks_b.view(bs, num_tracks * 2, seq_len),
             )
             loss += track_loss
 
@@ -186,7 +199,7 @@ class System(pl.LightningModule):
             sync_dist=True,
         )
 
-        sisdr_error = -self.sisdr(pred_mix_a, ref_mix_a)
+        sisdr_error = -self.sisdr(pred_mix_b_norm, ref_mix_b_norm)
         # log the SI-SDR error
         self.log(
             ("train" if train else "val") + "/si-sdr",
@@ -198,7 +211,7 @@ class System(pl.LightningModule):
             sync_dist=True,
         )
 
-        mrstft_error = self.mrstft(pred_mix_a, ref_mix_a)
+        mrstft_error = self.mrstft(pred_mix_b_norm, ref_mix_b_norm)
         # log the MR-STFT error
         self.log(
             ("train" if train else "val") + "/mrstft",
@@ -213,9 +226,15 @@ class System(pl.LightningModule):
         # for plotting down the line
         data_dict = {
             "ref_mix_a": ref_mix_a.detach().float().cpu(),
-            "ref_mix_b": ref_mix_b.detach().float().cpu(),
-            "pred_mix_a": pred_mix_a.detach().float().cpu(),
+            "ref_mix_b_norm": ref_mix_b_norm.detach().float().cpu(),
+            "pred_mix_b_norm": pred_mix_b_norm.detach().float().cpu(),
             "sum_mix_a": tracks_a.sum(dim=1, keepdim=True).detach().float().cpu(),
+            "ref_track_param_dict": ref_track_param_dict,
+            "pred_track_param_dict": pred_track_param_dict,
+            "ref_fx_bus_param_dict": ref_fx_bus_param_dict,
+            "pred_fx_bus_param_dict": pred_fx_bus_param_dict,
+            "ref_master_bus_param_dict": ref_master_bus_param_dict,
+            "pred_master_bus_param_dict": pred_master_bus_param_dict,
         }
 
         return loss, data_dict

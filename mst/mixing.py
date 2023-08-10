@@ -6,6 +6,7 @@ import json
 import random
 import numpy as np
 import mst.modules
+import pyloudnorm as pyln
 from mst.modules import BasicMixConsole, AdvancedMixConsole
 
 import mst.dataloaders.medley
@@ -55,6 +56,7 @@ def naive_random_mix(
     use_fx_bus: bool = True,
     use_master_bus: bool = True,
     sample_rate: int = 44100,
+    warmup: int = 0,
     **kwargs,
 ):
     """Generate a random mix by sampling parameters uniformly on the parameter ranges.
@@ -70,10 +72,12 @@ def naive_random_mix(
     """
     bs, num_tracks, seq_len = tracks.size()
 
+    # torch.manual_seed(46)
+
     # generate random parameter tensors
     mix_params = torch.rand(bs, num_tracks, mix_console.num_track_control_params)
     mix_params = mix_params.type_as(tracks)
-    #print("mix_params in the dataset making:", mix_params)
+    # print("mix_params in the dataset making:", mix_params)
 
     fx_bus_params = torch.rand(bs, mix_console.num_fx_bus_control_params)
     fx_bus_params = fx_bus_params.type_as(tracks)
@@ -82,29 +86,34 @@ def naive_random_mix(
     master_bus_params = master_bus_params.type_as(tracks)
 
     # ------------ generate a mix of the tracks ------------
-    (
-        mixed_tracks,
-        mix,
-        track_param_dict,
-        fx_bus_param_dict,
-        master_bus_param_dict,
-    ) = mix_console(
-        tracks,
-        mix_params,
-        fx_bus_params,
-        master_bus_params,
-        use_track_gain,
-        use_track_eq,
-        use_track_compressor,
-        use_track_panner,
-        use_fx_bus,
-        use_master_bus,
-    )
+    with torch.no_grad():
+        (
+            mixed_tracks,
+            mix,
+            track_param_dict,
+            fx_bus_param_dict,
+            master_bus_param_dict,
+        ) = mix_console(
+            tracks,
+            mix_params,
+            fx_bus_params,
+            master_bus_params,
+            use_track_gain=use_track_gain,
+            use_track_eq=use_track_eq,
+            use_track_compressor=use_track_compressor,
+            use_track_panner=use_track_panner,
+            use_master_bus=use_master_bus,
+            use_fx_bus=use_fx_bus,
+        )
 
-    # normalize mix
-    gain_lin = 1 / mix.abs().max().clamp(min=1e-8)
-    mix *= gain_lin
-    mixed_tracks *= gain_lin
+        # remove warmup samples
+        mix = mix[..., warmup:]
+        mixed_tracks = mixed_tracks[..., warmup:]
+
+        # peak normalize mixes
+        gain_lin = mix.abs().max(dim=-1, keepdim=True)[0]
+        gain_lin = gain_lin.max(dim=-2, keepdim=True)[0]
+        mix /= gain_lin
 
     return mixed_tracks, mix, track_param_dict, fx_bus_param_dict, master_bus_param_dict
 
@@ -180,122 +189,113 @@ def knowledge_engineering_mix(
     # print("inst_keys:", inst_keys)
     # Set defaullt calues for gain and pan (centre panning and min gain and intialize other params to 0)
 
-    mix_params = torch.full((bs, num_tracks, mix_console.num_track_control_params), -18.0)
+    mix_params = torch.full(
+        (bs, num_tracks, mix_console.num_track_control_params), -18.0
+    )
 
     pan_params = torch.full((bs, num_tracks, 1), 0.5)
-    
-    #In case the number of parameters is more than 2, we are working with advanced console, so set each of the value to the default min from the range
+
+    # In case the number of parameters is more than 2, we are working with advanced console, so set each of the value to the default min from the range
     if mix_console.num_track_control_params > 2:
         advance_console = True
-        
 
-        eq_lowshelf_params = torch.full((bs, num_tracks, 3),0)
-        eq_lowshelf_params[:,:,1] = 100
-        eq_lowshelf_params[:,:,2] = 1.0
-        
-        eq_bandpass0_params = torch.full((bs, num_tracks, 3),0)
-        eq_bandpass0_params[:,:,1] = 500
-        eq_bandpass0_params[:,:,2] = 1.0
-        
-        eq_bandpass1_params = torch.full((bs, num_tracks, 3),0)
-        eq_bandpass1_params[:,:,1] = 3000
-        eq_bandpass1_params[:,:,2] = 1.0
-        
-        eq_bandpass2_params = torch.full((bs, num_tracks, 3),0)
-        eq_bandpass2_params[:,:,1] = 10000
-        eq_bandpass2_params[:,:,2] = 1.0
-    
-        eq_bandpass3_params = torch.full((bs, num_tracks, 3),0)
-        eq_bandpass3_params[:,:,1] = 13000
-        eq_bandpass3_params[:,:,2] = 1.0
-        
-        eq_highshelf_params = torch.full((bs, num_tracks, 3),0)
-        eq_highshelf_params[:,:,1] = 10000
-        eq_highshelf_params[:,:,2] = 1.0
-            
-        
-        comp_params = torch.full((bs, num_tracks, 6),-5)
-        comp_params[:,:,1] = 1.0
-        comp_params[:,:,2] = 10.0
-        comp_params[:,:,3] = 10.0
-        comp_params[:,:,4] = 3.0
-        comp_params[:,:,5] = 0.0
+        eq_lowshelf_params = torch.full((bs, num_tracks, 3), 0)
+        eq_lowshelf_params[:, :, 1] = 100
+        eq_lowshelf_params[:, :, 2] = 1.0
 
-        fx_send_params = torch.full((bs,num_tracks, 1),0.0)
+        eq_bandpass0_params = torch.full((bs, num_tracks, 3), 0)
+        eq_bandpass0_params[:, :, 1] = 500
+        eq_bandpass0_params[:, :, 2] = 1.0
 
-        
+        eq_bandpass1_params = torch.full((bs, num_tracks, 3), 0)
+        eq_bandpass1_params[:, :, 1] = 3000
+        eq_bandpass1_params[:, :, 2] = 1.0
+
+        eq_bandpass2_params = torch.full((bs, num_tracks, 3), 0)
+        eq_bandpass2_params[:, :, 1] = 10000
+        eq_bandpass2_params[:, :, 2] = 1.0
+
+        eq_bandpass3_params = torch.full((bs, num_tracks, 3), 0)
+        eq_bandpass3_params[:, :, 1] = 13000
+        eq_bandpass3_params[:, :, 2] = 1.0
+
+        eq_highshelf_params = torch.full((bs, num_tracks, 3), 0)
+        eq_highshelf_params[:, :, 1] = 10000
+        eq_highshelf_params[:, :, 2] = 1.0
+
+        comp_params = torch.full((bs, num_tracks, 6), -5)
+        comp_params[:, :, 1] = 1.0
+        comp_params[:, :, 2] = 10.0
+        comp_params[:, :, 3] = 10.0
+        comp_params[:, :, 4] = 3.0
+        comp_params[:, :, 5] = 0.0
+
+        fx_send_params = torch.full((bs, num_tracks, 1), 0.0)
+
         # fx_band_gain = torch.full((bs,12))
         # fx_band_decay = torch.full((bs,12))
         # fx_mix = torch.full((bs,1))
         # fx_send_db = torch.full((bs,1))
-        fx_params = torch.full((bs,mix_console.num_fx_bus_control_params),0.0)
-        #12-band gain parameters
-        fx_params[:,0:12] = 0.0
-        #12-band decay parameters
-        fx_params[:,12:24] = 0.0
-        #mix parameter
-        fx_params[:,24] = 0.0
-        
-    
-        
-        master_params = torch.full((bs, mix_console.num_master_bus_control_params),0.0)
-       #eq params
-       #low shelf
-        master_params[:,1] = 100
-        master_params[:,2] = 1.0
+        fx_params = torch.full((bs, mix_console.num_fx_bus_control_params), 0.0)
+        # 12-band gain parameters
+        fx_params[:, 0:12] = 0.0
+        # 12-band decay parameters
+        fx_params[:, 12:24] = 0.0
+        # mix parameter
+        fx_params[:, 24] = 0.0
 
-        #bandpass0
-        master_params[:,3]= 0.0
-        master_params[:,4] = 500
-        master_params[:,5] = 1.0
+        master_params = torch.full((bs, mix_console.num_master_bus_control_params), 0.0)
+        # eq params
+        # low shelf
+        master_params[:, 1] = 100
+        master_params[:, 2] = 1.0
 
-        #bandpass1
-        
-        master_params[:,6] = 0.0
-        master_params[:,7] = 3000
-        master_params[:,8] = 1.0
+        # bandpass0
+        master_params[:, 3] = 0.0
+        master_params[:, 4] = 500
+        master_params[:, 5] = 1.0
 
-        #bandpass2
-        master_params[:,9] = 0.0
-        master_params[:,10] = 10000
-        master_params[:,11] = 1.0
+        # bandpass1
 
-        #bandpass3
-        master_params[:,12] = 0.0
-        master_params[:,13] = sample_rate/2
-        master_params[:,14] = 1.0
+        master_params[:, 6] = 0.0
+        master_params[:, 7] = 3000
+        master_params[:, 8] = 1.0
 
-        #high shelf
-        master_params[:,15] = 0.0
-        master_params[:,16] = sample_rate/2
-        master_params[:,17] = 1.0
+        # bandpass2
+        master_params[:, 9] = 0.0
+        master_params[:, 10] = 10000
+        master_params[:, 11] = 1.0
 
-        #compressor
-        master_params[:,18] = -5
-        master_params[:,19] = 1.0
-        master_params[:,20] = 10.0
-        master_params[:,21] = 10.0
-        master_params[:,22] = 3.0
-        master_params[:,23] = 0.0
+        # bandpass3
+        master_params[:, 12] = 0.0
+        master_params[:, 13] = sample_rate / 2
+        master_params[:, 14] = 1.0
 
+        # high shelf
+        master_params[:, 15] = 0.0
+        master_params[:, 16] = sample_rate / 2
+        master_params[:, 17] = 1.0
 
-            
+        # compressor
+        master_params[:, 18] = -5
+        master_params[:, 19] = 1.0
+        master_params[:, 20] = 10.0
+        master_params[:, 21] = 10.0
+        master_params[:, 22] = 3.0
+        master_params[:, 23] = 0.0
 
-        
-
-   
-    #skip is set to true whenever a track is stereo as it is loaded onto two tracks from the dataset one each for left and right channel
+    # skip is set to true whenever a track is stereo as it is loaded onto two tracks from the dataset one each for left and right channel
     skip = False
-    #We work with each song in the batch seperately. It is sort of not possible to do it simultaneously for all the songs in the batch
+    # We work with each song in the batch seperately. It is sort of not possible to do it simultaneously for all the songs in the batch
     for j in range(bs):
-        #We need instrument info to set the values for parameters
+        # We need instrument info to set the values for parameters
         metadata = mdata[j]
-        #This is to check if the track is stereo or not. If the stereo_id is 1 that means the next track is basically the other channel of the same track, hence needs to have same settings.
+        # This is to check if the track is stereo or not. If the stereo_id is 1 that means the next track is basically the other channel of the same track, hence needs to have same settings.
         stereo_info = stereo_id[j, :]
 
         for i in range(len(metadata)):
             # print(stereo_info[i])
-            #if the last track happens to be stereo, then skip value need not be true.
+            # if the last track happens to be stereo, then skip value need not be true.
             if stereo_info[i] == 1:
                 if i == num_tracks - 1:
                     # print("last track")
@@ -307,14 +307,14 @@ def knowledge_engineering_mix(
             inst_key = [
                 key for key in inst_keys if metadata[i] in KE[key]["instruments"]
             ]
-            #key values as returned from dataloader are numbers, so we need to convert them to strings(instrument names and then use the info to make mixing decisions)
+            # key values as returned from dataloader are numbers, so we need to convert them to strings(instrument names and then use the info to make mixing decisions)
             if inst_key == []:
                 print("no key found for", metadata[i])
                 continue
             # print(inst_key)
             # print(random.choice(KE[inst_key[0]]['gain']))
-            #since the yaml file stores ranges, we use random function to assign a value in that range just to create some diversity
-            
+            # since the yaml file stores ranges, we use random function to assign a value in that range just to create some diversity
+
             mix_params[j, i, 0] = random.uniform(
                 KE[inst_key[0]]["gain"][0], KE[inst_key[0]]["gain"][1]
             )
@@ -326,8 +326,8 @@ def knowledge_engineering_mix(
                 # raise value error
                 print(mix_params[j, i, 0])
                 print("gain value out of range")
-            #Pan values are stored as individual numbers in the yaml file, so we use random.choice to select one of them
-            
+            # Pan values are stored as individual numbers in the yaml file, so we use random.choice to select one of them
+
             pan_params[j, i, 0] = random.choice(KE[inst_key[0]]["pan"])
             if (
                 not mix_console.param_ranges["stereo_panner"]["pan"][0]
@@ -337,7 +337,7 @@ def knowledge_engineering_mix(
                 # raise value error
                 print(pan_params[j, i, 0])
                 print("pan value out of range")
-            #If the number of parameters is more than 2, we are working with advanced console, then we apply other effects
+            # If the number of parameters is more than 2, we are working with advanced console, then we apply other effects
             if advance_console:
                 if use_track_eq == True:
                     eq_lowshelf_params[j, i, 0] = random.uniform(
@@ -345,11 +345,13 @@ def knowledge_engineering_mix(
                         KE[inst_key[0]]["eq"]["eq_lowshelf_gain"][1],
                     )
                     if (
-                        not mix_console.param_ranges["parametric_eq"]["low_shelf_gain_db"][
-                            0
-                        ]
+                        not mix_console.param_ranges["parametric_eq"][
+                            "low_shelf_gain_db"
+                        ][0]
                         <= eq_lowshelf_params[j, i, 0]
-                        <= mix_console.param_ranges["parametric_eq"]["low_shelf_gain_db"][1]
+                        <= mix_console.param_ranges["parametric_eq"][
+                            "low_shelf_gain_db"
+                        ][1]
                     ):
                         # raise value error
                         print(eq_lowshelf_params[j, i, 0])
@@ -377,13 +379,13 @@ def knowledge_engineering_mix(
                         KE[inst_key[0]]["eq"]["eq_lowshelf_q"][1],
                     )
                     if (
-                        not mix_console.param_ranges["parametric_eq"]["low_shelf_q_factor"][
-                            0
-                        ]
+                        not mix_console.param_ranges["parametric_eq"][
+                            "low_shelf_q_factor"
+                        ][0]
                         <= eq_lowshelf_params[j, i, 2]
-                        <= mix_console.param_ranges["parametric_eq"]["low_shelf_q_factor"][
-                            1
-                        ]
+                        <= mix_console.param_ranges["parametric_eq"][
+                            "low_shelf_q_factor"
+                        ][1]
                     ):
                         # raise value error
                         print(eq_lowshelf_params[j, i, 2])
@@ -394,7 +396,9 @@ def knowledge_engineering_mix(
                         KE[inst_key[0]]["eq"]["eq_band0_gain"][1],
                     )
                     if (
-                        not mix_console.param_ranges["parametric_eq"]["band0_gain_db"][0]
+                        not mix_console.param_ranges["parametric_eq"]["band0_gain_db"][
+                            0
+                        ]
                         <= eq_bandpass0_params[j, i, 0]
                         <= mix_console.param_ranges["parametric_eq"]["band0_gain_db"][1]
                     ):
@@ -407,11 +411,13 @@ def knowledge_engineering_mix(
                         KE[inst_key[0]]["eq"]["eq_band0_freq"][1],
                     )
                     if (
-                        not mix_console.param_ranges["parametric_eq"]["band0_cutoff_freq"][
-                            0
-                        ]
+                        not mix_console.param_ranges["parametric_eq"][
+                            "band0_cutoff_freq"
+                        ][0]
                         <= eq_bandpass0_params[j, i, 1]
-                        <= mix_console.param_ranges["parametric_eq"]["band0_cutoff_freq"][1]
+                        <= mix_console.param_ranges["parametric_eq"][
+                            "band0_cutoff_freq"
+                        ][1]
                     ):
                         # raise value error
                         print(eq_bandpass0_params[j, i, 1])
@@ -422,9 +428,13 @@ def knowledge_engineering_mix(
                         KE[inst_key[0]]["eq"]["eq_band0_q"][1],
                     )
                     if (
-                        not mix_console.param_ranges["parametric_eq"]["band0_q_factor"][0]
+                        not mix_console.param_ranges["parametric_eq"]["band0_q_factor"][
+                            0
+                        ]
                         <= eq_bandpass0_params[j, i, 2]
-                        <= mix_console.param_ranges["parametric_eq"]["band0_q_factor"][1]
+                        <= mix_console.param_ranges["parametric_eq"]["band0_q_factor"][
+                            1
+                        ]
                     ):
                         # raise value error
                         print(eq_bandpass0_params[j, i, 2])
@@ -435,7 +445,9 @@ def knowledge_engineering_mix(
                         KE[inst_key[0]]["eq"]["eq_band1_gain"][1],
                     )
                     if (
-                        not mix_console.param_ranges["parametric_eq"]["band1_gain_db"][0]
+                        not mix_console.param_ranges["parametric_eq"]["band1_gain_db"][
+                            0
+                        ]
                         <= eq_bandpass1_params[j, i, 0]
                         <= mix_console.param_ranges["parametric_eq"]["band1_gain_db"][1]
                     ):
@@ -448,11 +460,13 @@ def knowledge_engineering_mix(
                         KE[inst_key[0]]["eq"]["eq_band1_freq"][1],
                     )
                     if (
-                        not mix_console.param_ranges["parametric_eq"]["band1_cutoff_freq"][
-                            0
-                        ]
+                        not mix_console.param_ranges["parametric_eq"][
+                            "band1_cutoff_freq"
+                        ][0]
                         <= eq_bandpass1_params[j, i, 1]
-                        <= mix_console.param_ranges["parametric_eq"]["band1_cutoff_freq"][1]
+                        <= mix_console.param_ranges["parametric_eq"][
+                            "band1_cutoff_freq"
+                        ][1]
                     ):
                         # raise value error
                         print(eq_bandpass1_params[j, i, 1])
@@ -463,9 +477,13 @@ def knowledge_engineering_mix(
                         KE[inst_key[0]]["eq"]["eq_band1_q"][1],
                     )
                     if (
-                        not mix_console.param_ranges["parametric_eq"]["band1_q_factor"][0]
+                        not mix_console.param_ranges["parametric_eq"]["band1_q_factor"][
+                            0
+                        ]
                         <= eq_bandpass1_params[j, i, 2]
-                        <= mix_console.param_ranges["parametric_eq"]["band1_q_factor"][1]
+                        <= mix_console.param_ranges["parametric_eq"]["band1_q_factor"][
+                            1
+                        ]
                     ):
                         # raise value error
                         print(eq_bandpass1_params[j, i, 2])
@@ -476,7 +494,9 @@ def knowledge_engineering_mix(
                         KE[inst_key[0]]["eq"]["eq_band2_gain"][1],
                     )
                     if (
-                        not mix_console.param_ranges["parametric_eq"]["band2_gain_db"][0]
+                        not mix_console.param_ranges["parametric_eq"]["band2_gain_db"][
+                            0
+                        ]
                         <= eq_bandpass2_params[j, i, 0]
                         <= mix_console.param_ranges["parametric_eq"]["band2_gain_db"][1]
                     ):
@@ -489,11 +509,13 @@ def knowledge_engineering_mix(
                         KE[inst_key[0]]["eq"]["eq_band2_freq"][1],
                     )
                     if (
-                        not mix_console.param_ranges["parametric_eq"]["band2_cutoff_freq"][
-                            0
-                        ]
+                        not mix_console.param_ranges["parametric_eq"][
+                            "band2_cutoff_freq"
+                        ][0]
                         <= eq_bandpass2_params[j, i, 1]
-                        <= mix_console.param_ranges["parametric_eq"]["band2_cutoff_freq"][1]
+                        <= mix_console.param_ranges["parametric_eq"][
+                            "band2_cutoff_freq"
+                        ][1]
                     ):
                         # raise value error
                         print(eq_bandpass2_params[j, i, 1])
@@ -504,9 +526,13 @@ def knowledge_engineering_mix(
                         KE[inst_key[0]]["eq"]["eq_band2_q"][1],
                     )
                     if (
-                        not mix_console.param_ranges["parametric_eq"]["band2_q_factor"][0]
+                        not mix_console.param_ranges["parametric_eq"]["band2_q_factor"][
+                            0
+                        ]
                         <= eq_bandpass2_params[j, i, 2]
-                        <= mix_console.param_ranges["parametric_eq"]["band2_q_factor"][1]
+                        <= mix_console.param_ranges["parametric_eq"]["band2_q_factor"][
+                            1
+                        ]
                     ):
                         # raise value error
                         print(eq_bandpass2_params[j, i, 2])
@@ -517,7 +543,9 @@ def knowledge_engineering_mix(
                         KE[inst_key[0]]["eq"]["eq_band3_gain"][1],
                     )
                     if (
-                        not mix_console.param_ranges["parametric_eq"]["band3_gain_db"][0]
+                        not mix_console.param_ranges["parametric_eq"]["band3_gain_db"][
+                            0
+                        ]
                         <= eq_bandpass3_params[j, i, 0]
                         <= mix_console.param_ranges["parametric_eq"]["band3_gain_db"][1]
                     ):
@@ -529,14 +557,16 @@ def knowledge_engineering_mix(
                         KE[inst_key[0]]["eq"]["eq_band3_freq"][0],
                         KE[inst_key[0]]["eq"]["eq_band3_freq"][1],
                     )
-                    if eq_bandpass3_params[j,i,1] > sample_rate/2:
-                        eq_bandpass3_params = sample_rate/2
+                    if eq_bandpass3_params[j, i, 1] > sample_rate / 2:
+                        eq_bandpass3_params = sample_rate / 2
                     if (
-                        not mix_console.param_ranges["parametric_eq"]["band3_cutoff_freq"][
-                            0
-                        ]
+                        not mix_console.param_ranges["parametric_eq"][
+                            "band3_cutoff_freq"
+                        ][0]
                         <= eq_bandpass3_params[j, i, 1]
-                        <= mix_console.param_ranges["parametric_eq"]["band3_cutoff_freq"][1]
+                        <= mix_console.param_ranges["parametric_eq"][
+                            "band3_cutoff_freq"
+                        ][1]
                     ):
                         # raise value error
                         print(eq_bandpass3_params[j, i, 1])
@@ -547,9 +577,13 @@ def knowledge_engineering_mix(
                         KE[inst_key[0]]["eq"]["eq_band3_q"][1],
                     )
                     if (
-                        not mix_console.param_ranges["parametric_eq"]["band3_q_factor"][0]
+                        not mix_console.param_ranges["parametric_eq"]["band3_q_factor"][
+                            0
+                        ]
                         <= eq_bandpass3_params[j, i, 2]
-                        <= mix_console.param_ranges["parametric_eq"]["band3_q_factor"][1]
+                        <= mix_console.param_ranges["parametric_eq"]["band3_q_factor"][
+                            1
+                        ]
                     ):
                         # raise value error
                         print(eq_bandpass3_params[j, i, 2])
@@ -559,15 +593,15 @@ def knowledge_engineering_mix(
                         KE[inst_key[0]]["eq"]["eq_highshelf_gain"][0],
                         KE[inst_key[0]]["eq"]["eq_highshelf_gain"][1],
                     )
-                    
+
                     if (
-                        not mix_console.param_ranges["parametric_eq"]["high_shelf_gain_db"][
-                            0
-                        ]
+                        not mix_console.param_ranges["parametric_eq"][
+                            "high_shelf_gain_db"
+                        ][0]
                         <= eq_highshelf_params[j, i, 0]
-                        <= mix_console.param_ranges["parametric_eq"]["high_shelf_gain_db"][
-                            1
-                        ]
+                        <= mix_console.param_ranges["parametric_eq"][
+                            "high_shelf_gain_db"
+                        ][1]
                     ):
                         # raise value error
                         print(eq_highshelf_params[j, i, 0])
@@ -577,8 +611,8 @@ def knowledge_engineering_mix(
                         KE[inst_key[0]]["eq"]["eq_highshelf_freq"][0],
                         KE[inst_key[0]]["eq"]["eq_highshelf_freq"][1],
                     )
-                    if eq_highshelf_params[j,i,1] > sample_rate/2:
-                        eq_highshelf_params[j,i,1] = sample_rate/2
+                    if eq_highshelf_params[j, i, 1] > sample_rate / 2:
+                        eq_highshelf_params[j, i, 1] = sample_rate / 2
                     if (
                         not mix_console.param_ranges["parametric_eq"][
                             "high_shelf_cutoff_freq"
@@ -601,9 +635,9 @@ def knowledge_engineering_mix(
                             "high_shelf_q_factor"
                         ][0]
                         <= eq_highshelf_params[j, i, 2]
-                        <= mix_console.param_ranges["parametric_eq"]["high_shelf_q_factor"][
-                            1
-                        ]
+                        <= mix_console.param_ranges["parametric_eq"][
+                            "high_shelf_q_factor"
+                        ][1]
                     ):
                         # raise value error
                         print(eq_highshelf_params[j, i, 2])
@@ -683,12 +717,13 @@ def knowledge_engineering_mix(
                         # raise value error
                         print(comp_params[j, i, 5])
                         print("comp_makeup value out of range")
-                    fx_send_params[j,i,0] = random.uniform(KE["fx_bus"]["send_db"][0], KE["fx_bus"]["send_db"][1])
-                #if skip was true, implies the next track is a different channel of the same track, hence set the same values
+                    fx_send_params[j, i, 0] = random.uniform(
+                        KE["fx_bus"]["send_db"][0], KE["fx_bus"]["send_db"][1]
+                    )
+                # if skip was true, implies the next track is a different channel of the same track, hence set the same values
             if skip:
-                
                 mix_params[j, i + 1, :] = mix_params[j, i, :]
-                
+
                 pan_params[j, i + 1, :] = 1.0 - pan_params[j, i, :]
                 if use_track_eq == True:
                     eq_lowshelf_params[j, i + 1, :] = eq_lowshelf_params[j, i, :]
@@ -706,120 +741,211 @@ def knowledge_engineering_mix(
                 skip = False
         # every song has only one fx bus; so we only iterate over batch_size for this
         if use_fx_bus:
-            fx_params[j,0] = random.uniform(KE["fx_bus"]["reverb_gain"]["band_0"][0], KE["fx_bus"]["reverb_gain"]["band_0"][1])
-            fx_params[j,1] = random.uniform(KE["fx_bus"]["reverb_gain"]["band_1"][0], KE["fx_bus"]["reverb_gain"]["band_1"][1])
-            fx_params[j,2] = random.uniform(KE["fx_bus"]["reverb_gain"]["band_2"][0], KE["fx_bus"]["reverb_gain"]["band_2"][1])
-            fx_params[j,3] = random.uniform(KE["fx_bus"]["reverb_gain"]["band_3"][0], KE["fx_bus"]["reverb_gain"]["band_3"][1])
-            fx_params[j,4] = random.uniform(KE["fx_bus"]["reverb_gain"]["band_4"][0], KE["fx_bus"]["reverb_gain"]["band_4"][1])
-            fx_params[j,5] = random.uniform(KE["fx_bus"]["reverb_gain"]["band_5"][0], KE["fx_bus"]["reverb_gain"]["band_5"][1])
-            fx_params[j,6] = random.uniform(KE["fx_bus"]["reverb_gain"]["band_6"][0], KE["fx_bus"]["reverb_gain"]["band_6"][1])
-            fx_params[j,7] = random.uniform(KE["fx_bus"]["reverb_gain"]["band_7"][0], KE["fx_bus"]["reverb_gain"]["band_7"][1])
-            fx_params[j,8] = random.uniform(KE["fx_bus"]["reverb_gain"]["band_8"][0], KE["fx_bus"]["reverb_gain"]["band_8"][1])
-            fx_params[j,9] = random.uniform(KE["fx_bus"]["reverb_gain"]["band_9"][0], KE["fx_bus"]["reverb_gain"]["band_9"][1])
-            fx_params[j,10] = random.uniform(KE["fx_bus"]["reverb_gain"]["band_10"][0], KE["fx_bus"]["reverb_gain"]["band_10"][1])
-            fx_params[j,11] = random.uniform(KE["fx_bus"]["reverb_gain"]["band_11"][0], KE["fx_bus"]["reverb_gain"]["band_11"][1])
+            fx_params[j, 0] = random.uniform(
+                KE["fx_bus"]["reverb_gain"]["band_0"][0],
+                KE["fx_bus"]["reverb_gain"]["band_0"][1],
+            )
+            fx_params[j, 1] = random.uniform(
+                KE["fx_bus"]["reverb_gain"]["band_1"][0],
+                KE["fx_bus"]["reverb_gain"]["band_1"][1],
+            )
+            fx_params[j, 2] = random.uniform(
+                KE["fx_bus"]["reverb_gain"]["band_2"][0],
+                KE["fx_bus"]["reverb_gain"]["band_2"][1],
+            )
+            fx_params[j, 3] = random.uniform(
+                KE["fx_bus"]["reverb_gain"]["band_3"][0],
+                KE["fx_bus"]["reverb_gain"]["band_3"][1],
+            )
+            fx_params[j, 4] = random.uniform(
+                KE["fx_bus"]["reverb_gain"]["band_4"][0],
+                KE["fx_bus"]["reverb_gain"]["band_4"][1],
+            )
+            fx_params[j, 5] = random.uniform(
+                KE["fx_bus"]["reverb_gain"]["band_5"][0],
+                KE["fx_bus"]["reverb_gain"]["band_5"][1],
+            )
+            fx_params[j, 6] = random.uniform(
+                KE["fx_bus"]["reverb_gain"]["band_6"][0],
+                KE["fx_bus"]["reverb_gain"]["band_6"][1],
+            )
+            fx_params[j, 7] = random.uniform(
+                KE["fx_bus"]["reverb_gain"]["band_7"][0],
+                KE["fx_bus"]["reverb_gain"]["band_7"][1],
+            )
+            fx_params[j, 8] = random.uniform(
+                KE["fx_bus"]["reverb_gain"]["band_8"][0],
+                KE["fx_bus"]["reverb_gain"]["band_8"][1],
+            )
+            fx_params[j, 9] = random.uniform(
+                KE["fx_bus"]["reverb_gain"]["band_9"][0],
+                KE["fx_bus"]["reverb_gain"]["band_9"][1],
+            )
+            fx_params[j, 10] = random.uniform(
+                KE["fx_bus"]["reverb_gain"]["band_10"][0],
+                KE["fx_bus"]["reverb_gain"]["band_10"][1],
+            )
+            fx_params[j, 11] = random.uniform(
+                KE["fx_bus"]["reverb_gain"]["band_11"][0],
+                KE["fx_bus"]["reverb_gain"]["band_11"][1],
+            )
 
-            fx_params[j,12] = random.uniform(KE["fx_bus"]["reverb_decay"]["band_0"][0], KE["fx_bus"]["reverb_decay"]["band_0"][1])
-            fx_params[j,12] = random.uniform(KE["fx_bus"]["reverb_decay"]["band_1"][0], KE["fx_bus"]["reverb_decay"]["band_1"][1])
-            fx_params[j,14] = random.uniform(KE["fx_bus"]["reverb_decay"]["band_2"][0], KE["fx_bus"]["reverb_decay"]["band_2"][1])
-            fx_params[j,15] = random.uniform(KE["fx_bus"]["reverb_decay"]["band_3"][0], KE["fx_bus"]["reverb_decay"]["band_3"][1])
-            fx_params[j,16] = random.uniform(KE["fx_bus"]["reverb_decay"]["band_4"][0], KE["fx_bus"]["reverb_decay"]["band_4"][1])
-            fx_params[j,17] = random.uniform(KE["fx_bus"]["reverb_decay"]["band_5"][0], KE["fx_bus"]["reverb_decay"]["band_5"][1])
-            fx_params[j,18] = random.uniform(KE["fx_bus"]["reverb_decay"]["band_6"][0], KE["fx_bus"]["reverb_decay"]["band_6"][1])
-            fx_params[j,19] = random.uniform(KE["fx_bus"]["reverb_decay"]["band_7"][0], KE["fx_bus"]["reverb_decay"]["band_7"][1])
-            fx_params[j,20] = random.uniform(KE["fx_bus"]["reverb_decay"]["band_8"][0], KE["fx_bus"]["reverb_decay"]["band_8"][1])
-            fx_params[j,21] = random.uniform(KE["fx_bus"]["reverb_decay"]["band_9"][0], KE["fx_bus"]["reverb_decay"]["band_9"][1])
-            fx_params[j,22] = random.uniform(KE["fx_bus"]["reverb_decay"]["band_10"][0], KE["fx_bus"]["reverb_decay"]["band_10"][1])
-            fx_params[j,23] = random.uniform(KE["fx_bus"]["reverb_decay"]["band_11"][0], KE["fx_bus"]["reverb_decay"]["band_11"][1])
+            fx_params[j, 12] = random.uniform(
+                KE["fx_bus"]["reverb_decay"]["band_0"][0],
+                KE["fx_bus"]["reverb_decay"]["band_0"][1],
+            )
+            fx_params[j, 12] = random.uniform(
+                KE["fx_bus"]["reverb_decay"]["band_1"][0],
+                KE["fx_bus"]["reverb_decay"]["band_1"][1],
+            )
+            fx_params[j, 14] = random.uniform(
+                KE["fx_bus"]["reverb_decay"]["band_2"][0],
+                KE["fx_bus"]["reverb_decay"]["band_2"][1],
+            )
+            fx_params[j, 15] = random.uniform(
+                KE["fx_bus"]["reverb_decay"]["band_3"][0],
+                KE["fx_bus"]["reverb_decay"]["band_3"][1],
+            )
+            fx_params[j, 16] = random.uniform(
+                KE["fx_bus"]["reverb_decay"]["band_4"][0],
+                KE["fx_bus"]["reverb_decay"]["band_4"][1],
+            )
+            fx_params[j, 17] = random.uniform(
+                KE["fx_bus"]["reverb_decay"]["band_5"][0],
+                KE["fx_bus"]["reverb_decay"]["band_5"][1],
+            )
+            fx_params[j, 18] = random.uniform(
+                KE["fx_bus"]["reverb_decay"]["band_6"][0],
+                KE["fx_bus"]["reverb_decay"]["band_6"][1],
+            )
+            fx_params[j, 19] = random.uniform(
+                KE["fx_bus"]["reverb_decay"]["band_7"][0],
+                KE["fx_bus"]["reverb_decay"]["band_7"][1],
+            )
+            fx_params[j, 20] = random.uniform(
+                KE["fx_bus"]["reverb_decay"]["band_8"][0],
+                KE["fx_bus"]["reverb_decay"]["band_8"][1],
+            )
+            fx_params[j, 21] = random.uniform(
+                KE["fx_bus"]["reverb_decay"]["band_9"][0],
+                KE["fx_bus"]["reverb_decay"]["band_9"][1],
+            )
+            fx_params[j, 22] = random.uniform(
+                KE["fx_bus"]["reverb_decay"]["band_10"][0],
+                KE["fx_bus"]["reverb_decay"]["band_10"][1],
+            )
+            fx_params[j, 23] = random.uniform(
+                KE["fx_bus"]["reverb_decay"]["band_11"][0],
+                KE["fx_bus"]["reverb_decay"]["band_11"][1],
+            )
 
-            fx_params[j,24] = random.uniform(KE["fx_bus"]["mix"][0], KE["fx_bus"]["mix"][1])
-            
+            fx_params[j, 24] = random.uniform(
+                KE["fx_bus"]["mix"][0], KE["fx_bus"]["mix"][1]
+            )
 
         if use_master_bus:
-            master_params[j,0] = random.uniform(
-                KE["master_bus"]["eq"]["eq_lowshelf_gain"][0], KE["master_bus"]["eq"]["eq_lowshelf_gain"][1]
+            master_params[j, 0] = random.uniform(
+                KE["master_bus"]["eq"]["eq_lowshelf_gain"][0],
+                KE["master_bus"]["eq"]["eq_lowshelf_gain"][1],
             )
-            master_params[j,1] = random.uniform(
-                KE["master_bus"]["eq"]["eq_lowshelf_freq"][0], KE["master_bus"]["eq"]["eq_lowshelf_freq"][1]
+            master_params[j, 1] = random.uniform(
+                KE["master_bus"]["eq"]["eq_lowshelf_freq"][0],
+                KE["master_bus"]["eq"]["eq_lowshelf_freq"][1],
             )
-            master_params[j,2] = random.uniform(
-                KE["master_bus"]["eq"]["eq_lowshelf_q"][0], KE["master_bus"]["eq"]["eq_lowshelf_q"][1]
+            master_params[j, 2] = random.uniform(
+                KE["master_bus"]["eq"]["eq_lowshelf_q"][0],
+                KE["master_bus"]["eq"]["eq_lowshelf_q"][1],
             )
-            
-            master_params[j,3] = random.uniform(
-                KE["master_bus"]["eq"]["eq_band0_gain"][0], KE["master_bus"]["eq"]["eq_band0_gain"][1]
-            )
-            master_params[j,4] =random.uniform(
-                KE["master_bus"]["eq"]["eq_band0_freq"][0], KE["master_bus"]["eq"]["eq_band0_freq"][1]
-            )
-            master_params[j,5] =random.uniform(
-                KE["master_bus"]["eq"]["eq_band0_q"][0], KE["master_bus"]["eq"]["eq_band0_q"][1]
-            )
-            
-            
-            master_params[j,6] = random.uniform(
-                KE["master_bus"]["eq"]["eq_band1_gain"][0], KE["master_bus"]["eq"]["eq_band1_gain"][1]
-            )
-            master_params[j,7] =random.uniform(
-                KE["master_bus"]["eq"]["eq_band1_freq"][0], KE["master_bus"]["eq"]["eq_band1_freq"][1]
-            )
-            master_params[j,8] = random.uniform(
-                KE["master_bus"]["eq"]["eq_band1_q"][0], KE["master_bus"]["eq"]["eq_band1_q"][1]
-            )
-            
-            
-            master_params[j,9] = random.uniform(
-                KE["master_bus"]["eq"]["eq_band2_gain"][0], KE["master_bus"]["eq"]["eq_band2_gain"][1]
-            )
-            master_params[j,10] = random.uniform(
-                KE["master_bus"]["eq"]["eq_band2_freq"][0], KE["master_bus"]["eq"]["eq_band2_freq"][1]
-            )
-            master_params[j,11] = random.uniform(
-                KE["master_bus"]["eq"]["eq_band2_q"][0], KE["master_bus"]["eq"]["eq_band2_q"][1]
-            )
-        
-            
-            master_params[j,12] = random.uniform(
-                KE["master_bus"]["eq"]["eq_band3_gain"][0], KE["master_bus"]["eq"]["eq_band3_gain"][1])
-            master_params[j,13] = random.uniform(
-                KE["master_bus"]["eq"]["eq_band3_freq"][0], KE["master_bus"]["eq"]["eq_band3_freq"][1])
-            master_params[j,14] = random.uniform(
-                KE["master_bus"]["eq"]["eq_band3_q"][0], KE["master_bus"]["eq"]["eq_band3_q"][1])
-            
-            
-            master_params[j,15] = random.uniform(
-                KE["master_bus"]["eq"]["eq_highshelf_gain"][0], KE["master_bus"]["eq"]["eq_highshelf_gain"][1])
-            master_params[j,16] = random.uniform(
-                KE["master_bus"]["eq"]["eq_highshelf_freq"][0], KE["master_bus"]["eq"]["eq_highshelf_freq"][1])
-            master_params[j,17] = random.uniform(
-                KE["master_bus"]["eq"]["eq_highshelf_q"][0], KE["master_bus"]["eq"]["eq_highshelf_q"][1])
 
-            
-            master_params[j,18] = random.uniform(KE["master_bus"]["compressor"]["threshold_db"][0],
-                    KE["master_bus"]["compressor"]["threshold_db"][1],
-                )
-            master_params[j,19]  = random.uniform(
-                    KE["master_bus"]["compressor"]["ratio"][0],
-                    KE["master_bus"]["compressor"]["ratio"][1],
-                )
-            master_params[j,20] = random.uniform(
-                    KE["master_bus"]["compressor"]["attack_ms"][0],
-                    KE["master_bus"]["compressor"]["attack_ms"][1],
-                )
-            master_params[j,21] = random.uniform(
-                    KE["master_bus"]["compressor"]["release_ms"][0],
-                    KE["master_bus"]["compressor"]["release_ms"][1],
-                )
-            master_params[j,22] = random.uniform(
-                    KE["master_bus"]["compressor"]["knee_db"][0],
-                    KE["master_bus"]["compressor"]["knee_db"][1],
-                )
-            master_params[j,23] =random.uniform(
-                    KE["master_bus"]["compressor"]["makeup_gain_db"][0],
-                    KE["master_bus"]["compressor"]["makeup_gain_db"][1],
-                )
+            master_params[j, 3] = random.uniform(
+                KE["master_bus"]["eq"]["eq_band0_gain"][0],
+                KE["master_bus"]["eq"]["eq_band0_gain"][1],
+            )
+            master_params[j, 4] = random.uniform(
+                KE["master_bus"]["eq"]["eq_band0_freq"][0],
+                KE["master_bus"]["eq"]["eq_band0_freq"][1],
+            )
+            master_params[j, 5] = random.uniform(
+                KE["master_bus"]["eq"]["eq_band0_q"][0],
+                KE["master_bus"]["eq"]["eq_band0_q"][1],
+            )
 
+            master_params[j, 6] = random.uniform(
+                KE["master_bus"]["eq"]["eq_band1_gain"][0],
+                KE["master_bus"]["eq"]["eq_band1_gain"][1],
+            )
+            master_params[j, 7] = random.uniform(
+                KE["master_bus"]["eq"]["eq_band1_freq"][0],
+                KE["master_bus"]["eq"]["eq_band1_freq"][1],
+            )
+            master_params[j, 8] = random.uniform(
+                KE["master_bus"]["eq"]["eq_band1_q"][0],
+                KE["master_bus"]["eq"]["eq_band1_q"][1],
+            )
 
+            master_params[j, 9] = random.uniform(
+                KE["master_bus"]["eq"]["eq_band2_gain"][0],
+                KE["master_bus"]["eq"]["eq_band2_gain"][1],
+            )
+            master_params[j, 10] = random.uniform(
+                KE["master_bus"]["eq"]["eq_band2_freq"][0],
+                KE["master_bus"]["eq"]["eq_band2_freq"][1],
+            )
+            master_params[j, 11] = random.uniform(
+                KE["master_bus"]["eq"]["eq_band2_q"][0],
+                KE["master_bus"]["eq"]["eq_band2_q"][1],
+            )
+
+            master_params[j, 12] = random.uniform(
+                KE["master_bus"]["eq"]["eq_band3_gain"][0],
+                KE["master_bus"]["eq"]["eq_band3_gain"][1],
+            )
+            master_params[j, 13] = random.uniform(
+                KE["master_bus"]["eq"]["eq_band3_freq"][0],
+                KE["master_bus"]["eq"]["eq_band3_freq"][1],
+            )
+            master_params[j, 14] = random.uniform(
+                KE["master_bus"]["eq"]["eq_band3_q"][0],
+                KE["master_bus"]["eq"]["eq_band3_q"][1],
+            )
+
+            master_params[j, 15] = random.uniform(
+                KE["master_bus"]["eq"]["eq_highshelf_gain"][0],
+                KE["master_bus"]["eq"]["eq_highshelf_gain"][1],
+            )
+            master_params[j, 16] = random.uniform(
+                KE["master_bus"]["eq"]["eq_highshelf_freq"][0],
+                KE["master_bus"]["eq"]["eq_highshelf_freq"][1],
+            )
+            master_params[j, 17] = random.uniform(
+                KE["master_bus"]["eq"]["eq_highshelf_q"][0],
+                KE["master_bus"]["eq"]["eq_highshelf_q"][1],
+            )
+
+            master_params[j, 18] = random.uniform(
+                KE["master_bus"]["compressor"]["threshold_db"][0],
+                KE["master_bus"]["compressor"]["threshold_db"][1],
+            )
+            master_params[j, 19] = random.uniform(
+                KE["master_bus"]["compressor"]["ratio"][0],
+                KE["master_bus"]["compressor"]["ratio"][1],
+            )
+            master_params[j, 20] = random.uniform(
+                KE["master_bus"]["compressor"]["attack_ms"][0],
+                KE["master_bus"]["compressor"]["attack_ms"][1],
+            )
+            master_params[j, 21] = random.uniform(
+                KE["master_bus"]["compressor"]["release_ms"][0],
+                KE["master_bus"]["compressor"]["release_ms"][1],
+            )
+            master_params[j, 22] = random.uniform(
+                KE["master_bus"]["compressor"]["knee_db"][0],
+                KE["master_bus"]["compressor"]["knee_db"][1],
+            )
+            master_params[j, 23] = random.uniform(
+                KE["master_bus"]["compressor"]["makeup_gain_db"][0],
+                KE["master_bus"]["compressor"]["makeup_gain_db"][1],
+            )
 
     if mix_console.num_track_control_params == 2:
         mix_params[:, :, 1] = pan_params[:, :, 0]
@@ -847,7 +973,7 @@ def knowledge_engineering_mix(
         mix_params[:, :, 19:25] = comp_params
         mix_params[:, :, 26] = fx_send_params[:, :, 0]
         mix_params = mix_params.type_as(tracks)
-        #fx_send_params= fx_send_params.type_as(tracks)
+        # fx_send_params= fx_send_params.type_as(tracks)
         track_param_dict = {
             "input_gain": {
                 "gain_db": mix_params[..., 0],
@@ -881,76 +1007,73 @@ def knowledge_engineering_mix(
                 "knee_db": mix_params[..., 23],
                 "makeup_gain_db": mix_params[..., 24],
             },
-       
             "fx_bus": {"send_db": mix_params[..., 26]},
             "stereo_panner": {
                 "pan": mix_params[..., 25],
             },
         }
-        fx_params=fx_params.type_as(tracks)
+        fx_params = fx_params.type_as(tracks)
         fx_bus_param_dict = {
             "reverberation": {
-                "band0_gain": fx_params[...,0],
-                "band1_gain": fx_params[...,1],
-                "band2_gain": fx_params[...,2],
-                "band3_gain": fx_params[...,3],
-                "band4_gain": fx_params[...,4],
-                "band5_gain": fx_params[...,5],
-                "band6_gain": fx_params[...,6],
-                "band7_gain": fx_params[...,7],
-                "band8_gain": fx_params[...,8],
-                "band9_gain": fx_params[...,9],
-                "band10_gain": fx_params[...,10],
-                "band11_gain": fx_params[...,11],
-                "band0_decay": fx_params[...,12],
-                "band1_decay":fx_params[...,13],
-                "band2_decay": fx_params[...,14],
-                "band3_decay": fx_params[...,15],
-                "band4_decay": fx_params[...,16],
-                "band5_decay": fx_params[...,17],
-                "band6_decay": fx_params[...,18],
-                "band7_decay": fx_params[...,19],
-                "band8_decay": fx_params[...,20],
-                "band9_decay": fx_params[...,21],
-                "band10_decay": fx_params[...,22],
-                "band11_decay": fx_params[...,23],
-                "mix": fx_params[...,24],
-            }}
+                "band0_gain": fx_params[..., 0],
+                "band1_gain": fx_params[..., 1],
+                "band2_gain": fx_params[..., 2],
+                "band3_gain": fx_params[..., 3],
+                "band4_gain": fx_params[..., 4],
+                "band5_gain": fx_params[..., 5],
+                "band6_gain": fx_params[..., 6],
+                "band7_gain": fx_params[..., 7],
+                "band8_gain": fx_params[..., 8],
+                "band9_gain": fx_params[..., 9],
+                "band10_gain": fx_params[..., 10],
+                "band11_gain": fx_params[..., 11],
+                "band0_decay": fx_params[..., 12],
+                "band1_decay": fx_params[..., 13],
+                "band2_decay": fx_params[..., 14],
+                "band3_decay": fx_params[..., 15],
+                "band4_decay": fx_params[..., 16],
+                "band5_decay": fx_params[..., 17],
+                "band6_decay": fx_params[..., 18],
+                "band7_decay": fx_params[..., 19],
+                "band8_decay": fx_params[..., 20],
+                "band9_decay": fx_params[..., 21],
+                "band10_decay": fx_params[..., 22],
+                "band11_decay": fx_params[..., 23],
+                "mix": fx_params[..., 24],
+            }
+        }
         master_params = master_params.type_as(tracks)
         master_bus_param_dict = {
             "parametric_eq": {
-                "low_shelf_gain_db": master_params[...,0],
-                "low_shelf_cutoff_freq": master_params[...,1],
-                "low_shelf_q_factor": master_params[...,2],
-                "band0_gain_db": master_params[...,3],
-                "band0_cutoff_freq": master_params[...,4],
-                "band0_q_factor": master_params[...,5],
-                "band1_gain_db": master_params[...,6],
-                "band1_cutoff_freq": master_params[...,7],
-                "band1_q_factor":master_params[...,8],
-                "band2_gain_db": master_params[...,9],
-                "band2_cutoff_freq": master_params[...,10],
-                "band2_q_factor": master_params[...,11],
-                "band3_gain_db": master_params[...,12],
-                "band3_cutoff_freq": master_params[...,13],
-                "band3_q_factor": master_params[...,14],
-                "high_shelf_gain_db": master_params[...,15],
-                "high_shelf_cutoff_freq":master_params[...,16],
-                "high_shelf_q_factor": master_params[...,17]
+                "low_shelf_gain_db": master_params[..., 0],
+                "low_shelf_cutoff_freq": master_params[..., 1],
+                "low_shelf_q_factor": master_params[..., 2],
+                "band0_gain_db": master_params[..., 3],
+                "band0_cutoff_freq": master_params[..., 4],
+                "band0_q_factor": master_params[..., 5],
+                "band1_gain_db": master_params[..., 6],
+                "band1_cutoff_freq": master_params[..., 7],
+                "band1_q_factor": master_params[..., 8],
+                "band2_gain_db": master_params[..., 9],
+                "band2_cutoff_freq": master_params[..., 10],
+                "band2_q_factor": master_params[..., 11],
+                "band3_gain_db": master_params[..., 12],
+                "band3_cutoff_freq": master_params[..., 13],
+                "band3_q_factor": master_params[..., 14],
+                "high_shelf_gain_db": master_params[..., 15],
+                "high_shelf_cutoff_freq": master_params[..., 16],
+                "high_shelf_q_factor": master_params[..., 17],
             },
             # release and attack time must be the same
             "compressor": {
-                "threshold_db": master_params[...,18],
-                "ratio": master_params[...,19],
-                "attack_ms": master_params[...,20],
-                "release_ms": master_params[...,21],
-                "knee_db": master_params[...,22],
-                "makeup_gain_db": master_params[...,23],
+                "threshold_db": master_params[..., 18],
+                "ratio": master_params[..., 19],
+                "attack_ms": master_params[..., 20],
+                "release_ms": master_params[..., 21],
+                "knee_db": master_params[..., 22],
+                "makeup_gain_db": master_params[..., 23],
             },
         }
-    
-
-
 
     # check param_dict for out of range parameters
     for effect_name, effect_param_dict in track_param_dict.items():
@@ -961,20 +1084,21 @@ def knowledge_engineering_mix(
             if param_val.max() > mix_console.param_ranges[effect_name][param_name][1]:
                 mix_console.param_ranges[effect_name][param_name][1]
                 print(
-                    f"{param_name} = out of range.  ({param_val.min()},{param_val.max()})" 
+                    f"{param_name} = out of range.  ({param_val.min()},{param_val.max()})"
                 )
-                
-    
-    mixed_tracks , mix = mix_console.forward_mix_console(tracks, 
-                                          track_param_dict, 
-                                          fx_bus_param_dict, 
-                                          master_bus_param_dict, 
-                                          use_track_gain, 
-                                          use_track_eq, 
-                                          use_track_compressor, 
-                                          use_track_panner, 
-                                          use_fx_bus, 
-                                          use_master_bus)
+
+    mixed_tracks, mix = mix_console.forward_mix_console(
+        tracks,
+        track_param_dict,
+        fx_bus_param_dict,
+        master_bus_param_dict,
+        use_track_gain,
+        use_track_eq,
+        use_track_compressor,
+        use_track_panner,
+        use_fx_bus,
+        use_master_bus,
+    )
     # peak normalize the mix
     # mix /= mix.abs().max().clamp(min=1e-8)
 
@@ -1005,7 +1129,7 @@ def knowledge_engineering_mix(
 
 #         # print(instrument_id)
 #         # print(stereo)
-        
+
 #         # naive_mix, param_dict = naive_random_mix(track, mix_console)
 #         #print("naive_mix", naive_mix.size())
 #         mix, param_dict = knowledge_engineering_mix(track, mix_console, instrument_id, stereo)
@@ -1015,12 +1139,12 @@ def knowledge_engineering_mix(
 #             print(param_dict)
 #         # track = track.view(batch_size,num_tracks,1, seq_len)
 #         # #print("track", track.size())
-        
-        
+
+
 #         # sum_mix =  torch.sum(track, dim=1)
 #         # # print("mix", mix.size())
 #         # #print("sum_mix", sum_mix.size())
-       
+
 #         # if not os.path.exists("mix_KE_adv"):
 #         #     os.mkdir("mix_KE_adv")
 #         # save_dir = "mix_KE_adv/"
