@@ -7,6 +7,7 @@ import torchaudio
 import numpy as np
 import pyloudnorm as pyln
 import pytorch_lightning as pl
+import yaml
 from yaml import load, dump
 from yaml import Loader, Dumper
 import json
@@ -95,7 +96,8 @@ class CambridgeDataset(torch.utils.data.Dataset):
         min_tracks: int = 4,
         max_tracks: int = 20,
         length: float = 524288,
-        indices: List[int] = [0,150],
+        subset: str = "train",
+        dataset_split_yaml: str = "./data/cambridge_split.yaml",
         buffer_reload_rate: int = 4000,
         num_examples_per_epoch: int = 10000,
         buffer_size_gb: float = 0.01,
@@ -109,11 +111,12 @@ class CambridgeDataset(torch.utils.data.Dataset):
         self.buffer_reload_rate = buffer_reload_rate
         self.num_examples_per_epoch = num_examples_per_epoch
         self.buffer_size_gb = buffer_size_gb
+        self.subset = subset
         self.buffer_frames = (
             self.length
         )  # load examples with same size as the train length
         self.target_track_lufs_db = target_track_lufs_db
-        self.indices = indices
+        
         self.meter = pyln.Meter(sample_rate)  # create BS.1770 meter
 
         self.mix_dirs = []
@@ -123,14 +126,21 @@ class CambridgeDataset(torch.utils.data.Dataset):
        
         
         self.mix_dirs = []
-        paths = glob.glob(os.path.join(root_dirs[0], "*"))
-        print(f"Found {len(paths)} mix directories in {root_dirs}.")
-        for path in paths:
+        with open(dataset_split_yaml, "r") as f:
+            self.cambridge_split = yaml.safe_load(f)
+        all_paths = glob.glob(os.path.join(root_dirs[0], "*"))
+        print(f"Found {len(all_paths)} mix directories in {root_dirs}.")
+        subset_dir = []
+        for paths in all_paths:
+            if os.path.basename(paths) in self.cambridge_split[self.subset]:
+                subset_dir.append(paths)
+        self.paths = subset_dir
+        for paths in all_paths:
             
-            if os.path.basename(path) == "00275":
+            if os.path.basename(paths) == "00275":
                 continue
             #print(os.path.basename(path))
-            song_dir = os.path.join(path,"tracks/")
+            song_dir = os.path.join(paths,"tracks/")
             #print(song_dir)
             raw_tracks_dir = [folder for folder in os.listdir(song_dir) if os.path.isdir(os.path.join(song_dir, folder))]
             #print(raw_tracks_dir)
@@ -141,20 +151,23 @@ class CambridgeDataset(torch.utils.data.Dataset):
                 #print("No tracks found in " + raw_tracks_dir)
                 continue
             else:
+                
                 #print(raw_tracks_dir)
                 mix_dirs = raw_tracks_dir
                 raw_tracks = glob.glob(os.path.join(raw_tracks_dir, "*.wav"))
 
-                #print(f"Found {len(raw_tracks)} tracks in {root_dirs[0]}.")
-                if len(raw_tracks)>=self.min_tracks and len(raw_tracks)<=self.max_tracks:   
+                # #print(f"Found {len(raw_tracks)} tracks in {root_dirs[0]}.")
+                if len(raw_tracks)>= self.max_tracks:   
                     self.mix_dirs.append(mix_dirs)
-                    
+                
+        
+        print(f"Found {len(self.mix_dirs)} mix directories in {self.subset} set.")
         #print(f"{len(self.mix_dirs)} with at least {self.min_tracks} tracks and at most {self.max_tracks} tracks.")
-        self.mix_dirs = self.mix_dirs[self.indices[0]:self.indices[1]]
-        if len(self.mix_dirs) == 0:
-            print("No songs found in this range")
-            exit()
-        print(f"{len(self.mix_dirs)} directories found with at least {self.min_tracks} tracks and at most {self.max_tracks} tracks.")
+        #self.mix_dirs = self.mix_dirs[self.indices[0]:self.indices[1]]
+        # if len(self.mix_dirs) == 0:
+        #     print("No songs found in this range")
+        #     exit()
+        #print(f"{len(self.mix_dirs)} directories found with at least {self.min_tracks} tracks and at most {self.max_tracks} tracks.")
         self.instrument_ids = json.load(open("/homes/ssv02/Diff-MST/data/instrument_name2id.json"))
             # print(raw_tracks_dir)
             
@@ -182,21 +195,43 @@ class CambridgeDataset(torch.utils.data.Dataset):
             #mix_id = os.path.basename(mix_dir)
             #print(mix_id)
             track_filepaths = glob.glob(os.path.join(mix_dir, "*.wav"))
+            #print(len(track_filepaths))
+            #print(track_filepaths)
             #print(os.path.basename(mix_dir))
             metadata_track = extract_metadata(track_filepaths)
             
             
             num_frames = torchaudio.info(track_filepaths[0]).num_frames
+
             if num_frames < self.length:
                 continue
             #print(num_frames)
-            offset = np.random.randint(0, num_frames - self.buffer_frames - 1)
+            silent = True
+            counter = 0
+            
+            while silent:
+
+                offset = np.random.randint(0, num_frames - self.buffer_frames - 1)
+                track, sr = torchaudio.load(
+                    track_filepaths[0],
+                    frame_offset=offset,
+                    num_frames=self.buffer_frames,
+                )
+                if (track**2).mean() > 1e-3:
+                    silent = False
+
+                counter += 1
+                if counter > 5: 
+                    break
+        
             tracks = []
-            solo_tracks = []
+            #solo_tracks = []
             stereo_info = []
-            silent = True 
+            #silent = True 
             metadata = []
             stereo = 0
+            track_idx = 0
+
             for tidx, track_filepath in enumerate(track_filepaths):
                 # load the track
                 track, sr = torchaudio.load(
@@ -204,14 +239,26 @@ class CambridgeDataset(torch.utils.data.Dataset):
                     frame_offset=offset,
                     num_frames=self.buffer_frames,
                 )
-                solo_track = track
-                if solo_track.size()[0] == 2:
-                    #print("stereo", tidx)
-                    solo_track = stereo_to_mono(solo_track)
-                    stereo = 1
+                # if (track**2).mean() > 1e-3:
+                #     silent = False
+                
+                # if silent:
+                #     continue
+                #we mono the track and save it to solotrack to do a mono sum later to see if the art in song is silent
+                # solo_track = track
+                # if solo_track.size()[0] == 2:
+                #     #print("stereo", tidx)
+                #     solo_track = stereo_to_mono(solo_track)
+                #     stereo = 1
 
                 if track.shape[-1] != self.buffer_frames:
                     continue
+
+                if track.size()[0] == 2:
+                    stereo = 1
+                    track_idx = track_idx + 2
+                else:
+                    track_idx = track_idx + 1
                 #print(os.path.basename(track_filepath))
                 #
                 # print(track.shape)
@@ -229,10 +276,24 @@ class CambridgeDataset(torch.utils.data.Dataset):
                 #     continue
 
 
-               
+                # loudness normalization
+                track_lufs_db = self.meter.integrated_loudness(
+                    track.permute(1, 0).numpy()
+                )
+
+                if track_lufs_db < -48.0 or track_lufs_db == float("-inf"):
+                    continue
+
+                delta_lufs_db = torch.tensor(
+                    [self.target_track_lufs_db - track_lufs_db]
+                ).float()
+                gain_lin = 10.0 ** (delta_lufs_db.clamp(-120, 40.0) / 20.0)
+                track = gain_lin * track
+
 
                 tracks.append(track)
-                solo_tracks.append(solo_track)
+                
+                #solo_tracks.append(solo_track)
                 
                 if stereo:
                     stereo_info.append(stereo)
@@ -243,38 +304,12 @@ class CambridgeDataset(torch.utils.data.Dataset):
                 else:
                     metadata.append(instrument)
                     stereo_info.append(stereo)
-
-            
-            
-            y = torch.stack(solo_tracks)
-            #print(y.shape)
-            y = y.sum(0)
-            #print(y.shape)
-            #print(type(tracks))
-
-            if (y**2).mean() > 1e-3:
-                    silent = False
                 
-            if silent:
-                continue
-
-        
-            else:
-                # loudness normalization
-                track_lufs_db = self.meter.integrated_loudness(y.permute(1, 0).numpy())
-
-                if track_lufs_db == float("-inf"):
-                    continue
-
-                delta_lufs_db = torch.tensor(
-                    [self.target_track_lufs_db - track_lufs_db]
-                ).float()
-                gain_lin = 10.0 ** (delta_lufs_db.clamp(-120, 40.0) / 20.0)
-                tracks = [gain_lin * track for track in tracks]
-
                 nbytes = track.element_size() * track.nelement()
                 nbytes_loaded += nbytes
 
+                if track_idx >= self.max_tracks:
+                    break
             
 
             # store this example
@@ -355,40 +390,56 @@ class CambridgeDataset(torch.utils.data.Dataset):
         return tracks, instrument_id, stereo_info
 
 
+
 class CambridgeDataModule(pl.LightningDataModule):
     def __init__(
         self,
         root_dirs: List[str],
         length: int,
+        min_tracks: int = 4,
+        max_tracks: int = 20,
         num_workers: int = 4,
         batch_size: int = 16,
         train_buffer_size_gb: float = 0.01,
         val_buffer_size_gb: float = 0.1,
+        num_examples_per_epoch: int = 10000,
     ):
         super().__init__()
         self.save_hyperparameters()
+        self.current_epoch = -1
+        self.max_tracks = 1
 
     def setup(self, stage=None):
+        pass
 
-        if stage == "fit":
-            self.train_dataset = CambridgeDataset(
-                root_dirs=self.hparams.root_dirs,
-                indices=[0,150],
-                length=self.hparams.length,
-                buffer_size_gb=self.hparams.train_buffer_size_gb,
-                num_examples_per_epoch=10000,
-            )
-
-        if stage == "validate" or stage == "fit":
-            self.val_dataset = CambridgeDataset(
-                root_dirs=self.hparams.root_dirs,
-                indices=[150,200],
-                length=self.hparams.length,
-                buffer_size_gb=self.hparams.val_buffer_size_gb,
-                num_examples_per_epoch=1000,
-            )
 
     def train_dataloader(self):
+         # count number of times setup is called
+        self.current_epoch += 1
+
+        # set the max number of tracks (increase every 10 epochs)
+        self.max_tracks = (self.current_epoch // 10) + 1
+
+        if self.max_tracks > self.hparams.max_tracks:
+            self.max_tracks = self.hparams.max_tracks
+
+        # batch_size = (self.hparams.max_tracks // self.max_tracks) // 2
+        # if batch_size < 1:
+        #    batch_size = 1
+
+        print()
+        print(f"Current epoch: {self.current_epoch} with max_tracks: {self.max_tracks}")
+
+        self.train_dataset = CambridgeDataset(
+            root_dirs=self.hparams.root_dirs,
+            subset="train",
+            min_tracks=self.hparams.min_tracks,
+            max_tracks=self.max_tracks,
+            length=self.hparams.length,
+            buffer_size_gb=self.hparams.train_buffer_size_gb,
+            num_examples_per_epoch=self.hparams.num_examples_per_epoch,
+        )
+
         return torch.utils.data.DataLoader(
             self.train_dataset,
             batch_size=self.hparams.batch_size,
@@ -398,20 +449,48 @@ class CambridgeDataModule(pl.LightningDataModule):
         )
 
     def val_dataloader(self):
+
+        self.val_dataset = CambridgeDataset(
+            root_dirs=self.hparams.root_dirs,
+            subset="val",
+            min_tracks=self.hparams.min_tracks,
+            max_tracks=self.max_tracks,
+            length=self.hparams.length,
+            buffer_size_gb=self.hparams.val_buffer_size_gb,
+            num_examples_per_epoch=int(self.hparams.num_examples_per_epoch / 10),
+        )
+
         return torch.utils.data.DataLoader(
             self.val_dataset,
             batch_size=self.hparams.batch_size,
-            num_workers=4,
+            num_workers=1,
+        )
+    
+    def test_dataloader(self):
+        self.test_dataset = CambridgeDataset(
+            root_dirs=self.hparams.root_dirs,
+            subset="test",
+            min_tracks=self.hparams.min_tracks,
+            max_tracks=self.max_tracks,
+            length=self.hparams.length,
+            buffer_size_gb=self.hparams.test_buffer_size_gb,
+            num_examples_per_epoch=int(self.hparams.num_examples_per_epoch / 10),
         )
 
-if __name__ == "__main__":
-    dataset = CambridgeDataset(root_dirs=["/import/c4dm-multitrack-private/C4DM Multitrack Collection/mixing-secrets"],indices=[0,150],buffer_size_gb =4.0)
-    print(dataset)
-    print(len(dataset))
+        return torch.utils.data.DataLoader(
+            self.test_dataset,
+            batch_size=1,
+            num_workers=1,
+        )
 
-    dataloader = torch.utils.data.DataLoader(dataset, batch_size=2, shuffle=True, drop_last = True, num_workers=4)
-    print(dataloader)
-    print(dataloader[0])
+# if __name__ == "__main__":
+#     dataset = CambridgeDataset(root_dirs=["/import/c4dm-multitrack-private/C4DM Multitrack Collection/mixing-secrets"],indices=[0,150],buffer_size_gb =4.0)
+#     print(dataset)
+#     print(len(dataset))
 
-    for i, (track, instrument_id, stereo) in enumerate(dataloader):
-       print(i)
+#     dataloader = torch.utils.data.DataLoader(dataset, batch_size=2, shuffle=True, drop_last = True, num_workers=4)
+#     print(dataloader)
+#     print(dataloader[0])
+
+#     for i, (track, instrument_id, stereo) in enumerate(dataloader):
+#        print(i)

@@ -113,39 +113,40 @@ class MedleyDBDataset(torch.utils.data.Dataset):
                 continue  # this song is corrupted
 
             # save only a random subset of this song so we can load more songs
-            silent = True
-            counter = 0
-            num_frames = torchaudio.info(mix_filepath).num_frames
+            track_filepaths = glob.glob(os.path.join(mix_dir, f"{mix_id}_RAW", "*.wav"))
+            
+            num_frames = torchaudio.info(track_filepaths[0]).num_frames
             if num_frames < self.length:
                 continue
+            
+            silent = True
+            counter = 0
 
             while silent:
-                offset = np.random.randint(0, num_frames - self.buffer_frames - 1)
 
-                # now check the length of the mix
-                y, sr = torchaudio.load(
-                    mix_filepath,
+                offset = np.random.randint(0, num_frames - self.buffer_frames - 1)
+                track, sr = torchaudio.load(
+                    track_filepaths[0],
                     frame_offset=offset,
                     num_frames=self.buffer_frames,
                 )
-
-                if (y**2).mean() > 1e-3:
+                if (track**2).mean() > 1e-3:
                     silent = False
 
                 counter += 1
-                if counter > 10:
+                if counter > 5: 
                     break
 
             if silent:
                 continue  # skip this song after 10 tries
 
-            if y.shape[-1] != self.buffer_frames:
+            if track.shape[-1] != self.buffer_frames:
                 continue
 
-            mix_num_frames = y.shape[-1]
+            
 
             # now find all the track filepaths
-            track_filepaths = glob.glob(os.path.join(mix_dir, f"{mix_id}_RAW", "*.wav"))
+            #track_filepaths = glob.glob(os.path.join(mix_dir, f"{mix_id}_RAW", "*.wav"))
 
             # check length of each track
             tracks = []
@@ -195,14 +196,14 @@ class MedleyDBDataset(torch.utils.data.Dataset):
                 if len(tracks) >= self.max_tracks:
                     break
 
-            if len(tracks) < self.min_tracks:
-                continue
+            # if len(tracks) < self.min_tracks:
+            #     continue
 
             # store this example
             example = {
                 "mix_id": os.path.dirname(mix_filepath).split(os.sep)[-1],
                 "mix_filepath": mix_filepath,
-                "num_frames": mix_num_frames,
+                "num_frames": num_frames,
                 "track_filepaths": track_filepaths,
                 "tracks": tracks,
                 "metadata": metadata,

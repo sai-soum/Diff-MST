@@ -5,6 +5,7 @@ data:
     min_tracks: 4
     max_tracks: 20
     batch_size: 2
+    num_examples_per_epoch: 5000
     num_workers: 4
     train_buffer_size_gb: 0.1
     val_buffer_size_gb: 0.01
