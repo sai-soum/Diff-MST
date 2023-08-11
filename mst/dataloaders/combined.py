@@ -35,9 +35,12 @@ class CombinedDataModule(pl.LightningDataModule):
         max_tracks: int = 20,
         train_buffer_size_gb: float = 2.0,
         val_buffer_size_gb: float = 0.1,
+        num_examples_per_epoch: int = 10000,
     ):
         super().__init__()
         self.save_hyperparameters()
+        self.current_epoch = -1
+        self.max_tracks = 1
         
         # self.num_workers = num_workers
         # self.batch_size = batch_size
@@ -46,88 +49,97 @@ class CombinedDataModule(pl.LightningDataModule):
         
     
     def setup(self, stage=None):
+        pass
 
-        if stage == "fit":
-            # train_dataset =CombinedDataset(CambridgeDataset(root_dirs=["/data/scratch/acw639/Cambridge/mixing-secrets"]),
-            #                  MedleyDBDataset(["/data/scratch/acw639/Medley/V1", "/data/scratch/acw639/Medley/MedleyDB_V2/V2"]))
-            self.train_dataset =CombinedDataset(CambridgeDataset(root_dirs=["/data/scratch/acw639/Cambridge/mixing-secrets"],
-                                                        indices = [0,150],
+    
+
+    def train_dataloader(self):
+        self.current_epoch += 1
+
+        # set the max number of tracks (increase every 10 epochs)
+        self.max_tracks = (self.current_epoch // 10) + 1
+
+        if self.max_tracks > self.hparams.max_tracks:
+            self.max_tracks = self.hparams.max_tracks
+
+        # batch_size = (self.hparams.max_tracks // self.max_tracks) // 2
+        # if batch_size < 1:
+        #    batch_size = 1
+
+        
+        print(f"Current epoch: {self.current_epoch} with max_tracks: {self.max_tracks}")
+
+        # dataset =CombinedDataset(CambridgeDataset(root_dirs=["/import/c4dm-multitrack-private/C4DM Multitrack Collection/mixing-secrets"]),
+        #                      MedleyDBDataset(["/import/c4dm-datasets/MedleyDB_V1/V1", "/import/c4dm-datasets/MedleyDB_V2/V2"]))
+        #print(len(self.train_dataset))
+        self.train_dataset =CombinedDataset(CambridgeDataset(root_dirs=["/import/c4dm-multitrack-private/C4DM Multitrack Collection/mixing-secrets"],
+                                                        subset = "train",
                                                         min_tracks = self.hparams.min_tracks,
                                                         max_tracks = self.hparams.max_tracks,
                                                         length = self.hparams.length,
                                                         buffer_size_gb=self.hparams.train_buffer_size_gb,
-                                                        num_examples_per_epoch=10000,
-                                                        ), MedleyDBDataset(root_dirs=["/data/scratch/acw639/Medley/V1", "/data/scratch/acw639/Medley/MedleyDB_V2/V2"],
+                                                        num_examples_per_epoch=self.hparams.num_examples_per_epoch,
+                                                        ), MedleyDBDataset(root_dirs=["/import/c4dm-datasets/MedleyDB_V1/V1", "/import/c4dm-datasets/MedleyDB_V2/V2"],
                                                         subset = "train",
                                                         min_tracks = self.hparams.min_tracks, 
                                                         max_tracks = self.hparams.max_tracks, 
                                                         length = self.hparams.length, 
                                                         buffer_size_gb=self.hparams.train_buffer_size_gb,
-                                                        num_examples_per_epoch=10000,
+                                                        num_examples_per_epoch=self.hparams.num_examples_per_epoch,
                                                         ))
-           
-            
-
-        if stage == "validate" or stage == "fit":
-            self.val_dataset =CombinedDataset (CambridgeDataset(root_dirs= ["/data/scratch/acw639/Cambridge/mixing-secrets"],
-                                                        indices = [150,200],
+        
+        loader = torch.utils.data.DataLoader(
+                                            self.train_dataset,
+                                            batch_size=self.hparams.batch_size, 
+                                            shuffle=True, 
+                                            drop_last = True, 
+                                            num_workers=self.hparams.num_workers)
+        return loader
+    
+    def val_dataloader(self):
+        self.val_dataset =CombinedDataset (CambridgeDataset(root_dirs= ["/import/c4dm-multitrack-private/C4DM Multitrack Collection/mixing-secrets"],
+                                                        subset = "val",
                                                         min_tracks = self.hparams.min_tracks,
                                                         max_tracks = self.hparams.max_tracks,
                                                         length = self.hparams.length,
-                                                        buffer_size_gb=self.hparams.train_buffer_size_gb,
-                                                        num_examples_per_epoch=1000,
-                                                        ), MedleyDBDataset(root_dirs=["/data/scratch/acw639/Medley/V1", "/data/scratch/acw639/Medley/MedleyDB_V2/V2"],
+                                                        buffer_size_gb=self.hparams.val_buffer_size_gb,
+                                                        num_examples_per_epoch=self.hparams.num_examples_per_epoch,
+                                                        ), MedleyDBDataset(root_dirs=["/import/c4dm-datasets/MedleyDB_V1/V1", "/import/c4dm-datasets/MedleyDB_V2/V2"],
                                                         subset = "val",
                                                         min_tracks = self.hparams.min_tracks, 
                                                         max_tracks = self.hparams.max_tracks, 
                                                         length = self.hparams.length, 
-                                                        buffer_size_gb=self.hparams.train_buffer_size_gb,
-                                                        num_examples_per_epoch=1000,
+                                                        buffer_size_gb=self.hparams.val_buffer_size_gb,
+                                                        num_examples_per_epoch=self.hparams.num_examples_per_epoch,
                                                         ))
-        
-        if stage == "validate" or stage == "fit":
-            self.test_dataset =CombinedDataset (CambridgeDataset(root_dirs= ["/data/scratch/acw639/Cambridge/mixing-secrets"],
-                                                        indices = [150,200],
-                                                        min_tracks = self.hparams.min_tracks,
-                                                        max_tracks = self.hparams.max_tracks,
-                                                        length = self.hparams.length,
-                                                        buffer_size_gb=self.hparams.train_buffer_size_gb,
-                                                        num_examples_per_epoch=1000,
-                                                        ), MedleyDBDataset(root_dirs=["/data/scratch/acw639/Medley/V1", "/data/scratch/acw639/Medley/MedleyDB_V2/V2"],
-                                                        subset = "test",
-                                                        min_tracks = self.hparams.min_tracks, 
-                                                        max_tracks = self.hparams.max_tracks, 
-                                                        length = self.hparams.length, 
-                                                        buffer_size_gb=self.hparams.train_buffer_size_gb,
-                                                        num_examples_per_epoch=1000,
-                                                        ))
-            
-
-    def train_dataloader(self):
-        # dataset =CombinedDataset(CambridgeDataset(root_dirs=["/data/scratch/acw639/Cambridge/mixing-secrets"]),
-        #                      MedleyDBDataset(["/data/scratch/acw639/Medley/V1", "/data/scratch/acw639/Medley/MedleyDB_V2/V2"]))
-        #print(len(self.train_dataset))
-        loader = torch.utils.data.DataLoader(self.train_dataset,
-                                             batch_size=self.hparams.batch_size, 
-                                             shuffle=True, 
-                                             drop_last = True, 
-                                             num_workers=self.hparams.num_workers)
-        return loader
-    
-    def val_dataloader(self):
         loader = torch.utils.data.DataLoader(self.val_dataset,
                                              batch_size=self.hparams.batch_size, 
                                              shuffle=False, 
                                              drop_last = True, 
-                                             num_workers=self.hparams.num_workers)
+                                             num_workers=1)
         return loader
     
     def test_dataloader(self):
+        self.test_dataset =CombinedDataset (CambridgeDataset(root_dirs= ["/import/c4dm-multitrack-private/C4DM Multitrack Collection/mixing-secrets"],
+                                                        subset = "test",
+                                                        min_tracks = self.hparams.min_tracks,
+                                                        max_tracks = self.hparams.max_tracks,
+                                                        length = self.hparams.length,
+                                                        buffer_size_gb=self.hparams.val_buffer_size_gb,
+                                                        num_examples_per_epoch=self.hparams.num_examples_per_epoch,
+                                                        ), MedleyDBDataset(root_dirs=["/import/c4dm-datasets/MedleyDB_V1/V1", "/import/c4dm-datasets/MedleyDB_V2/V2"],
+                                                        subset = "test",
+                                                        min_tracks = self.hparams.min_tracks, 
+                                                        max_tracks = self.hparams.max_tracks, 
+                                                        length = self.hparams.length, 
+                                                        buffer_size_gb=self.hparams.val_buffer_size_gb,
+                                                        num_examples_per_epoch=self.hparams.num_examples_per_epoch,
+                                                        ))
         loader = torch.utils.data.DataLoader(self.test_dataset,
-                                             batch_size=self.hparams.batch_size, 
+                                             batch_size=1, 
                                              shuffle=False, 
-                                             drop_last = True, 
-                                             num_workers=self.hparams.num_workers)
+                                             drop_last = False, 
+                                             num_workers=1)
         return loader
     
         
