@@ -28,6 +28,8 @@ class CombinedDataset(torch.utils.data.Dataset):
 class CombinedDataModule(pl.LightningDataModule):
     def __init__(
         self,
+        medley_rootdir: list = ["/import/c4dm-datasets/MedleyDB_V1/V1", "/import/c4dm-datasets/MedleyDB_V2/V2"],
+        cambridge_rootdir: list = ["/import/c4dm-multitrack-private/C4DM Multitrack Collection/mixing-secrets"],
         length: int = 524288,
         num_workers: int = 4,
         batch_size: int = 16,
@@ -72,14 +74,14 @@ class CombinedDataModule(pl.LightningDataModule):
         # dataset =CombinedDataset(CambridgeDataset(root_dirs=["/import/c4dm-multitrack-private/C4DM Multitrack Collection/mixing-secrets"]),
         #                      MedleyDBDataset(["/import/c4dm-datasets/MedleyDB_V1/V1", "/import/c4dm-datasets/MedleyDB_V2/V2"]))
         #print(len(self.train_dataset))
-        self.train_dataset =CombinedDataset(CambridgeDataset(root_dirs=["/import/c4dm-multitrack-private/C4DM Multitrack Collection/mixing-secrets"],
+        self.train_dataset =CombinedDataset(CambridgeDataset(root_dirs=self.hparams.cambridge_rootdir,
                                                         subset = "train",
                                                         min_tracks = self.hparams.min_tracks,
                                                         max_tracks = self.hparams.max_tracks,
                                                         length = self.hparams.length,
                                                         buffer_size_gb=self.hparams.train_buffer_size_gb,
                                                         num_examples_per_epoch=self.hparams.num_examples_per_epoch,
-                                                        ), MedleyDBDataset(root_dirs=["/import/c4dm-datasets/MedleyDB_V1/V1", "/import/c4dm-datasets/MedleyDB_V2/V2"],
+                                                        ), MedleyDBDataset(root_dirs=self.hparams.medley_rootdir,
                                                         subset = "train",
                                                         min_tracks = self.hparams.min_tracks, 
                                                         max_tracks = self.hparams.max_tracks, 
@@ -97,14 +99,14 @@ class CombinedDataModule(pl.LightningDataModule):
         return loader
     
     def val_dataloader(self):
-        self.val_dataset =CombinedDataset (CambridgeDataset(root_dirs= ["/import/c4dm-multitrack-private/C4DM Multitrack Collection/mixing-secrets"],
+        self.val_dataset =CombinedDataset (CambridgeDataset(root_dirs=self.hparams.cambridge_rootdir,
                                                         subset = "val",
                                                         min_tracks = self.hparams.min_tracks,
                                                         max_tracks = self.hparams.max_tracks,
                                                         length = self.hparams.length,
                                                         buffer_size_gb=self.hparams.val_buffer_size_gb,
                                                         num_examples_per_epoch=self.hparams.num_examples_per_epoch,
-                                                        ), MedleyDBDataset(root_dirs=["/import/c4dm-datasets/MedleyDB_V1/V1", "/import/c4dm-datasets/MedleyDB_V2/V2"],
+                                                        ), MedleyDBDataset(root_dirs=self.hparams.medley_rootdir,
                                                         subset = "val",
                                                         min_tracks = self.hparams.min_tracks, 
                                                         max_tracks = self.hparams.max_tracks, 
@@ -120,14 +122,14 @@ class CombinedDataModule(pl.LightningDataModule):
         return loader
     
     def test_dataloader(self):
-        self.test_dataset =CombinedDataset (CambridgeDataset(root_dirs= ["/import/c4dm-multitrack-private/C4DM Multitrack Collection/mixing-secrets"],
+        self.test_dataset =CombinedDataset (CambridgeDataset(root_dirs= self.hparams.cambridge_rootdir, 
                                                         subset = "test",
                                                         min_tracks = self.hparams.min_tracks,
                                                         max_tracks = self.hparams.max_tracks,
                                                         length = self.hparams.length,
                                                         buffer_size_gb=self.hparams.val_buffer_size_gb,
                                                         num_examples_per_epoch=self.hparams.num_examples_per_epoch,
-                                                        ), MedleyDBDataset(root_dirs=["/import/c4dm-datasets/MedleyDB_V1/V1", "/import/c4dm-datasets/MedleyDB_V2/V2"],
+                                                        ), MedleyDBDataset(root_dirs=self.hparams.medley_rootdir,
                                                         subset = "test",
                                                         min_tracks = self.hparams.min_tracks, 
                                                         max_tracks = self.hparams.max_tracks, 
