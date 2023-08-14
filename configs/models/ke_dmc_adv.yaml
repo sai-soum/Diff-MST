@@ -39,7 +39,7 @@ model:
             embed_dim: 128
             num_track_control_params: 27
             num_fx_bus_control_params: 25
-            num_master_bus_control_params: 24
+            num_master_bus_control_params: 25
             num_layers: 6
             nhead: 8
         mix_console:

@@ -138,7 +138,7 @@ class CambridgeDataset(torch.utils.data.Dataset):
         self.paths = subset_dir
         for paths in all_paths:
             
-            if os.path.basename(paths) == "00275":
+            if os.path.basename(paths) in ["00275" , "00375"]:
                 continue
             #print(os.path.basename(path))
             song_dir = os.path.join(paths,"tracks/")
@@ -154,12 +154,14 @@ class CambridgeDataset(torch.utils.data.Dataset):
             else:
                 
                 #print(raw_tracks_dir)
-                mix_dirs = raw_tracks_dir
+                mix_dir = raw_tracks_dir
                 raw_tracks = glob.glob(os.path.join(raw_tracks_dir, "*.wav"))
 
                 # #print(f"Found {len(raw_tracks)} tracks in {root_dirs[0]}.")
                 if len(raw_tracks)>= self.max_tracks:   
-                    self.mix_dirs.append(mix_dirs)
+                    self.mix_dirs.append(mix_dir)
+                    #print(os.path.basename(paths), len(raw_tracks))
+
                 
         
         print(f"Found {len(self.mix_dirs)} mix directories in {self.subset} set.")
@@ -278,6 +280,9 @@ class CambridgeDataset(torch.utils.data.Dataset):
 
 
                 # loudness normalization
+                # print("cambridge",track.shape)
+                # print(track.permute(1, 0).shape)
+                # print(track.shape)
                 track_lufs_db = self.meter.integrated_loudness(
                     track.permute(1, 0).numpy()
                 )

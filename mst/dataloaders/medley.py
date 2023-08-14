@@ -84,7 +84,11 @@ class MedleyDBDataset(torch.utils.data.Dataset):
 
         for mix_dir in tqdm(self.mix_dirs):
             mix_id = os.path.basename(mix_dir)
-            filtered_mix_dirs.append(mix_dir)
+            
+            # save only a random subset of this song so we can load more songs
+            track_filepaths = glob.glob(os.path.join(mix_dir, f"{mix_id}_RAW", "*.wav"))
+            if len(track_filepaths) >= self.max_tracks:
+                filtered_mix_dirs.append(mix_dir)
 
         self.mix_dirs = filtered_mix_dirs
         print(f"Found {len(self.mix_dirs)} mix directories.")
@@ -165,6 +169,8 @@ class MedleyDBDataset(torch.utils.data.Dataset):
                     continue  # not sure why we need this yet, but it seems to be necessary
 
                 # loudness normalization
+                #print("medley",track.shape)
+                #print(track.permute(1, 0).shape)
                 track_lufs_db = self.meter.integrated_loudness(
                     track.permute(1, 0).numpy()
                 )

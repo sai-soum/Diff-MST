@@ -132,6 +132,8 @@ def knowledge_engineering_mix(
     use_fx_bus: bool = True,
     use_master_bus: bool = True,
     sample_rate: int = 44100,
+    warmup: int = 0,
+
 ):
     """Generate a mix using knowledge engineering"""
 
@@ -284,6 +286,9 @@ def knowledge_engineering_mix(
         master_params[:, 22] = 3.0
         master_params[:, 23] = 0.0
 
+        # master gain
+        master_params[:, 24] = -10.0
+
     # skip is set to true whenever a track is stereo as it is loaded onto two tracks from the dataset one each for left and right channel
     skip = False
     # We work with each song in the batch seperately. It is sort of not possible to do it simultaneously for all the songs in the batch
@@ -319,9 +324,9 @@ def knowledge_engineering_mix(
                 KE[inst_key[0]]["gain"][0], KE[inst_key[0]]["gain"][1]
             )
             if (
-                not mix_console.param_ranges["input_gain"]["gain_db"][0]
+                not mix_console.param_ranges["fader"]["gain_db"][0]
                 <= mix_params[j, i, 0]
-                <= mix_console.param_ranges["input_gain"]["gain_db"][1]
+                <= mix_console.param_ranges["fader"]["gain_db"][1]
             ):
                 # raise value error
                 print(mix_params[j, i, 0])
@@ -946,6 +951,8 @@ def knowledge_engineering_mix(
                 KE["master_bus"]["compressor"]["makeup_gain_db"][0],
                 KE["master_bus"]["compressor"]["makeup_gain_db"][1],
             )
+            master_params[j, 24] = random.uniform(KE["master_bus"]["fader"]["gain_db"][0],
+                                                    KE["master_bus"]["fader"]["gain_db"][1])
 
     if mix_console.num_track_control_params == 2:
         mix_params[:, :, 1] = pan_params[:, :, 0]
@@ -975,7 +982,7 @@ def knowledge_engineering_mix(
         mix_params = mix_params.type_as(tracks)
         # fx_send_params= fx_send_params.type_as(tracks)
         track_param_dict = {
-            "input_gain": {
+            "fader": {
                 "gain_db": mix_params[..., 0],
             },
             "parametric_eq": {
@@ -1073,6 +1080,7 @@ def knowledge_engineering_mix(
                 "knee_db": master_params[..., 22],
                 "makeup_gain_db": master_params[..., 23],
             },
+            "fader": {"gain_db": master_params[..., 24]},
         }
 
     # check param_dict for out of range parameters
@@ -1103,6 +1111,9 @@ def knowledge_engineering_mix(
     # mix /= mix.abs().max().clamp(min=1e-8)
 
     # return mix, param_dict
+    # remove warmup samples
+    mix = mix[..., warmup:]
+    mixed_tracks = mixed_tracks[..., warmup:]
     # normalize mix
     gain_lin = 1 / mix.abs().max().clamp(min=1e-8)
     mix *= gain_lin

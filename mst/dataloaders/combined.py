@@ -12,7 +12,9 @@ class CombinedDataset(torch.utils.data.Dataset):
     def __getitem__(self, i):
         # print(i)
         for d in self.datasets:
+            
             tracks, id, stereo  = d[i]
+            #print(tracks.shape)
             # print(tracks.shape)
             # print(id)
             # print(stereo)

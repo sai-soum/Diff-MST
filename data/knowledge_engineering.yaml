@@ -1347,6 +1347,7 @@ keys:
     - melodica
     - keys
     - rhodes
+    - electronic organ
   gain : 
     - -13.0
     - -10.0
@@ -1776,6 +1777,10 @@ master_bus:
     makeup_gain_db:
       - 1.0
       - 3.0
+  fader:
+    gain_db:
+      - -10.0
+      - 0.0
 
 
 
