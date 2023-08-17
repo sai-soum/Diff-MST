@@ -1,0 +1,3401 @@
+test:
+  MedleyDB_V1/V1/AlexanderRoss_VelvetCurtain/AlexanderRoss_VelvetCurtain_RAW:
+    AlexanderRoss_VelvetCurtain_RAW_01_01.wav: acoustic guitar
+    AlexanderRoss_VelvetCurtain_RAW_01_02.wav: acoustic guitar
+    AlexanderRoss_VelvetCurtain_RAW_02_01.wav: clean electric guitar
+    AlexanderRoss_VelvetCurtain_RAW_03_01.wav: clean electric guitar
+    AlexanderRoss_VelvetCurtain_RAW_04_01.wav: electric bass
+    AlexanderRoss_VelvetCurtain_RAW_05_01.wav: kick drum
+    AlexanderRoss_VelvetCurtain_RAW_05_02.wav: snare drum
+    AlexanderRoss_VelvetCurtain_RAW_05_03.wav: snare drum
+    AlexanderRoss_VelvetCurtain_RAW_05_04.wav: snare drum
+    AlexanderRoss_VelvetCurtain_RAW_05_05.wav: toms
+    AlexanderRoss_VelvetCurtain_RAW_05_06.wav: high hat
+    AlexanderRoss_VelvetCurtain_RAW_05_07.wav: drum set
+    AlexanderRoss_VelvetCurtain_RAW_05_08.wav: drum set
+    AlexanderRoss_VelvetCurtain_RAW_06_01.wav: male singer
+    AlexanderRoss_VelvetCurtain_RAW_07_01.wav: trumpet
+    AlexanderRoss_VelvetCurtain_RAW_07_02.wav: trumpet
+    AlexanderRoss_VelvetCurtain_RAW_07_03.wav: euphonium
+    AlexanderRoss_VelvetCurtain_RAW_08_01.wav: string section
+    AlexanderRoss_VelvetCurtain_RAW_08_02.wav: string section
+    AlexanderRoss_VelvetCurtain_RAW_08_03.wav: cello
+    AlexanderRoss_VelvetCurtain_RAW_09_01.wav: vocalists
+    AlexanderRoss_VelvetCurtain_RAW_09_02.wav: vocalists
+    AlexanderRoss_VelvetCurtain_RAW_09_03.wav: vocalists
+    AlexanderRoss_VelvetCurtain_RAW_10_01.wav: clean electric guitar
+  MedleyDB_V1/V1/ClaraBerryAndWooldog_Stella/ClaraBerryAndWooldog_Stella_RAW:
+    ClaraBerryAndWooldog_Stella_RAW_01_01.wav: bass drum
+    ClaraBerryAndWooldog_Stella_RAW_01_02.wav: bass drum
+    ClaraBerryAndWooldog_Stella_RAW_01_03.wav: snare drum
+    ClaraBerryAndWooldog_Stella_RAW_01_04.wav: high hat
+    ClaraBerryAndWooldog_Stella_RAW_01_05.wav: toms
+    ClaraBerryAndWooldog_Stella_RAW_01_06.wav: drum set
+    ClaraBerryAndWooldog_Stella_RAW_01_07.wav: drum set
+    ClaraBerryAndWooldog_Stella_RAW_01_08.wav: drum set
+    ClaraBerryAndWooldog_Stella_RAW_01_09.wav: drum set
+    ClaraBerryAndWooldog_Stella_RAW_01_10.wav: drum set
+    ClaraBerryAndWooldog_Stella_RAW_02_01.wav: fx/processed sound
+    ClaraBerryAndWooldog_Stella_RAW_02_02.wav: guiro
+    ClaraBerryAndWooldog_Stella_RAW_02_03.wav: cowbell
+    ClaraBerryAndWooldog_Stella_RAW_02_04.wav: cowbell
+    ClaraBerryAndWooldog_Stella_RAW_03_01.wav: vibraphone
+    ClaraBerryAndWooldog_Stella_RAW_03_02.wav: vibraphone
+    ClaraBerryAndWooldog_Stella_RAW_04_01.wav: electric bass
+    ClaraBerryAndWooldog_Stella_RAW_05_01.wav: piano
+    ClaraBerryAndWooldog_Stella_RAW_05_02.wav: piano
+    ClaraBerryAndWooldog_Stella_RAW_06_01.wav: synthesizer
+    ClaraBerryAndWooldog_Stella_RAW_07_01.wav: female singer
+    ClaraBerryAndWooldog_Stella_RAW_08_01.wav: female singer
+    ClaraBerryAndWooldog_Stella_RAW_08_02.wav: female singer
+  MedleyDB_V1/V1/HeladoNegro_MitadDelMundo/HeladoNegro_MitadDelMundo_RAW:
+    HeladoNegro_MitadDelMundo_RAW_01_01.wav: fx/processed sound
+    HeladoNegro_MitadDelMundo_RAW_01_02.wav: fx/processed sound
+    HeladoNegro_MitadDelMundo_RAW_01_03.wav: fx/processed sound
+    HeladoNegro_MitadDelMundo_RAW_02_01.wav: synthesizer
+    HeladoNegro_MitadDelMundo_RAW_03_01.wav: male singer
+    HeladoNegro_MitadDelMundo_RAW_04_01.wav: snare drum
+    HeladoNegro_MitadDelMundo_RAW_04_02.wav: drum machine
+    HeladoNegro_MitadDelMundo_RAW_04_03.wav: drum machine
+    HeladoNegro_MitadDelMundo_RAW_04_04.wav: drum machine
+    HeladoNegro_MitadDelMundo_RAW_04_05.wav: tambourine
+    HeladoNegro_MitadDelMundo_RAW_05_01.wav: synthesizer
+    HeladoNegro_MitadDelMundo_RAW_05_02.wav: synthesizer
+    HeladoNegro_MitadDelMundo_RAW_05_03.wav: synthesizer
+    HeladoNegro_MitadDelMundo_RAW_05_04.wav: synthesizer
+    HeladoNegro_MitadDelMundo_RAW_06_01.wav: synthesizer
+    HeladoNegro_MitadDelMundo_RAW_06_02.wav: synthesizer
+    HeladoNegro_MitadDelMundo_RAW_07_01.wav: vibraphone
+    HeladoNegro_MitadDelMundo_RAW_07_02.wav: vibraphone
+    HeladoNegro_MitadDelMundo_RAW_07_03.wav: vibraphone
+    HeladoNegro_MitadDelMundo_RAW_08_01.wav: male singer
+    HeladoNegro_MitadDelMundo_RAW_09_01.wav: synthesizer
+    HeladoNegro_MitadDelMundo_RAW_10_01.wav: tack piano
+    HeladoNegro_MitadDelMundo_RAW_10_02.wav: tack piano
+    HeladoNegro_MitadDelMundo_RAW_10_03.wav: tack piano
+    HeladoNegro_MitadDelMundo_RAW_10_04.wav: tack piano
+    HeladoNegro_MitadDelMundo_RAW_10_05.wav: tack piano
+    HeladoNegro_MitadDelMundo_RAW_10_06.wav: synthesizer
+    HeladoNegro_MitadDelMundo_RAW_10_07.wav: synthesizer
+  MedleyDB_V1/V1/HezekiahJones_BorrowedHeart/HezekiahJones_BorrowedHeart_RAW:
+    HezekiahJones_BorrowedHeart_RAW_01_01.wav: acoustic guitar
+    HezekiahJones_BorrowedHeart_RAW_02_01.wav: male singer
+    HezekiahJones_BorrowedHeart_RAW_02_02.wav: female singer
+    HezekiahJones_BorrowedHeart_RAW_03_01.wav: banjo
+    HezekiahJones_BorrowedHeart_RAW_04_01.wav: electric bass
+    HezekiahJones_BorrowedHeart_RAW_05_01.wav: vibraphone
+    HezekiahJones_BorrowedHeart_RAW_05_02.wav: vibraphone
+    HezekiahJones_BorrowedHeart_RAW_06_01.wav: male singer
+    HezekiahJones_BorrowedHeart_RAW_06_02.wav: male singer
+    HezekiahJones_BorrowedHeart_RAW_06_03.wav: male singer
+    HezekiahJones_BorrowedHeart_RAW_06_04.wav: male singer
+    HezekiahJones_BorrowedHeart_RAW_06_05.wav: male singer
+    HezekiahJones_BorrowedHeart_RAW_06_06.wav: female singer
+    HezekiahJones_BorrowedHeart_RAW_06_07.wav: male singer
+    HezekiahJones_BorrowedHeart_RAW_06_08.wav: female singer
+    HezekiahJones_BorrowedHeart_RAW_06_09.wav: male singer
+    HezekiahJones_BorrowedHeart_RAW_06_10.wav: male singer
+    HezekiahJones_BorrowedHeart_RAW_06_11.wav: female singer
+    HezekiahJones_BorrowedHeart_RAW_06_12.wav: female singer
+    HezekiahJones_BorrowedHeart_RAW_06_13.wav: male singer
+    HezekiahJones_BorrowedHeart_RAW_06_14.wav: female singer
+    HezekiahJones_BorrowedHeart_RAW_07_01.wav: cymbal
+    HezekiahJones_BorrowedHeart_RAW_07_02.wav: cymbal
+    HezekiahJones_BorrowedHeart_RAW_07_03.wav: cymbal
+    HezekiahJones_BorrowedHeart_RAW_07_04.wav: cymbal
+    HezekiahJones_BorrowedHeart_RAW_08_01.wav: auxiliary percussion
+    HezekiahJones_BorrowedHeart_RAW_09_01.wav: drum set
+    HezekiahJones_BorrowedHeart_RAW_09_02.wav: kick drum
+    HezekiahJones_BorrowedHeart_RAW_09_03.wav: drum set
+    HezekiahJones_BorrowedHeart_RAW_09_04.wav: drum set
+    HezekiahJones_BorrowedHeart_RAW_09_05.wav: drum set
+    HezekiahJones_BorrowedHeart_RAW_09_06.wav: snare drum
+    HezekiahJones_BorrowedHeart_RAW_10_01.wav: male singer
+    HezekiahJones_BorrowedHeart_RAW_10_02.wav: male singer
+    HezekiahJones_BorrowedHeart_RAW_11_01.wav: violin section
+    HezekiahJones_BorrowedHeart_RAW_11_02.wav: lap steel guitar
+    HezekiahJones_BorrowedHeart_RAW_12_01.wav: lap steel guitar
+    HezekiahJones_BorrowedHeart_RAW_12_02.wav: lap steel guitar
+    HezekiahJones_BorrowedHeart_RAW_12_03.wav: lap steel guitar
+    HezekiahJones_BorrowedHeart_RAW_12_04.wav: lap steel guitar
+  MedleyDB_V1/V1/MatthewEntwistle_AnEveningWithOliver/MatthewEntwistle_AnEveningWithOliver_RAW:
+    MatthewEntwistle_AnEveningWithOliver_RAW_01_01.wav: cello
+    MatthewEntwistle_AnEveningWithOliver_RAW_02_01.wav: cello
+    MatthewEntwistle_AnEveningWithOliver_RAW_03_01.wav: clarinet
+    MatthewEntwistle_AnEveningWithOliver_RAW_04_01.wav: bassoon
+    MatthewEntwistle_AnEveningWithOliver_RAW_05_01.wav: bongo
+    MatthewEntwistle_AnEveningWithOliver_RAW_06_01.wav: vocalists
+    MatthewEntwistle_AnEveningWithOliver_RAW_07_01.wav: double bass
+    MatthewEntwistle_AnEveningWithOliver_RAW_08_01.wav: glockenspiel
+    MatthewEntwistle_AnEveningWithOliver_RAW_09_01.wav: harp
+    MatthewEntwistle_AnEveningWithOliver_RAW_10_01.wav: french horn section
+    MatthewEntwistle_AnEveningWithOliver_RAW_11_01.wav: piano
+    MatthewEntwistle_AnEveningWithOliver_RAW_12_01.wav: flute
+    MatthewEntwistle_AnEveningWithOliver_RAW_13_01.wav: oboe
+    MatthewEntwistle_AnEveningWithOliver_RAW_14_01.wav: viola
+    MatthewEntwistle_AnEveningWithOliver_RAW_15_01.wav: viola
+    MatthewEntwistle_AnEveningWithOliver_RAW_16_01.wav: violin
+    MatthewEntwistle_AnEveningWithOliver_RAW_17_01.wav: violin
+    MatthewEntwistle_AnEveningWithOliver_RAW_18_01.wav: violin
+    MatthewEntwistle_AnEveningWithOliver_RAW_19_01.wav: violin
+    MatthewEntwistle_AnEveningWithOliver_RAW_20_01.wav: violin
+    MatthewEntwistle_AnEveningWithOliver_RAW_21_01.wav: violin
+    MatthewEntwistle_AnEveningWithOliver_RAW_22_01.wav: violin
+    MatthewEntwistle_AnEveningWithOliver_RAW_23_01.wav: violin
+    MatthewEntwistle_AnEveningWithOliver_RAW_24_01.wav: violin section
+  MedleyDB_V1/V1/MusicDelta_80sRock/MusicDelta_80sRock_RAW:
+    MusicDelta_80sRock_RAW_01_01.wav: drum set
+    MusicDelta_80sRock_RAW_02_01.wav: electric bass
+    MusicDelta_80sRock_RAW_03_01.wav: distorted electric guitar
+    MusicDelta_80sRock_RAW_04_01.wav: male singer
+  MedleyDB_V1/V1/MusicDelta_Hendrix/MusicDelta_Hendrix_RAW:
+    MusicDelta_Hendrix_RAW_01_01.wav: drum set
+    MusicDelta_Hendrix_RAW_02_01.wav: electric bass
+    MusicDelta_Hendrix_RAW_03_01.wav: distorted electric guitar
+    MusicDelta_Hendrix_RAW_04_01.wav: male singer
+  MedleyDB_V1/V1/NightPanther_Fire/NightPanther_Fire_RAW:
+    NightPanther_Fire_RAW_01_01.wav: electric bass
+    NightPanther_Fire_RAW_01_02.wav: electric bass
+    NightPanther_Fire_RAW_02_01.wav: female singer
+    NightPanther_Fire_RAW_02_02.wav: female singer
+    NightPanther_Fire_RAW_02_03.wav: female singer
+    NightPanther_Fire_RAW_02_04.wav: female singer
+    NightPanther_Fire_RAW_02_05.wav: female singer
+    NightPanther_Fire_RAW_03_01.wav: male singer
+    NightPanther_Fire_RAW_03_02.wav: male singer
+    NightPanther_Fire_RAW_03_03.wav: male singer
+    NightPanther_Fire_RAW_03_04.wav: male singer
+    NightPanther_Fire_RAW_03_05.wav: male singer
+    NightPanther_Fire_RAW_03_06.wav: male singer
+    NightPanther_Fire_RAW_03_07.wav: male singer
+    NightPanther_Fire_RAW_03_08.wav: male singer
+    NightPanther_Fire_RAW_04_01.wav: drum machine
+    NightPanther_Fire_RAW_04_02.wav: high hat
+    NightPanther_Fire_RAW_04_03.wav: fx/processed sound
+    NightPanther_Fire_RAW_05_01.wav: drum set
+    NightPanther_Fire_RAW_05_02.wav: kick drum
+    NightPanther_Fire_RAW_05_03.wav: drum set
+    NightPanther_Fire_RAW_05_04.wav: drum set
+    NightPanther_Fire_RAW_05_05.wav: drum set
+    NightPanther_Fire_RAW_05_06.wav: snare drum
+    NightPanther_Fire_RAW_05_07.wav: toms
+    NightPanther_Fire_RAW_05_08.wav: toms
+    NightPanther_Fire_RAW_05_09.wav: drum set
+    NightPanther_Fire_RAW_06_01.wav: brass section
+    NightPanther_Fire_RAW_06_02.wav: cornet
+    NightPanther_Fire_RAW_06_03.wav: cornet
+    NightPanther_Fire_RAW_06_04.wav: brass section
+    NightPanther_Fire_RAW_06_05.wav: brass section
+    NightPanther_Fire_RAW_06_06.wav: brass section
+    NightPanther_Fire_RAW_07_01.wav: male singer
+    NightPanther_Fire_RAW_07_02.wav: male singer
+    NightPanther_Fire_RAW_08_01.wav: cymbal
+    NightPanther_Fire_RAW_08_02.wav: tambourine
+    NightPanther_Fire_RAW_09_01.wav: cello
+    NightPanther_Fire_RAW_09_02.wav: cello
+    NightPanther_Fire_RAW_09_03.wav: cello
+    NightPanther_Fire_RAW_09_04.wav: cello
+    NightPanther_Fire_RAW_09_05.wav: string section
+    NightPanther_Fire_RAW_09_06.wav: violin section
+    NightPanther_Fire_RAW_09_07.wav: string section
+    NightPanther_Fire_RAW_09_08.wav: string section
+    NightPanther_Fire_RAW_09_09.wav: string section
+    NightPanther_Fire_RAW_09_10.wav: string section
+    NightPanther_Fire_RAW_09_11.wav: string section
+    NightPanther_Fire_RAW_09_12.wav: string section
+    NightPanther_Fire_RAW_09_13.wav: string section
+    NightPanther_Fire_RAW_09_14.wav: violin section
+    NightPanther_Fire_RAW_10_01.wav: synthesizer
+    NightPanther_Fire_RAW_10_02.wav: synthesizer
+    NightPanther_Fire_RAW_11_01.wav: synthesizer
+    NightPanther_Fire_RAW_12_01.wav: synthesizer
+  MedleyDB_V1/V1/Phoenix_BrokenPledgeChicagoReel/Phoenix_BrokenPledgeChicagoReel_RAW:
+    Phoenix_BrokenPledgeChicagoReel_RAW_01_01.wav: acoustic guitar
+    Phoenix_BrokenPledgeChicagoReel_RAW_02_01.wav: flute
+    Phoenix_BrokenPledgeChicagoReel_RAW_03_01.wav: violin
+  MedleyDB_V1/V1/PurlingHiss_Lolita/PurlingHiss_Lolita_RAW:
+    PurlingHiss_Lolita_RAW_01_01.wav: electric bass
+    PurlingHiss_Lolita_RAW_01_02.wav: electric bass
+    PurlingHiss_Lolita_RAW_02_01.wav: drum set
+    PurlingHiss_Lolita_RAW_02_02.wav: drum set
+    PurlingHiss_Lolita_RAW_02_03.wav: drum set
+    PurlingHiss_Lolita_RAW_02_04.wav: kick drum
+    PurlingHiss_Lolita_RAW_02_05.wav: drum set
+    PurlingHiss_Lolita_RAW_02_06.wav: drum set
+    PurlingHiss_Lolita_RAW_02_07.wav: snare drum
+    PurlingHiss_Lolita_RAW_02_08.wav: snare drum
+    PurlingHiss_Lolita_RAW_02_09.wav: drum set
+    PurlingHiss_Lolita_RAW_02_10.wav: drum set
+    PurlingHiss_Lolita_RAW_03_01.wav: distorted electric guitar
+    PurlingHiss_Lolita_RAW_03_02.wav: distorted electric guitar
+    PurlingHiss_Lolita_RAW_03_03.wav: distorted electric guitar
+    PurlingHiss_Lolita_RAW_03_04.wav: distorted electric guitar
+    PurlingHiss_Lolita_RAW_03_05.wav: distorted electric guitar
+    PurlingHiss_Lolita_RAW_03_06.wav: clean electric guitar
+    PurlingHiss_Lolita_RAW_04_01.wav: distorted electric guitar
+    PurlingHiss_Lolita_RAW_04_02.wav: distorted electric guitar
+    PurlingHiss_Lolita_RAW_04_03.wav: distorted electric guitar
+    PurlingHiss_Lolita_RAW_05_01.wav: tambourine
+    PurlingHiss_Lolita_RAW_05_02.wav: tambourine
+    PurlingHiss_Lolita_RAW_06_01.wav: male singer
+    PurlingHiss_Lolita_RAW_06_02.wav: male singer
+  MedleyDB_V1/V1/Snowmine_Curfews/Snowmine_Curfews_RAW:
+    Snowmine_Curfews_RAW_01_01.wav: fx/processed sound
+    Snowmine_Curfews_RAW_01_02.wav: fx/processed sound
+    Snowmine_Curfews_RAW_01_03.wav: fx/processed sound
+    Snowmine_Curfews_RAW_01_04.wav: fx/processed sound
+    Snowmine_Curfews_RAW_01_05.wav: shaker
+    Snowmine_Curfews_RAW_01_06.wav: tambourine
+    Snowmine_Curfews_RAW_01_07.wav: tambourine
+    Snowmine_Curfews_RAW_02_01.wav: electric bass
+    Snowmine_Curfews_RAW_02_02.wav: electric bass
+    Snowmine_Curfews_RAW_03_01.wav: male singer
+    Snowmine_Curfews_RAW_04_01.wav: vibraphone
+    Snowmine_Curfews_RAW_04_02.wav: vibraphone
+    Snowmine_Curfews_RAW_05_01.wav: drum set
+    Snowmine_Curfews_RAW_05_02.wav: drum set
+    Snowmine_Curfews_RAW_05_03.wav: drum set
+    Snowmine_Curfews_RAW_05_04.wav: drum set
+    Snowmine_Curfews_RAW_05_05.wav: drum set
+    Snowmine_Curfews_RAW_05_06.wav: snare drum
+    Snowmine_Curfews_RAW_05_07.wav: snare drum
+    Snowmine_Curfews_RAW_05_08.wav: toms
+    Snowmine_Curfews_RAW_05_09.wav: toms
+    Snowmine_Curfews_RAW_05_10.wav: kick drum
+    Snowmine_Curfews_RAW_06_01.wav: sampler
+    Snowmine_Curfews_RAW_06_02.wav: sampler
+    Snowmine_Curfews_RAW_07_01.wav: clean electric guitar
+    Snowmine_Curfews_RAW_07_02.wav: clean electric guitar
+    Snowmine_Curfews_RAW_07_03.wav: clean electric guitar
+    Snowmine_Curfews_RAW_07_04.wav: clean electric guitar
+    Snowmine_Curfews_RAW_07_05.wav: clean electric guitar
+    Snowmine_Curfews_RAW_07_06.wav: clean electric guitar
+    Snowmine_Curfews_RAW_07_07.wav: clean electric guitar
+    Snowmine_Curfews_RAW_07_08.wav: clean electric guitar
+    Snowmine_Curfews_RAW_07_09.wav: clean electric guitar
+    Snowmine_Curfews_RAW_08_01.wav: clean electric guitar
+    Snowmine_Curfews_RAW_08_02.wav: clean electric guitar
+    Snowmine_Curfews_RAW_08_03.wav: clean electric guitar
+    Snowmine_Curfews_RAW_08_04.wav: clean electric guitar
+    Snowmine_Curfews_RAW_08_05.wav: clean electric guitar
+    Snowmine_Curfews_RAW_08_06.wav: fx/processed sound
+    Snowmine_Curfews_RAW_08_07.wav: clean electric guitar
+    Snowmine_Curfews_RAW_08_08.wav: clean electric guitar
+    Snowmine_Curfews_RAW_09_01.wav: synthesizer
+    Snowmine_Curfews_RAW_09_02.wav: synthesizer
+    Snowmine_Curfews_RAW_09_03.wav: synthesizer
+    Snowmine_Curfews_RAW_09_04.wav: synthesizer
+    Snowmine_Curfews_RAW_09_05.wav: synthesizer
+    Snowmine_Curfews_RAW_09_06.wav: synthesizer
+    Snowmine_Curfews_RAW_09_07.wav: synthesizer
+    Snowmine_Curfews_RAW_09_08.wav: synthesizer
+    Snowmine_Curfews_RAW_09_09.wav: synthesizer
+    Snowmine_Curfews_RAW_09_10.wav: synthesizer
+    Snowmine_Curfews_RAW_10_01.wav: male singer
+    Snowmine_Curfews_RAW_10_02.wav: male singer
+    Snowmine_Curfews_RAW_11_01.wav: tack piano
+    Snowmine_Curfews_RAW_11_02.wav: tack piano
+    Snowmine_Curfews_RAW_11_03.wav: tack piano
+  MedleyDB_V1/V1/TheSoSoGlos_Emergency/TheSoSoGlos_Emergency_RAW:
+    TheSoSoGlos_Emergency_RAW_01_01.wav: electric bass
+    TheSoSoGlos_Emergency_RAW_01_02.wav: electric bass
+    TheSoSoGlos_Emergency_RAW_02_01.wav: vocalists
+    TheSoSoGlos_Emergency_RAW_02_02.wav: vocalists
+    TheSoSoGlos_Emergency_RAW_02_03.wav: vocalists
+    TheSoSoGlos_Emergency_RAW_02_04.wav: male singer
+    TheSoSoGlos_Emergency_RAW_02_05.wav: male singer
+    TheSoSoGlos_Emergency_RAW_03_01.wav: drum set
+    TheSoSoGlos_Emergency_RAW_03_02.wav: high hat
+    TheSoSoGlos_Emergency_RAW_03_03.wav: kick drum
+    TheSoSoGlos_Emergency_RAW_03_04.wav: kick drum
+    TheSoSoGlos_Emergency_RAW_03_05.wav: drum set
+    TheSoSoGlos_Emergency_RAW_03_06.wav: drum set
+    TheSoSoGlos_Emergency_RAW_03_07.wav: drum set
+    TheSoSoGlos_Emergency_RAW_03_08.wav: drum set
+    TheSoSoGlos_Emergency_RAW_03_09.wav: snare drum
+    TheSoSoGlos_Emergency_RAW_03_10.wav: snare drum
+    TheSoSoGlos_Emergency_RAW_03_11.wav: drum set
+    TheSoSoGlos_Emergency_RAW_04_01.wav: distorted electric guitar
+    TheSoSoGlos_Emergency_RAW_04_02.wav: distorted electric guitar
+    TheSoSoGlos_Emergency_RAW_04_03.wav: distorted electric guitar
+    TheSoSoGlos_Emergency_RAW_04_04.wav: distorted electric guitar
+    TheSoSoGlos_Emergency_RAW_04_05.wav: distorted electric guitar
+    TheSoSoGlos_Emergency_RAW_04_06.wav: clean electric guitar
+    TheSoSoGlos_Emergency_RAW_05_01.wav: male singer
+    TheSoSoGlos_Emergency_RAW_05_02.wav: male singer
+    TheSoSoGlos_Emergency_RAW_06_01.wav: cabasa
+    TheSoSoGlos_Emergency_RAW_06_02.wav: shaker
+    TheSoSoGlos_Emergency_RAW_06_03.wav: whistle
+    TheSoSoGlos_Emergency_RAW_07_01.wav: fx/processed sound
+    TheSoSoGlos_Emergency_RAW_07_02.wav: fx/processed sound
+    TheSoSoGlos_Emergency_RAW_08_01.wav: synthesizer
+    TheSoSoGlos_Emergency_RAW_09_01.wav: acoustic guitar
+    TheSoSoGlos_Emergency_RAW_09_02.wav: acoustic guitar
+    TheSoSoGlos_Emergency_RAW_10_01.wav: vibraphone
+  MedleyDB_V2/V2/DahkaBand_SoldierMan/DahkaBand_SoldierMan_RAW:
+    DahkaBand_SoldierMan_RAW_01_01.wav: tenor saxophone
+    DahkaBand_SoldierMan_RAW_02_01.wav: drum set
+    DahkaBand_SoldierMan_RAW_02_02.wav: drum set
+    DahkaBand_SoldierMan_RAW_02_03.wav: drum set
+    DahkaBand_SoldierMan_RAW_02_04.wav: drum set
+    DahkaBand_SoldierMan_RAW_02_05.wav: drum set
+    DahkaBand_SoldierMan_RAW_02_06.wav: drum set
+    DahkaBand_SoldierMan_RAW_02_07.wav: drum set
+    DahkaBand_SoldierMan_RAW_02_08.wav: drum set
+    DahkaBand_SoldierMan_RAW_02_09.wav: drum set
+    DahkaBand_SoldierMan_RAW_02_10.wav: drum set
+    DahkaBand_SoldierMan_RAW_02_11.wav: drum set
+    DahkaBand_SoldierMan_RAW_03_01.wav: male singer
+    DahkaBand_SoldierMan_RAW_03_02.wav: male singer
+    DahkaBand_SoldierMan_RAW_03_03.wav: male singer
+    DahkaBand_SoldierMan_RAW_04_01.wav: clean electric guitar
+    DahkaBand_SoldierMan_RAW_04_02.wav: clean electric guitar
+    DahkaBand_SoldierMan_RAW_05_01.wav: double bass
+    DahkaBand_SoldierMan_RAW_05_02.wav: double bass
+    DahkaBand_SoldierMan_RAW_05_03.wav: double bass
+  MedleyDB_V2/V2/DeclareAString_MendelssohnPianoTrio1Movement2/DeclareAString_MendelssohnPianoTrio1Movement2_RAW: 
+    DeclareAString_MendelssohnPianoTrio1Movement2_RAW_01_01.wav: violin
+    DeclareAString_MendelssohnPianoTrio1Movement2_RAW_02_01.wav: Main System
+    DeclareAString_MendelssohnPianoTrio1Movement2_RAW_02_02.wav: Main System
+    DeclareAString_MendelssohnPianoTrio1Movement2_RAW_03_01.wav: cello
+    DeclareAString_MendelssohnPianoTrio1Movement2_RAW_03_02.wav: cello
+    DeclareAString_MendelssohnPianoTrio1Movement2_RAW_03_03.wav: cello
+    DeclareAString_MendelssohnPianoTrio1Movement2_RAW_04_01.wav: piano
+    DeclareAString_MendelssohnPianoTrio1Movement2_RAW_04_02.wav: piano
+    DeclareAString_MendelssohnPianoTrio1Movement2_RAW_04_03.wav: piano
+    DeclareAString_MendelssohnPianoTrio1Movement2_RAW_04_04.wav: piano
+  MedleyDB_V2/V2/FallingSparks_Improvisation1/FallingSparks_Improvisation1_RAW:
+    FallingSparks_Improvisation1_RAW_01_01.wav: double bass
+    FallingSparks_Improvisation1_RAW_02_01.wav: clarinet
+    FallingSparks_Improvisation1_RAW_03_01.wav: Main System
+    FallingSparks_Improvisation1_RAW_03_02.wav: Main System
+    FallingSparks_Improvisation1_RAW_03_03.wav: Main System
+    FallingSparks_Improvisation1_RAW_03_04.wav: Main System
+    FallingSparks_Improvisation1_RAW_03_05.wav: Main System
+    FallingSparks_Improvisation1_RAW_03_06.wav: Main System
+    FallingSparks_Improvisation1_RAW_04_01.wav: auxiliary percussion
+  MedleyDB_V2/V2/FallingSparks_Improvisation2/FallingSparks_Improvisation2_RAW:
+    FallingSparks_Improvisation2_RAW_01_01.wav: clarinet
+    FallingSparks_Improvisation2_RAW_02_01.wav: double bass
+    FallingSparks_Improvisation2_RAW_03_01.wav: auxiliary percussion
+    FallingSparks_Improvisation2_RAW_04_01.wav: Main System
+    FallingSparks_Improvisation2_RAW_04_02.wav: Main System
+    FallingSparks_Improvisation2_RAW_04_03.wav: Main System
+    FallingSparks_Improvisation2_RAW_04_04.wav: Main System
+    FallingSparks_Improvisation2_RAW_04_05.wav: Main System
+    FallingSparks_Improvisation2_RAW_04_06.wav: Main System
+  MedleyDB_V2/V2/FallingSparks_Improvisation3/FallingSparks_Improvisation3_RAW:
+    FallingSparks_Improvisation3_RAW_01_01.wav: double bass
+    FallingSparks_Improvisation3_RAW_02_01.wav: clarinet
+    FallingSparks_Improvisation3_RAW_03_01.wav: Main System
+    FallingSparks_Improvisation3_RAW_03_02.wav: Main System
+    FallingSparks_Improvisation3_RAW_03_03.wav: Main System
+    FallingSparks_Improvisation3_RAW_03_04.wav: Main System
+    FallingSparks_Improvisation3_RAW_03_05.wav: Main System
+    FallingSparks_Improvisation3_RAW_03_06.wav: Main System
+    FallingSparks_Improvisation3_RAW_04_01.wav: auxiliary percussion
+  MedleyDB_V2/V2/FallingSparks_PakKlongTalad/FallingSparks_PakKlongTalad_RAW:
+    FallingSparks_PakKlongTalad_RAW_01_01.wav: clarinet
+    FallingSparks_PakKlongTalad_RAW_02_01.wav: Main System
+    FallingSparks_PakKlongTalad_RAW_02_02.wav: Main System
+    FallingSparks_PakKlongTalad_RAW_02_03.wav: Main System
+    FallingSparks_PakKlongTalad_RAW_02_04.wav: Main System
+    FallingSparks_PakKlongTalad_RAW_02_05.wav: Main System
+    FallingSparks_PakKlongTalad_RAW_02_06.wav: Main System
+    FallingSparks_PakKlongTalad_RAW_03_01.wav: double bass
+    FallingSparks_PakKlongTalad_RAW_04_01.wav: auxiliary percussion
+  MedleyDB_V2/V2/FennelCartwright_DearTessie/FennelCartwright_DearTessie_RAW:
+    FennelCartwright_DearTessie_RAW_01_01.wav: Main System
+    FennelCartwright_DearTessie_RAW_01_02.wav: Main System
+    FennelCartwright_DearTessie_RAW_02_01.wav: flute
+    FennelCartwright_DearTessie_RAW_02_02.wav: flute
+    FennelCartwright_DearTessie_RAW_03_01.wav: oboe
+    FennelCartwright_DearTessie_RAW_03_02.wav: oboe
+    FennelCartwright_DearTessie_RAW_04_01.wav: clarinet
+    FennelCartwright_DearTessie_RAW_04_02.wav: clarinet
+    FennelCartwright_DearTessie_RAW_05_01.wav: french horn
+    FennelCartwright_DearTessie_RAW_05_02.wav: french horn
+    FennelCartwright_DearTessie_RAW_06_01.wav: bassoon
+    FennelCartwright_DearTessie_RAW_06_02.wav: bassoon
+  MedleyDB_V2/V2/FennelCartwright_FlowerDrumSong/FennelCartwright_FlowerDrumSong_RAW:
+    FennelCartwright_FlowerDrumSong_RAW_01_01.wav: french horn
+    FennelCartwright_FlowerDrumSong_RAW_01_02.wav: french horn
+    FennelCartwright_FlowerDrumSong_RAW_02_01.wav: oboe
+    FennelCartwright_FlowerDrumSong_RAW_02_02.wav: oboe
+    FennelCartwright_FlowerDrumSong_RAW_03_01.wav: clarinet
+    FennelCartwright_FlowerDrumSong_RAW_03_02.wav: clarinet
+    FennelCartwright_FlowerDrumSong_RAW_04_01.wav: bassoon
+    FennelCartwright_FlowerDrumSong_RAW_04_02.wav: bassoon
+    FennelCartwright_FlowerDrumSong_RAW_05_01.wav: flute
+    FennelCartwright_FlowerDrumSong_RAW_05_02.wav: flute
+  MedleyDB_V2/V2/FennelCartwright_WinterLake/FennelCartwright_WinterLake_RAW:
+    FennelCartwright_WinterLake_RAW_01_01.wav: bassoon
+    FennelCartwright_WinterLake_RAW_01_02.wav: bassoon
+    FennelCartwright_WinterLake_RAW_02_01.wav: french horn
+    FennelCartwright_WinterLake_RAW_02_02.wav: french horn
+    FennelCartwright_WinterLake_RAW_03_01.wav: clarinet
+    FennelCartwright_WinterLake_RAW_03_02.wav: clarinet
+    FennelCartwright_WinterLake_RAW_04_01.wav: flute
+    FennelCartwright_WinterLake_RAW_04_02.wav: flute
+    FennelCartwright_WinterLake_RAW_05_01.wav: oboe
+    FennelCartwright_WinterLake_RAW_05_02.wav: oboe
+    FennelCartwright_WinterLake_RAW_06_01.wav: Main System
+    FennelCartwright_WinterLake_RAW_06_02.wav: Main System
+    FennelCartwright_WinterLake_RAW_06_03.wav: Main System
+    FennelCartwright_WinterLake_RAW_06_04.wav: Main System
+  MedleyDB_V2/V2/HopsNVinyl_HoneyBrown/HopsNVinyl_HoneyBrown_RAW:
+    HopsNVinyl_HoneyBrown_RAW_01_01.wav: vibraphone
+    HopsNVinyl_HoneyBrown_RAW_01_02.wav: vibraphone
+    HopsNVinyl_HoneyBrown_RAW_02_01.wav: drum set
+    HopsNVinyl_HoneyBrown_RAW_02_02.wav: drum set
+    HopsNVinyl_HoneyBrown_RAW_02_03.wav: drum set
+    HopsNVinyl_HoneyBrown_RAW_02_04.wav: drum set
+    HopsNVinyl_HoneyBrown_RAW_03_01.wav: tenor saxophone
+    HopsNVinyl_HoneyBrown_RAW_03_02.wav: tenor saxophone
+    HopsNVinyl_HoneyBrown_RAW_03_03.wav: tenor saxophone
+    HopsNVinyl_HoneyBrown_RAW_03_04.wav: tenor saxophone
+    HopsNVinyl_HoneyBrown_RAW_04_01.wav: Main System
+    HopsNVinyl_HoneyBrown_RAW_04_02.wav: Main System
+    HopsNVinyl_HoneyBrown_RAW_04_03.wav: Main System
+    HopsNVinyl_HoneyBrown_RAW_04_04.wav: Main System
+    HopsNVinyl_HoneyBrown_RAW_05_01.wav: double bass
+    HopsNVinyl_HoneyBrown_RAW_05_02.wav: double bass
+    HopsNVinyl_HoneyBrown_RAW_05_03.wav: double bass
+    HopsNVinyl_HoneyBrown_RAW_05_04.wav: double bass
+  MedleyDB_V2/V2/HopsNVinyl_ReignCheck/HopsNVinyl_ReignCheck_RAW:
+    HopsNVinyl_ReignCheck_RAW_01_01.wav: drum set
+    HopsNVinyl_ReignCheck_RAW_01_02.wav: drum set
+    HopsNVinyl_ReignCheck_RAW_01_03.wav: drum set
+    HopsNVinyl_ReignCheck_RAW_01_04.wav: drum set
+    HopsNVinyl_ReignCheck_RAW_02_01.wav: tenor saxophone
+    HopsNVinyl_ReignCheck_RAW_02_02.wav: tenor saxophone
+    HopsNVinyl_ReignCheck_RAW_02_03.wav: tenor saxophone
+    HopsNVinyl_ReignCheck_RAW_02_04.wav: tenor saxophone
+    HopsNVinyl_ReignCheck_RAW_03_01.wav: Main System
+    HopsNVinyl_ReignCheck_RAW_03_02.wav: Main System
+    HopsNVinyl_ReignCheck_RAW_03_03.wav: Main System
+    HopsNVinyl_ReignCheck_RAW_03_04.wav: Main System
+    HopsNVinyl_ReignCheck_RAW_04_01.wav: double bass
+    HopsNVinyl_ReignCheck_RAW_04_02.wav: double bass
+    HopsNVinyl_ReignCheck_RAW_04_03.wav: double bass
+    HopsNVinyl_ReignCheck_RAW_04_04.wav: double bass
+    HopsNVinyl_ReignCheck_RAW_05_01.wav: vibraphone
+    HopsNVinyl_ReignCheck_RAW_05_02.wav: vibraphone
+  MedleyDB_V2/V2/HopsNVinyl_WidowsWalk/HopsNVinyl_WidowsWalk_RAW:
+    HopsNVinyl_WidowsWalk_RAW_01_01.wav: drum set
+    HopsNVinyl_WidowsWalk_RAW_01_02.wav: drum set
+    HopsNVinyl_WidowsWalk_RAW_01_03.wav: drum set
+    HopsNVinyl_WidowsWalk_RAW_02_01.wav: soprano saxophone
+    HopsNVinyl_WidowsWalk_RAW_02_02.wav: soprano saxophone
+    HopsNVinyl_WidowsWalk_RAW_02_03.wav: soprano saxophone
+    HopsNVinyl_WidowsWalk_RAW_02_04.wav: soprano saxophone
+    HopsNVinyl_WidowsWalk_RAW_03_01.wav: Main System
+    HopsNVinyl_WidowsWalk_RAW_03_02.wav: Main System
+    HopsNVinyl_WidowsWalk_RAW_03_03.wav: Main System
+    HopsNVinyl_WidowsWalk_RAW_03_04.wav: Main System
+    HopsNVinyl_WidowsWalk_RAW_04_01.wav: double bass
+    HopsNVinyl_WidowsWalk_RAW_04_02.wav: double bass
+    HopsNVinyl_WidowsWalk_RAW_04_03.wav: double bass
+    HopsNVinyl_WidowsWalk_RAW_04_04.wav: double bass
+    HopsNVinyl_WidowsWalk_RAW_05_01.wav: vibraphone
+    HopsNVinyl_WidowsWalk_RAW_05_02.wav: vibraphone
+  MedleyDB_V2/V2/Karachacha_Volamos/Karachacha_Volamos_RAW:
+    Karachacha_Volamos_RAW_01_01.wav: drum set
+    Karachacha_Volamos_RAW_02_01.wav: acoustic guitar
+    Karachacha_Volamos_RAW_03_01.wav: vibraphone
+    Karachacha_Volamos_RAW_03_02.wav: vibraphone
+    Karachacha_Volamos_RAW_03_03.wav: vibraphone
+    Karachacha_Volamos_RAW_04_01.wav: auxiliary percussion
+    Karachacha_Volamos_RAW_04_02.wav: auxiliary percussion
+    Karachacha_Volamos_RAW_05_01.wav: kick drum
+    Karachacha_Volamos_RAW_06_01.wav: double bass
+    Karachacha_Volamos_RAW_06_02.wav: double bass
+  MedleyDB_V2/V2/Katzn_CharlieKnox/Katzn_CharlieKnox_RAW:
+    Katzn_CharlieKnox_RAW_01_01.wav: auxiliary percussion
+    Katzn_CharlieKnox_RAW_01_02.wav: auxiliary percussion
+    Katzn_CharlieKnox_RAW_01_03.wav: auxiliary percussion
+    Katzn_CharlieKnox_RAW_01_04.wav: auxiliary percussion
+    Katzn_CharlieKnox_RAW_01_05.wav: auxiliary percussion
+    Katzn_CharlieKnox_RAW_01_06.wav: auxiliary percussion
+    Katzn_CharlieKnox_RAW_02_01.wav: piano
+    Katzn_CharlieKnox_RAW_02_02.wav: piano
+    Katzn_CharlieKnox_RAW_03_01.wav: Main System
+    Katzn_CharlieKnox_RAW_03_02.wav: Main System
+    Katzn_CharlieKnox_RAW_04_01.wav: clarinet
+    Katzn_CharlieKnox_RAW_04_02.wav: clarinet
+    Katzn_CharlieKnox_RAW_05_01.wav: violin
+    Katzn_CharlieKnox_RAW_06_01.wav: cello
+    Katzn_CharlieKnox_RAW_06_02.wav: cello
+  MedleyDB_V2/V2/LittleTybee_TheAlchemist/LittleTybee_TheAlchemist_RAW:
+    LittleTybee_TheAlchemist_RAW_01_01.wav: acoustic guitar
+    LittleTybee_TheAlchemist_RAW_01_02.wav: acoustic guitar
+    LittleTybee_TheAlchemist_RAW_01_03.wav: acoustic guitar
+    LittleTybee_TheAlchemist_RAW_01_04.wav: acoustic guitar
+    LittleTybee_TheAlchemist_RAW_02_01.wav: distorted electric guitar
+    LittleTybee_TheAlchemist_RAW_02_02.wav: distorted electric guitar
+    LittleTybee_TheAlchemist_RAW_03_01.wav: drum set
+    LittleTybee_TheAlchemist_RAW_03_02.wav: drum set
+    LittleTybee_TheAlchemist_RAW_03_03.wav: drum set
+    LittleTybee_TheAlchemist_RAW_03_04.wav: drum set
+    LittleTybee_TheAlchemist_RAW_03_05.wav: drum set
+    LittleTybee_TheAlchemist_RAW_03_06.wav: drum set
+    LittleTybee_TheAlchemist_RAW_03_07.wav: drum set
+    LittleTybee_TheAlchemist_RAW_03_08.wav: drum set
+    LittleTybee_TheAlchemist_RAW_03_09.wav: drum set
+    LittleTybee_TheAlchemist_RAW_03_10.wav: drum set
+    LittleTybee_TheAlchemist_RAW_03_11.wav: drum set
+    LittleTybee_TheAlchemist_RAW_04_01.wav: clean electric guitar
+    LittleTybee_TheAlchemist_RAW_04_02.wav: clean electric guitar
+    LittleTybee_TheAlchemist_RAW_05_01.wav: clean electric guitar
+    LittleTybee_TheAlchemist_RAW_05_02.wav: clean electric guitar
+    LittleTybee_TheAlchemist_RAW_06_01.wav: electric bass
+    LittleTybee_TheAlchemist_RAW_06_02.wav: electric bass
+    LittleTybee_TheAlchemist_RAW_07_01.wav: female singer
+    LittleTybee_TheAlchemist_RAW_07_02.wav: female singer
+    LittleTybee_TheAlchemist_RAW_07_03.wav: female singer
+    LittleTybee_TheAlchemist_RAW_08_01.wav: clean electric guitar
+    LittleTybee_TheAlchemist_RAW_08_02.wav: clean electric guitar
+    LittleTybee_TheAlchemist_RAW_08_03.wav: clean electric guitar
+    LittleTybee_TheAlchemist_RAW_08_04.wav: clean electric guitar
+    LittleTybee_TheAlchemist_RAW_09_01.wav: electric piano
+    LittleTybee_TheAlchemist_RAW_09_02.wav: electric piano
+    LittleTybee_TheAlchemist_RAW_09_03.wav: electric piano
+    LittleTybee_TheAlchemist_RAW_10_01.wav: violin
+    LittleTybee_TheAlchemist_RAW_10_02.wav: violin
+    LittleTybee_TheAlchemist_RAW_10_03.wav: violin
+    LittleTybee_TheAlchemist_RAW_10_04.wav: violin
+    LittleTybee_TheAlchemist_RAW_10_05.wav: violin
+    LittleTybee_TheAlchemist_RAW_10_06.wav: violin
+    LittleTybee_TheAlchemist_RAW_10_07.wav: violin
+  MedleyDB_V2/V2/MatthewEntwistle_ReturnToVenezia/MatthewEntwistle_ReturnToVenezia_RAW:
+    MatthewEntwistle_ReturnToVenezia_RAW_01_01.wav: viola
+    MatthewEntwistle_ReturnToVenezia_RAW_01_02.wav: viola
+    MatthewEntwistle_ReturnToVenezia_RAW_02_01.wav: piano
+    MatthewEntwistle_ReturnToVenezia_RAW_02_02.wav: piano
+  MedleyDB_V2/V2/MidnightBlue_StarsAreScreaming/MidnightBlue_StarsAreScreaming_RAW:
+    MidnightBlue_StarsAreScreaming_RAW_01_01.wav: distorted electric guitar
+    MidnightBlue_StarsAreScreaming_RAW_02_01.wav: drum set
+    MidnightBlue_StarsAreScreaming_RAW_02_02.wav: drum set
+    MidnightBlue_StarsAreScreaming_RAW_02_03.wav: drum set
+    MidnightBlue_StarsAreScreaming_RAW_02_04.wav: drum set
+    MidnightBlue_StarsAreScreaming_RAW_02_05.wav: drum set
+    MidnightBlue_StarsAreScreaming_RAW_02_06.wav: drum set
+    MidnightBlue_StarsAreScreaming_RAW_02_07.wav: drum set
+    MidnightBlue_StarsAreScreaming_RAW_02_08.wav: drum set
+    MidnightBlue_StarsAreScreaming_RAW_03_01.wav: electric bass
+    MidnightBlue_StarsAreScreaming_RAW_04_01.wav: distorted electric guitar
+    MidnightBlue_StarsAreScreaming_RAW_05_01.wav: distorted electric guitar
+    MidnightBlue_StarsAreScreaming_RAW_06_01.wav: male singer
+    MidnightBlue_StarsAreScreaming_RAW_07_01.wav: male singer
+  MedleyDB_V2/V2/PeterMatthewBauer_YouAlwaysLookForSomeoneLost/PeterMatthewBauer_YouAlwaysLookForSomeoneLost_RAW: 
+    PeterMatthewBauer_YouAlwaysLookForSomeoneLost_RAW_01_01.wav: clean electric guitar
+    PeterMatthewBauer_YouAlwaysLookForSomeoneLost_RAW_01_02.wav: clean electric guitar
+    PeterMatthewBauer_YouAlwaysLookForSomeoneLost_RAW_02_01.wav: toms
+    PeterMatthewBauer_YouAlwaysLookForSomeoneLost_RAW_02_02.wav: drum set
+    PeterMatthewBauer_YouAlwaysLookForSomeoneLost_RAW_02_03.wav: kick drum
+    PeterMatthewBauer_YouAlwaysLookForSomeoneLost_RAW_02_04.wav: toms
+    PeterMatthewBauer_YouAlwaysLookForSomeoneLost_RAW_03_01.wav: piano
+    PeterMatthewBauer_YouAlwaysLookForSomeoneLost_RAW_03_02.wav: piano
+    PeterMatthewBauer_YouAlwaysLookForSomeoneLost_RAW_04_01.wav: tambourine
+    PeterMatthewBauer_YouAlwaysLookForSomeoneLost_RAW_04_02.wav: auxiliary percussion
+    PeterMatthewBauer_YouAlwaysLookForSomeoneLost_RAW_04_03.wav: chimes
+    PeterMatthewBauer_YouAlwaysLookForSomeoneLost_RAW_05_01.wav: female singer
+    PeterMatthewBauer_YouAlwaysLookForSomeoneLost_RAW_05_02.wav: male singer
+    PeterMatthewBauer_YouAlwaysLookForSomeoneLost_RAW_05_03.wav: male singer
+    PeterMatthewBauer_YouAlwaysLookForSomeoneLost_RAW_06_01.wav: electric bass
+  MedleyDB_V2/V2/PoliceHearingDepartment_Brahms/PoliceHearingDepartment_Brahms_RAW:
+    PoliceHearingDepartment_Brahms_RAW_01_01.wav: viola
+    PoliceHearingDepartment_Brahms_RAW_02_01.wav: Main System
+    PoliceHearingDepartment_Brahms_RAW_02_02.wav: Main System
+    PoliceHearingDepartment_Brahms_RAW_02_03.wav: Main System
+    PoliceHearingDepartment_Brahms_RAW_02_04.wav: Main System
+    PoliceHearingDepartment_Brahms_RAW_03_01.wav: piano
+    PoliceHearingDepartment_Brahms_RAW_03_02.wav: piano
+  MedleyDB_V2/V2/PoliceHearingDepartment_SchumannMovement1/PoliceHearingDepartment_SchumannMovement1_RAW: 
+    PoliceHearingDepartment_SchumannMovement1_RAW_01_01.wav: bassoon
+    PoliceHearingDepartment_SchumannMovement1_RAW_01_02.wav: bassoon
+    PoliceHearingDepartment_SchumannMovement1_RAW_02_01.wav: Main System
+    PoliceHearingDepartment_SchumannMovement1_RAW_02_02.wav: Main System
+    PoliceHearingDepartment_SchumannMovement1_RAW_02_03.wav: Main System
+    PoliceHearingDepartment_SchumannMovement1_RAW_02_04.wav: Main System
+    PoliceHearingDepartment_SchumannMovement1_RAW_03_01.wav: flute
+    PoliceHearingDepartment_SchumannMovement1_RAW_04_01.wav: viola
+    PoliceHearingDepartment_SchumannMovement1_RAW_04_02.wav: viola
+    PoliceHearingDepartment_SchumannMovement1_RAW_05_01.wav: violin
+    PoliceHearingDepartment_SchumannMovement1_RAW_05_02.wav: violin
+    PoliceHearingDepartment_SchumannMovement1_RAW_06_01.wav: piano
+    PoliceHearingDepartment_SchumannMovement1_RAW_06_02.wav: piano
+  MedleyDB_V2/V2/PoliceHearingDepartment_SchumannMovement2/PoliceHearingDepartment_SchumannMovement2_RAW: 
+    PoliceHearingDepartment_SchumannMovement2_RAW_01_01.wav: bassoon
+    PoliceHearingDepartment_SchumannMovement2_RAW_01_02.wav: bassoon
+    PoliceHearingDepartment_SchumannMovement2_RAW_02_01.wav: Main System
+    PoliceHearingDepartment_SchumannMovement2_RAW_02_02.wav: Main System
+    PoliceHearingDepartment_SchumannMovement2_RAW_02_03.wav: Main System
+    PoliceHearingDepartment_SchumannMovement2_RAW_02_04.wav: Main System
+    PoliceHearingDepartment_SchumannMovement2_RAW_03_01.wav: flute
+    PoliceHearingDepartment_SchumannMovement2_RAW_04_01.wav: viola
+    PoliceHearingDepartment_SchumannMovement2_RAW_04_02.wav: viola
+    PoliceHearingDepartment_SchumannMovement2_RAW_05_01.wav: violin
+    PoliceHearingDepartment_SchumannMovement2_RAW_05_02.wav: violin
+    PoliceHearingDepartment_SchumannMovement2_RAW_06_01.wav: piano
+    PoliceHearingDepartment_SchumannMovement2_RAW_06_02.wav: piano
+  MedleyDB_V2/V2/PoliceHearingDepartment_VivaldiMovement1/PoliceHearingDepartment_VivaldiMovement1_RAW:
+    PoliceHearingDepartment_VivaldiMovement1_RAW_01_01.wav: bassoon
+    PoliceHearingDepartment_VivaldiMovement1_RAW_01_02.wav: bassoon
+    PoliceHearingDepartment_VivaldiMovement1_RAW_02_01.wav: Main System
+    PoliceHearingDepartment_VivaldiMovement1_RAW_03_01.wav: violin
+    PoliceHearingDepartment_VivaldiMovement1_RAW_03_02.wav: violin
+    PoliceHearingDepartment_VivaldiMovement1_RAW_04_01.wav: flute
+    PoliceHearingDepartment_VivaldiMovement1_RAW_04_02.wav: flute
+  MedleyDB_V2/V2/PoliceHearingDepartment_VivaldiMovement2/PoliceHearingDepartment_VivaldiMovement2_RAW:
+    PoliceHearingDepartment_VivaldiMovement2_RAW_01_01.wav: bassoon
+    PoliceHearingDepartment_VivaldiMovement2_RAW_01_02.wav: bassoon
+    PoliceHearingDepartment_VivaldiMovement2_RAW_02_01.wav: Main System
+    PoliceHearingDepartment_VivaldiMovement2_RAW_03_01.wav: violin
+    PoliceHearingDepartment_VivaldiMovement2_RAW_03_02.wav: violin
+    PoliceHearingDepartment_VivaldiMovement2_RAW_04_01.wav: flute
+    PoliceHearingDepartment_VivaldiMovement2_RAW_04_02.wav: flute
+  MedleyDB_V2/V2/TheTonTons_Lush/TheTonTons_Lush_RAW:
+    TheTonTons_Lush_RAW_01_01.wav: male singer
+    TheTonTons_Lush_RAW_01_02.wav: male singer
+    TheTonTons_Lush_RAW_01_03.wav: male singer
+    TheTonTons_Lush_RAW_01_04.wav: male singer
+    TheTonTons_Lush_RAW_02_01.wav: tambourine
+    TheTonTons_Lush_RAW_03_01.wav: clean electric guitar
+    TheTonTons_Lush_RAW_03_02.wav: clean electric guitar
+    TheTonTons_Lush_RAW_03_03.wav: clean electric guitar
+    TheTonTons_Lush_RAW_04_01.wav: drum set
+    TheTonTons_Lush_RAW_04_02.wav: drum set
+    TheTonTons_Lush_RAW_04_03.wav: drum set
+    TheTonTons_Lush_RAW_04_04.wav: drum set
+    TheTonTons_Lush_RAW_04_05.wav: drum set
+    TheTonTons_Lush_RAW_04_06.wav: drum set
+    TheTonTons_Lush_RAW_04_07.wav: drum set
+    TheTonTons_Lush_RAW_04_08.wav: drum set
+    TheTonTons_Lush_RAW_04_09.wav: drum set
+    TheTonTons_Lush_RAW_04_10.wav: drum set
+    TheTonTons_Lush_RAW_04_11.wav: drum set
+    TheTonTons_Lush_RAW_05_01.wav: distorted electric guitar
+    TheTonTons_Lush_RAW_05_02.wav: distorted electric guitar
+    TheTonTons_Lush_RAW_05_03.wav: distorted electric guitar
+    TheTonTons_Lush_RAW_06_01.wav: distorted electric guitar
+    TheTonTons_Lush_RAW_06_02.wav: distorted electric guitar
+    TheTonTons_Lush_RAW_06_03.wav: distorted electric guitar
+    TheTonTons_Lush_RAW_06_04.wav: distorted electric guitar
+    TheTonTons_Lush_RAW_07_01.wav: clean electric guitar
+    TheTonTons_Lush_RAW_07_02.wav: clean electric guitar
+    TheTonTons_Lush_RAW_08_01.wav: clean electric guitar
+    TheTonTons_Lush_RAW_08_02.wav: clean electric guitar
+    TheTonTons_Lush_RAW_09_01.wav: electric bass
+    TheTonTons_Lush_RAW_09_02.wav: electric bass
+    TheTonTons_Lush_RAW_10_01.wav: female singer
+    TheTonTons_Lush_RAW_10_02.wav: female singer
+    TheTonTons_Lush_RAW_11_01.wav: clean electric guitar
+    TheTonTons_Lush_RAW_11_02.wav: clean electric guitar
+    TheTonTons_Lush_RAW_11_03.wav: clean electric guitar
+    TheTonTons_Lush_RAW_11_04.wav: clean electric guitar
+    TheTonTons_Lush_RAW_11_05.wav: clean electric guitar
+    TheTonTons_Lush_RAW_11_06.wav: clean electric guitar
+  MedleyDB_V2/V2/Torres_NewSkin/Torres_NewSkin_RAW:
+    Torres_NewSkin_RAW_01_01.wav: distorted electric guitar
+    Torres_NewSkin_RAW_01_02.wav: distorted electric guitar
+    Torres_NewSkin_RAW_01_03.wav: distorted electric guitar
+    Torres_NewSkin_RAW_02_01.wav: female singer
+    Torres_NewSkin_RAW_03_01.wav: female singer
+    Torres_NewSkin_RAW_04_01.wav: clean electric guitar
+    Torres_NewSkin_RAW_04_02.wav: clean electric guitar
+    Torres_NewSkin_RAW_04_03.wav: clean electric guitar
+    Torres_NewSkin_RAW_05_01.wav: female singer
+    Torres_NewSkin_RAW_06_01.wav: electric bass
+    Torres_NewSkin_RAW_07_01.wav: drum set
+    Torres_NewSkin_RAW_07_02.wav: drum set
+    Torres_NewSkin_RAW_07_03.wav: drum set
+    Torres_NewSkin_RAW_07_04.wav: drum set
+    Torres_NewSkin_RAW_07_05.wav: drum set
+    Torres_NewSkin_RAW_07_06.wav: drum set
+    Torres_NewSkin_RAW_07_07.wav: drum set
+    Torres_NewSkin_RAW_07_08.wav: drum set
+    Torres_NewSkin_RAW_07_09.wav: drum set
+    Torres_NewSkin_RAW_07_10.wav: drum set
+    Torres_NewSkin_RAW_08_01.wav: distorted electric guitar
+    Torres_NewSkin_RAW_08_02.wav: distorted electric guitar
+    Torres_NewSkin_RAW_08_03.wav: distorted electric guitar
+    Torres_NewSkin_RAW_09_01.wav: clean electric guitar
+    Torres_NewSkin_RAW_10_01.wav: female singer
+train:
+  MedleyDB_V1/V1/AlexanderRoss_GoodbyeBolero/AlexanderRoss_GoodbyeBolero_RAW:
+    AlexanderRoss_GoodbyeBolero_RAW_01_01.wav: acoustic guitar
+    AlexanderRoss_GoodbyeBolero_RAW_01_02.wav: acoustic guitar
+    AlexanderRoss_GoodbyeBolero_RAW_02_01.wav: clean electric guitar
+    AlexanderRoss_GoodbyeBolero_RAW_02_02.wav: clean electric guitar
+    AlexanderRoss_GoodbyeBolero_RAW_03_01.wav: clean electric guitar
+    AlexanderRoss_GoodbyeBolero_RAW_03_02.wav: clean electric guitar
+    AlexanderRoss_GoodbyeBolero_RAW_04_01.wav: electric bass
+    AlexanderRoss_GoodbyeBolero_RAW_05_01.wav: kick drum
+    AlexanderRoss_GoodbyeBolero_RAW_05_02.wav: snare drum
+    AlexanderRoss_GoodbyeBolero_RAW_05_03.wav: snare drum
+    AlexanderRoss_GoodbyeBolero_RAW_05_04.wav: snare drum
+    AlexanderRoss_GoodbyeBolero_RAW_05_05.wav: high hat
+    AlexanderRoss_GoodbyeBolero_RAW_05_06.wav: drum set
+    AlexanderRoss_GoodbyeBolero_RAW_05_07.wav: drum set
+    AlexanderRoss_GoodbyeBolero_RAW_06_01.wav: male singer
+    AlexanderRoss_GoodbyeBolero_RAW_07_01.wav: trumpet
+    AlexanderRoss_GoodbyeBolero_RAW_07_02.wav: euphonium
+    AlexanderRoss_GoodbyeBolero_RAW_08_01.wav: viola
+    AlexanderRoss_GoodbyeBolero_RAW_08_02.wav: viola
+    AlexanderRoss_GoodbyeBolero_RAW_09_01.wav: harmonica
+  MedleyDB_V1/V1/AmarLal_Rest/AmarLal_Rest_RAW:
+    AmarLal_Rest_RAW_01_01.wav: clean electric guitar
+    AmarLal_Rest_RAW_01_02.wav: clean electric guitar
+    AmarLal_Rest_RAW_01_03.wav: clean electric guitar
+    AmarLal_Rest_RAW_01_04.wav: clean electric guitar
+    AmarLal_Rest_RAW_02_01.wav: fx/processed sound
+    AmarLal_Rest_RAW_02_02.wav: fx/processed sound
+  MedleyDB_V1/V1/AmarLal_SpringDay1/AmarLal_SpringDay1_RAW:
+    AmarLal_SpringDay1_RAW_01_01.wav: acoustic guitar
+    AmarLal_SpringDay1_RAW_01_02.wav: acoustic guitar
+    AmarLal_SpringDay1_RAW_01_03.wav: acoustic guitar
+    AmarLal_SpringDay1_RAW_01_04.wav: acoustic guitar
+    AmarLal_SpringDay1_RAW_01_05.wav: acoustic guitar
+    AmarLal_SpringDay1_RAW_01_06.wav: acoustic guitar
+    AmarLal_SpringDay1_RAW_01_07.wav: acoustic guitar
+    AmarLal_SpringDay1_RAW_01_08.wav: acoustic guitar
+    AmarLal_SpringDay1_RAW_01_09.wav: acoustic guitar
+    AmarLal_SpringDay1_RAW_01_10.wav: acoustic guitar
+    AmarLal_SpringDay1_RAW_01_11.wav: acoustic guitar
+    AmarLal_SpringDay1_RAW_01_12.wav: acoustic guitar
+    AmarLal_SpringDay1_RAW_01_13.wav: acoustic guitar
+    AmarLal_SpringDay1_RAW_01_14.wav: acoustic guitar
+    AmarLal_SpringDay1_RAW_01_15.wav: acoustic guitar
+  MedleyDB_V1/V1/Auctioneer_OurFutureFaces/Auctioneer_OurFutureFaces_RAW:
+    Auctioneer_OurFutureFaces_RAW_01_01.wav: banjo
+    Auctioneer_OurFutureFaces_RAW_02_01.wav: electric bass
+    Auctioneer_OurFutureFaces_RAW_02_02.wav: electric bass
+    Auctioneer_OurFutureFaces_RAW_03_01.wav: male singer
+    Auctioneer_OurFutureFaces_RAW_03_02.wav: male singer
+    Auctioneer_OurFutureFaces_RAW_03_03.wav: male singer
+    Auctioneer_OurFutureFaces_RAW_03_04.wav: male singer
+    Auctioneer_OurFutureFaces_RAW_03_05.wav: vocalists
+    Auctioneer_OurFutureFaces_RAW_03_06.wav: vocalists
+    Auctioneer_OurFutureFaces_RAW_03_07.wav: vocalists
+    Auctioneer_OurFutureFaces_RAW_03_08.wav: vocalists
+    Auctioneer_OurFutureFaces_RAW_03_09.wav: male singer
+    Auctioneer_OurFutureFaces_RAW_03_10.wav: male singer
+    Auctioneer_OurFutureFaces_RAW_03_11.wav: male singer
+    Auctioneer_OurFutureFaces_RAW_04_01.wav: drum set
+    Auctioneer_OurFutureFaces_RAW_04_02.wav: drum set
+    Auctioneer_OurFutureFaces_RAW_04_03.wav: drum set
+    Auctioneer_OurFutureFaces_RAW_04_04.wav: kick drum
+    Auctioneer_OurFutureFaces_RAW_04_05.wav: drum set
+    Auctioneer_OurFutureFaces_RAW_04_06.wav: drum set
+    Auctioneer_OurFutureFaces_RAW_04_07.wav: snare drum
+    Auctioneer_OurFutureFaces_RAW_04_08.wav: snare drum
+    Auctioneer_OurFutureFaces_RAW_04_09.wav: toms
+    Auctioneer_OurFutureFaces_RAW_04_10.wav: toms
+    Auctioneer_OurFutureFaces_RAW_05_01.wav: clean electric guitar
+    Auctioneer_OurFutureFaces_RAW_05_02.wav: clean electric guitar
+    Auctioneer_OurFutureFaces_RAW_06_01.wav: horn section
+    Auctioneer_OurFutureFaces_RAW_06_02.wav: horn section
+    Auctioneer_OurFutureFaces_RAW_06_03.wav: horn section
+    Auctioneer_OurFutureFaces_RAW_06_04.wav: horn section
+    Auctioneer_OurFutureFaces_RAW_06_05.wav: horn section
+    Auctioneer_OurFutureFaces_RAW_06_06.wav: horn section
+    Auctioneer_OurFutureFaces_RAW_07_01.wav: vibraphone
+    Auctioneer_OurFutureFaces_RAW_07_02.wav: vibraphone
+    Auctioneer_OurFutureFaces_RAW_08_01.wav: male singer
+    Auctioneer_OurFutureFaces_RAW_09_01.wav: fx/processed sound
+    Auctioneer_OurFutureFaces_RAW_09_02.wav: fx/processed sound
+    Auctioneer_OurFutureFaces_RAW_09_03.wav: fx/processed sound
+    Auctioneer_OurFutureFaces_RAW_09_04.wav: fx/processed sound
+    Auctioneer_OurFutureFaces_RAW_09_05.wav: toms
+    Auctioneer_OurFutureFaces_RAW_09_06.wav: toms
+    Auctioneer_OurFutureFaces_RAW_09_07.wav: auxiliary percussion
+    Auctioneer_OurFutureFaces_RAW_09_08.wav: shaker
+    Auctioneer_OurFutureFaces_RAW_09_09.wav: toms
+    Auctioneer_OurFutureFaces_RAW_09_10.wav: toms
+    Auctioneer_OurFutureFaces_RAW_10_01.wav: piano
+    Auctioneer_OurFutureFaces_RAW_10_02.wav: piano
+  MedleyDB_V1/V1/AvaLuna_Waterduct/AvaLuna_Waterduct_RAW:
+    AvaLuna_Waterduct_RAW_01_01.wav: electric bass
+    AvaLuna_Waterduct_RAW_01_02.wav: electric bass
+    AvaLuna_Waterduct_RAW_02_01.wav: fx/processed sound
+    AvaLuna_Waterduct_RAW_02_02.wav: fx/processed sound
+    AvaLuna_Waterduct_RAW_02_03.wav: fx/processed sound
+    AvaLuna_Waterduct_RAW_02_04.wav: synthesizer
+    AvaLuna_Waterduct_RAW_02_05.wav: fx/processed sound
+    AvaLuna_Waterduct_RAW_02_06.wav: synthesizer
+    AvaLuna_Waterduct_RAW_02_07.wav: synthesizer
+    AvaLuna_Waterduct_RAW_03_01.wav: female singer
+    AvaLuna_Waterduct_RAW_03_02.wav: female singer
+    AvaLuna_Waterduct_RAW_03_03.wav: female singer
+    AvaLuna_Waterduct_RAW_03_04.wav: female singer
+    AvaLuna_Waterduct_RAW_03_05.wav: female singer
+    AvaLuna_Waterduct_RAW_03_06.wav: vocalists
+    AvaLuna_Waterduct_RAW_04_01.wav: drum set
+    AvaLuna_Waterduct_RAW_04_02.wav: drum set
+    AvaLuna_Waterduct_RAW_04_03.wav: drum set
+    AvaLuna_Waterduct_RAW_04_04.wav: kick drum
+    AvaLuna_Waterduct_RAW_04_05.wav: drum set
+    AvaLuna_Waterduct_RAW_04_06.wav: drum set
+    AvaLuna_Waterduct_RAW_04_07.wav: snare drum
+    AvaLuna_Waterduct_RAW_04_08.wav: snare drum
+    AvaLuna_Waterduct_RAW_05_01.wav: distorted electric guitar
+    AvaLuna_Waterduct_RAW_05_02.wav: distorted electric guitar
+    AvaLuna_Waterduct_RAW_05_03.wav: distorted electric guitar
+    AvaLuna_Waterduct_RAW_05_04.wav: clean electric guitar
+    AvaLuna_Waterduct_RAW_05_05.wav: clean electric guitar
+    AvaLuna_Waterduct_RAW_05_06.wav: distorted electric guitar
+    AvaLuna_Waterduct_RAW_05_07.wav: distorted electric guitar
+    AvaLuna_Waterduct_RAW_05_08.wav: clean electric guitar
+    AvaLuna_Waterduct_RAW_05_09.wav: distorted electric guitar
+    AvaLuna_Waterduct_RAW_05_10.wav: distorted electric guitar
+    AvaLuna_Waterduct_RAW_06_01.wav: fx/processed sound
+    AvaLuna_Waterduct_RAW_06_02.wav: fx/processed sound
+    AvaLuna_Waterduct_RAW_06_03.wav: fx/processed sound
+    AvaLuna_Waterduct_RAW_06_04.wav: fx/processed sound
+    AvaLuna_Waterduct_RAW_07_01.wav: vibraphone
+    AvaLuna_Waterduct_RAW_07_02.wav: vibraphone
+    AvaLuna_Waterduct_RAW_08_01.wav: male singer
+  MedleyDB_V1/V1/BigTroubles_Phantom/BigTroubles_Phantom_RAW:
+    BigTroubles_Phantom_RAW_01_01.wav: electric bass
+    BigTroubles_Phantom_RAW_01_02.wav: electric bass
+    BigTroubles_Phantom_RAW_02_01.wav: drum set
+    BigTroubles_Phantom_RAW_02_02.wav: drum set
+    BigTroubles_Phantom_RAW_02_03.wav: drum set
+    BigTroubles_Phantom_RAW_02_04.wav: drum set
+    BigTroubles_Phantom_RAW_02_05.wav: drum set
+    BigTroubles_Phantom_RAW_02_06.wav: drum set
+    BigTroubles_Phantom_RAW_02_07.wav: drum set
+    BigTroubles_Phantom_RAW_02_08.wav: kick drum
+    BigTroubles_Phantom_RAW_02_09.wav: snare drum
+    BigTroubles_Phantom_RAW_02_10.wav: snare drum
+    BigTroubles_Phantom_RAW_03_01.wav: distorted electric guitar
+    BigTroubles_Phantom_RAW_03_02.wav: distorted electric guitar
+    BigTroubles_Phantom_RAW_03_03.wav: distorted electric guitar
+    BigTroubles_Phantom_RAW_03_04.wav: distorted electric guitar
+    BigTroubles_Phantom_RAW_03_05.wav: clean electric guitar
+    BigTroubles_Phantom_RAW_03_06.wav: clean electric guitar
+    BigTroubles_Phantom_RAW_03_07.wav: clean electric guitar
+    BigTroubles_Phantom_RAW_03_08.wav: clean electric guitar
+    BigTroubles_Phantom_RAW_03_09.wav: clean electric guitar
+    BigTroubles_Phantom_RAW_03_10.wav: clean electric guitar
+    BigTroubles_Phantom_RAW_03_11.wav: clean electric guitar
+    BigTroubles_Phantom_RAW_03_12.wav: clean electric guitar
+    BigTroubles_Phantom_RAW_03_13.wav: clean electric guitar
+    BigTroubles_Phantom_RAW_04_01.wav: male singer
+    BigTroubles_Phantom_RAW_05_01.wav: distorted electric guitar
+    BigTroubles_Phantom_RAW_05_02.wav: distorted electric guitar
+    BigTroubles_Phantom_RAW_05_03.wav: distorted electric guitar
+    BigTroubles_Phantom_RAW_05_04.wav: distorted electric guitar
+    BigTroubles_Phantom_RAW_06_01.wav: male singer
+    BigTroubles_Phantom_RAW_06_02.wav: male singer
+    BigTroubles_Phantom_RAW_07_01.wav: distorted electric guitar
+    BigTroubles_Phantom_RAW_07_02.wav: distorted electric guitar
+    BigTroubles_Phantom_RAW_07_03.wav: distorted electric guitar
+    BigTroubles_Phantom_RAW_07_04.wav: distorted electric guitar
+  MedleyDB_V1/V1/BrandonWebster_YesSirICanFly/BrandonWebster_YesSirICanFly_RAW:
+    BrandonWebster_YesSirICanFly_RAW_01_01.wav: piano
+    BrandonWebster_YesSirICanFly_RAW_01_02.wav: piano
+    BrandonWebster_YesSirICanFly_RAW_02_01.wav: male singer
+  MedleyDB_V1/V1/CelestialShore_DieForUs/CelestialShore_DieForUs_RAW:
+    CelestialShore_DieForUs_RAW_01_01.wav: male singer
+    CelestialShore_DieForUs_RAW_01_02.wav: male singer
+    CelestialShore_DieForUs_RAW_02_01.wav: female singer
+    CelestialShore_DieForUs_RAW_02_02.wav: female singer
+    CelestialShore_DieForUs_RAW_03_01.wav: electric bass
+    CelestialShore_DieForUs_RAW_03_02.wav: electric bass
+    CelestialShore_DieForUs_RAW_04_01.wav: synthesizer
+    CelestialShore_DieForUs_RAW_05_01.wav: clean electric guitar
+    CelestialShore_DieForUs_RAW_05_02.wav: clean electric guitar
+    CelestialShore_DieForUs_RAW_05_03.wav: clean electric guitar
+    CelestialShore_DieForUs_RAW_06_01.wav: drum set
+    CelestialShore_DieForUs_RAW_06_02.wav: drum set
+    CelestialShore_DieForUs_RAW_06_03.wav: drum set
+    CelestialShore_DieForUs_RAW_06_04.wav: drum set
+    CelestialShore_DieForUs_RAW_06_05.wav: drum set
+    CelestialShore_DieForUs_RAW_06_06.wav: drum set
+    CelestialShore_DieForUs_RAW_06_07.wav: drum set
+    CelestialShore_DieForUs_RAW_06_08.wav: kick drum
+    CelestialShore_DieForUs_RAW_06_09.wav: kick drum
+    CelestialShore_DieForUs_RAW_06_10.wav: snare drum
+    CelestialShore_DieForUs_RAW_06_11.wav: snare drum
+    CelestialShore_DieForUs_RAW_07_01.wav: tack piano
+    CelestialShore_DieForUs_RAW_07_02.wav: tack piano
+    CelestialShore_DieForUs_RAW_08_01.wav: clean electric guitar
+    CelestialShore_DieForUs_RAW_08_02.wav: clean electric guitar
+    CelestialShore_DieForUs_RAW_08_03.wav: clean electric guitar
+    CelestialShore_DieForUs_RAW_09_01.wav: synthesizer
+    CelestialShore_DieForUs_RAW_09_02.wav: synthesizer
+    CelestialShore_DieForUs_RAW_09_03.wav: synthesizer
+    CelestialShore_DieForUs_RAW_09_04.wav: synthesizer
+  MedleyDB_V1/V1/ChrisJacoby_BoothShotLincoln/ChrisJacoby_BoothShotLincoln_RAW:
+    ChrisJacoby_BoothShotLincoln_RAW_01_01.wav: drum machine
+    ChrisJacoby_BoothShotLincoln_RAW_02_01.wav: mandolin
+    ChrisJacoby_BoothShotLincoln_RAW_03_01.wav: clean electric guitar
+    ChrisJacoby_BoothShotLincoln_RAW_04_01.wav: tabla
+    ChrisJacoby_BoothShotLincoln_RAW_04_02.wav: tabla
+  MedleyDB_V1/V1/ChrisJacoby_PigsFoot/ChrisJacoby_PigsFoot_RAW:
+    ChrisJacoby_PigsFoot_RAW_01_01.wav: kick drum
+    ChrisJacoby_PigsFoot_RAW_02_01.wav: mandolin
+    ChrisJacoby_PigsFoot_RAW_03_01.wav: electric bass
+    ChrisJacoby_PigsFoot_RAW_04_01.wav: tabla
+    ChrisJacoby_PigsFoot_RAW_04_02.wav: tabla
+  MedleyDB_V1/V1/ClaraBerryAndWooldog_AirTraffic/ClaraBerryAndWooldog_AirTraffic_RAW:
+    ClaraBerryAndWooldog_AirTraffic_RAW_01_01.wav: drum set
+    ClaraBerryAndWooldog_AirTraffic_RAW_02_01.wav: timpani
+    ClaraBerryAndWooldog_AirTraffic_RAW_03_01.wav: electric bass
+    ClaraBerryAndWooldog_AirTraffic_RAW_04_01.wav: clean electric guitar
+    ClaraBerryAndWooldog_AirTraffic_RAW_05_01.wav: lap steel guitar
+    ClaraBerryAndWooldog_AirTraffic_RAW_06_01.wav: piano
+    ClaraBerryAndWooldog_AirTraffic_RAW_07_01.wav: female singer
+    ClaraBerryAndWooldog_AirTraffic_RAW_08_01.wav: female singer
+  MedleyDB_V1/V1/ClaraBerryAndWooldog_Boys/ClaraBerryAndWooldog_Boys_RAW:
+    ClaraBerryAndWooldog_Boys_RAW_01_01.wav: bass drum
+    ClaraBerryAndWooldog_Boys_RAW_01_02.wav: bass drum
+    ClaraBerryAndWooldog_Boys_RAW_01_03.wav: snare drum
+    ClaraBerryAndWooldog_Boys_RAW_01_04.wav: tambourine
+    ClaraBerryAndWooldog_Boys_RAW_01_05.wav: fx/processed sound
+    ClaraBerryAndWooldog_Boys_RAW_01_06.wav: drum set
+    ClaraBerryAndWooldog_Boys_RAW_01_07.wav: drum set
+    ClaraBerryAndWooldog_Boys_RAW_02_01.wav: snare drum
+    ClaraBerryAndWooldog_Boys_RAW_02_02.wav: snare drum
+    ClaraBerryAndWooldog_Boys_RAW_03_01.wav: brass section
+    ClaraBerryAndWooldog_Boys_RAW_03_02.wav: brass section
+    ClaraBerryAndWooldog_Boys_RAW_04_01.wav: timpani
+    ClaraBerryAndWooldog_Boys_RAW_04_02.wav: timpani
+    ClaraBerryAndWooldog_Boys_RAW_04_03.wav: synthesizer
+    ClaraBerryAndWooldog_Boys_RAW_05_01.wav: piano
+    ClaraBerryAndWooldog_Boys_RAW_05_02.wav: piano
+    ClaraBerryAndWooldog_Boys_RAW_05_03.wav: piano
+    ClaraBerryAndWooldog_Boys_RAW_05_04.wav: piano
+    ClaraBerryAndWooldog_Boys_RAW_05_05.wav: piano
+    ClaraBerryAndWooldog_Boys_RAW_06_01.wav: female singer
+    ClaraBerryAndWooldog_Boys_RAW_07_01.wav: female singer
+    ClaraBerryAndWooldog_Boys_RAW_07_02.wav: female singer
+    ClaraBerryAndWooldog_Boys_RAW_07_03.wav: female singer
+    ClaraBerryAndWooldog_Boys_RAW_08_01.wav: tenor saxophone
+    ClaraBerryAndWooldog_Boys_RAW_08_02.wav: tenor saxophone
+    ClaraBerryAndWooldog_Boys_RAW_09_01.wav: tack piano
+  MedleyDB_V1/V1/ClaraBerryAndWooldog_TheBadGuys/ClaraBerryAndWooldog_TheBadGuys_RAW:
+    ClaraBerryAndWooldog_TheBadGuys_RAW_01_01.wav: piano
+    ClaraBerryAndWooldog_TheBadGuys_RAW_01_02.wav: piano
+    ClaraBerryAndWooldog_TheBadGuys_RAW_02_01.wav: female singer
+    ClaraBerryAndWooldog_TheBadGuys_RAW_02_02.wav: fx/processed sound
+    ClaraBerryAndWooldog_TheBadGuys_RAW_02_03.wav: fx/processed sound
+  MedleyDB_V1/V1/ClaraBerryAndWooldog_WaltzForMyVictims/ClaraBerryAndWooldog_WaltzForMyVictims_RAW:
+    ClaraBerryAndWooldog_WaltzForMyVictims_RAW_01_01.wav: kick drum
+    ClaraBerryAndWooldog_WaltzForMyVictims_RAW_01_02.wav: drum set
+    ClaraBerryAndWooldog_WaltzForMyVictims_RAW_02_01.wav: electric bass
+    ClaraBerryAndWooldog_WaltzForMyVictims_RAW_03_01.wav: piano
+    ClaraBerryAndWooldog_WaltzForMyVictims_RAW_04_01.wav: glockenspiel
+    ClaraBerryAndWooldog_WaltzForMyVictims_RAW_05_01.wav: female singer
+  MedleyDB_V1/V1/Creepoid_OldTree/Creepoid_OldTree_RAW:
+    Creepoid_OldTree_RAW_01_01.wav: female singer
+    Creepoid_OldTree_RAW_01_02.wav: female singer
+    Creepoid_OldTree_RAW_01_03.wav: female singer
+    Creepoid_OldTree_RAW_01_04.wav: female singer
+    Creepoid_OldTree_RAW_01_05.wav: female singer
+    Creepoid_OldTree_RAW_02_01.wav: electric bass
+    Creepoid_OldTree_RAW_02_02.wav: electric bass
+    Creepoid_OldTree_RAW_03_01.wav: male singer
+    Creepoid_OldTree_RAW_04_01.wav: drum set
+    Creepoid_OldTree_RAW_04_02.wav: drum set
+    Creepoid_OldTree_RAW_04_03.wav: drum set
+    Creepoid_OldTree_RAW_04_04.wav: drum set
+    Creepoid_OldTree_RAW_04_05.wav: drum set
+    Creepoid_OldTree_RAW_04_06.wav: drum set
+    Creepoid_OldTree_RAW_04_07.wav: drum set
+    Creepoid_OldTree_RAW_04_08.wav: drum set
+    Creepoid_OldTree_RAW_04_09.wav: kick drum
+    Creepoid_OldTree_RAW_04_10.wav: drum set
+    Creepoid_OldTree_RAW_04_11.wav: drum set
+    Creepoid_OldTree_RAW_04_12.wav: snare drum
+    Creepoid_OldTree_RAW_05_01.wav: distorted electric guitar
+    Creepoid_OldTree_RAW_05_02.wav: distorted electric guitar
+    Creepoid_OldTree_RAW_05_03.wav: distorted electric guitar
+    Creepoid_OldTree_RAW_06_01.wav: distorted electric guitar
+    Creepoid_OldTree_RAW_06_02.wav: distorted electric guitar
+    Creepoid_OldTree_RAW_06_03.wav: distorted electric guitar
+    Creepoid_OldTree_RAW_06_04.wav: distorted electric guitar
+    Creepoid_OldTree_RAW_07_01.wav: male singer
+    Creepoid_OldTree_RAW_07_02.wav: male singer
+    Creepoid_OldTree_RAW_08_01.wav: male singer
+    Creepoid_OldTree_RAW_08_02.wav: male singer
+    Creepoid_OldTree_RAW_09_01.wav: male singer
+    Creepoid_OldTree_RAW_09_02.wav: male singer
+    Creepoid_OldTree_RAW_10_01.wav: sleigh bells
+    Creepoid_OldTree_RAW_10_02.wav: sleigh bells
+    Creepoid_OldTree_RAW_10_03.wav: shaker
+    Creepoid_OldTree_RAW_10_04.wav: shaker
+    Creepoid_OldTree_RAW_10_05.wav: fx/processed sound
+    Creepoid_OldTree_RAW_10_06.wav: tambourine
+    Creepoid_OldTree_RAW_10_07.wav: tambourine
+  MedleyDB_V1/V1/CroqueMadame_Oil/CroqueMadame_Oil_RAW:
+    CroqueMadame_Oil_RAW_01_01.wav: piano
+    CroqueMadame_Oil_RAW_01_02.wav: piano
+    CroqueMadame_Oil_RAW_02_01.wav: clean electric guitar
+    CroqueMadame_Oil_RAW_02_02.wav: clean electric guitar
+    CroqueMadame_Oil_RAW_03_01.wav: double bass
+    CroqueMadame_Oil_RAW_03_02.wav: double bass
+    CroqueMadame_Oil_RAW_04_01.wav: kick drum
+    CroqueMadame_Oil_RAW_04_02.wav: snare drum
+    CroqueMadame_Oil_RAW_04_03.wav: snare drum
+    CroqueMadame_Oil_RAW_04_04.wav: toms
+    CroqueMadame_Oil_RAW_04_05.wav: toms
+    CroqueMadame_Oil_RAW_04_06.wav: cymbal
+    CroqueMadame_Oil_RAW_04_07.wav: high hat
+    CroqueMadame_Oil_RAW_04_08.wav: cymbal
+    CroqueMadame_Oil_RAW_04_09.wav: drum set
+    CroqueMadame_Oil_RAW_04_10.wav: drum set
+  MedleyDB_V1/V1/CroqueMadame_Pilot/CroqueMadame_Pilot_RAW:
+    CroqueMadame_Pilot_RAW_01_01.wav: piano
+    CroqueMadame_Pilot_RAW_01_02.wav: piano
+    CroqueMadame_Pilot_RAW_02_01.wav: clean electric guitar
+    CroqueMadame_Pilot_RAW_02_02.wav: clean electric guitar
+    CroqueMadame_Pilot_RAW_03_01.wav: double bass
+    CroqueMadame_Pilot_RAW_03_02.wav: double bass
+    CroqueMadame_Pilot_RAW_04_01.wav: kick drum
+    CroqueMadame_Pilot_RAW_04_02.wav: snare drum
+    CroqueMadame_Pilot_RAW_04_03.wav: snare drum
+    CroqueMadame_Pilot_RAW_04_04.wav: toms
+    CroqueMadame_Pilot_RAW_04_05.wav: toms
+    CroqueMadame_Pilot_RAW_04_06.wav: cymbal
+    CroqueMadame_Pilot_RAW_04_07.wav: high hat
+    CroqueMadame_Pilot_RAW_04_08.wav: cymbal
+    CroqueMadame_Pilot_RAW_04_09.wav: drum set
+    CroqueMadame_Pilot_RAW_04_10.wav: drum set
+  MedleyDB_V1/V1/Debussy_LenfantProdigue/Debussy_LenfantProdigue_RAW:
+    Debussy_LenfantProdigue_RAW_01_01.wav: male singer
+    Debussy_LenfantProdigue_RAW_02_01.wav: piano
+    Debussy_LenfantProdigue_RAW_02_02.wav: piano
+    Debussy_LenfantProdigue_RAW_02_03.wav: piano
+    Debussy_LenfantProdigue_RAW_02_04.wav: piano
+  MedleyDB_V1/V1/DreamersOfTheGhetto_HeavyLove/DreamersOfTheGhetto_HeavyLove_RAW:
+    DreamersOfTheGhetto_HeavyLove_RAW_01_01.wav: electric bass
+    DreamersOfTheGhetto_HeavyLove_RAW_01_02.wav: electric bass
+    DreamersOfTheGhetto_HeavyLove_RAW_02_01.wav: male singer
+    DreamersOfTheGhetto_HeavyLove_RAW_02_02.wav: male singer
+    DreamersOfTheGhetto_HeavyLove_RAW_02_03.wav: male singer
+    DreamersOfTheGhetto_HeavyLove_RAW_02_04.wav: male singer
+    DreamersOfTheGhetto_HeavyLove_RAW_02_05.wav: male singer
+    DreamersOfTheGhetto_HeavyLove_RAW_02_06.wav: male singer
+    DreamersOfTheGhetto_HeavyLove_RAW_03_01.wav: cymbal
+    DreamersOfTheGhetto_HeavyLove_RAW_03_02.wav: cymbal
+    DreamersOfTheGhetto_HeavyLove_RAW_03_03.wav: fx/processed sound
+    DreamersOfTheGhetto_HeavyLove_RAW_03_04.wav: fx/processed sound
+    DreamersOfTheGhetto_HeavyLove_RAW_04_01.wav: shaker
+    DreamersOfTheGhetto_HeavyLove_RAW_04_02.wav: tambourine
+    DreamersOfTheGhetto_HeavyLove_RAW_05_01.wav: drum set
+    DreamersOfTheGhetto_HeavyLove_RAW_05_02.wav: drum set
+    DreamersOfTheGhetto_HeavyLove_RAW_05_03.wav: kick drum
+    DreamersOfTheGhetto_HeavyLove_RAW_05_04.wav: drum set
+    DreamersOfTheGhetto_HeavyLove_RAW_05_05.wav: drum set
+    DreamersOfTheGhetto_HeavyLove_RAW_05_06.wav: drum set
+    DreamersOfTheGhetto_HeavyLove_RAW_05_07.wav: drum set
+    DreamersOfTheGhetto_HeavyLove_RAW_05_08.wav: toms
+    DreamersOfTheGhetto_HeavyLove_RAW_05_09.wav: toms
+    DreamersOfTheGhetto_HeavyLove_RAW_06_01.wav: male singer
+    DreamersOfTheGhetto_HeavyLove_RAW_06_02.wav: male singer
+    DreamersOfTheGhetto_HeavyLove_RAW_06_03.wav: male singer
+    DreamersOfTheGhetto_HeavyLove_RAW_07_01.wav: synthesizer
+    DreamersOfTheGhetto_HeavyLove_RAW_07_02.wav: synthesizer
+    DreamersOfTheGhetto_HeavyLove_RAW_08_01.wav: female singer
+    DreamersOfTheGhetto_HeavyLove_RAW_09_01.wav: synthesizer
+  MedleyDB_V1/V1/EthanHein_1930sSynthAndUprightBass/EthanHein_1930sSynthAndUprightBass_RAW:
+    EthanHein_1930sSynthAndUprightBass_RAW_01_01.wav: drum machine
+    EthanHein_1930sSynthAndUprightBass_RAW_01_02.wav: drum machine
+    EthanHein_1930sSynthAndUprightBass_RAW_02_01.wav: fx/processed sound
+    EthanHein_1930sSynthAndUprightBass_RAW_02_02.wav: fx/processed sound
+    EthanHein_1930sSynthAndUprightBass_RAW_03_01.wav: synthesizer
+    EthanHein_1930sSynthAndUprightBass_RAW_03_02.wav: synthesizer
+    EthanHein_1930sSynthAndUprightBass_RAW_04_01.wav: double bass
+    EthanHein_1930sSynthAndUprightBass_RAW_04_02.wav: double bass
+  MedleyDB_V1/V1/EthanHein_GirlOnABridge/EthanHein_GirlOnABridge_RAW:
+    EthanHein_GirlOnABridge_RAW_01_01.wav: auxiliary percussion
+    EthanHein_GirlOnABridge_RAW_01_02.wav: auxiliary percussion
+    EthanHein_GirlOnABridge_RAW_02_01.wav: piano
+    EthanHein_GirlOnABridge_RAW_02_02.wav: piano
+    EthanHein_GirlOnABridge_RAW_03_01.wav: synthesizer
+    EthanHein_GirlOnABridge_RAW_03_02.wav: synthesizer
+    EthanHein_GirlOnABridge_RAW_04_01.wav: string section
+    EthanHein_GirlOnABridge_RAW_04_02.wav: string section
+    EthanHein_GirlOnABridge_RAW_05_01.wav: distorted electric guitar
+  MedleyDB_V1/V1/EthanHein_HarmonicaFigure/EthanHein_HarmonicaFigure_RAW:
+    EthanHein_HarmonicaFigure_RAW_01_01.wav: drum machine
+    EthanHein_HarmonicaFigure_RAW_01_02.wav: drum machine
+    EthanHein_HarmonicaFigure_RAW_02_01.wav: drum machine
+    EthanHein_HarmonicaFigure_RAW_02_02.wav: drum machine
+    EthanHein_HarmonicaFigure_RAW_03_01.wav: synthesizer
+    EthanHein_HarmonicaFigure_RAW_04_01.wav: synthesizer
+    EthanHein_HarmonicaFigure_RAW_05_01.wav: harmonica
+  MedleyDB_V1/V1/FamilyBand_Again/FamilyBand_Again_RAW:
+    FamilyBand_Again_RAW_01_01.wav: electric bass
+    FamilyBand_Again_RAW_01_02.wav: electric bass
+    FamilyBand_Again_RAW_01_03.wav: electric bass
+    FamilyBand_Again_RAW_01_04.wav: electric bass
+    FamilyBand_Again_RAW_02_01.wav: male singer
+    FamilyBand_Again_RAW_02_02.wav: female singer
+    FamilyBand_Again_RAW_02_03.wav: female singer
+    FamilyBand_Again_RAW_02_04.wav: female singer
+    FamilyBand_Again_RAW_02_05.wav: female singer
+    FamilyBand_Again_RAW_02_06.wav: female singer
+    FamilyBand_Again_RAW_02_07.wav: male singer
+    FamilyBand_Again_RAW_03_01.wav: drum set
+    FamilyBand_Again_RAW_03_02.wav: kick drum
+    FamilyBand_Again_RAW_03_03.wav: snare drum
+    FamilyBand_Again_RAW_04_01.wav: acoustic guitar
+    FamilyBand_Again_RAW_05_01.wav: clean electric guitar
+    FamilyBand_Again_RAW_05_02.wav: clean electric guitar
+    FamilyBand_Again_RAW_05_03.wav: clean electric guitar
+    FamilyBand_Again_RAW_06_01.wav: distorted electric guitar
+    FamilyBand_Again_RAW_06_02.wav: distorted electric guitar
+    FamilyBand_Again_RAW_07_01.wav: lap steel guitar
+    FamilyBand_Again_RAW_07_02.wav: lap steel guitar
+    FamilyBand_Again_RAW_07_03.wav: lap steel guitar
+    FamilyBand_Again_RAW_07_04.wav: lap steel guitar
+    FamilyBand_Again_RAW_07_05.wav: lap steel guitar
+    FamilyBand_Again_RAW_07_06.wav: lap steel guitar
+    FamilyBand_Again_RAW_08_01.wav: lap steel guitar
+    FamilyBand_Again_RAW_08_02.wav: lap steel guitar
+    FamilyBand_Again_RAW_09_01.wav: female singer
+    FamilyBand_Again_RAW_10_01.wav: melodica
+    FamilyBand_Again_RAW_10_02.wav: melodica
+    FamilyBand_Again_RAW_11_01.wav: shaker
+    FamilyBand_Again_RAW_11_02.wav: tambourine
+  MedleyDB_V1/V1/Grants_PunchDrunk/Grants_PunchDrunk_RAW:
+    Grants_PunchDrunk_RAW_01_01.wav: sampler
+    Grants_PunchDrunk_RAW_01_02.wav: sampler
+    Grants_PunchDrunk_RAW_02_01.wav: electric bass
+    Grants_PunchDrunk_RAW_02_02.wav: electric bass
+    Grants_PunchDrunk_RAW_02_03.wav: electric bass
+    Grants_PunchDrunk_RAW_03_01.wav: male rapper
+    Grants_PunchDrunk_RAW_03_02.wav: male rapper
+    Grants_PunchDrunk_RAW_03_03.wav: male rapper
+    Grants_PunchDrunk_RAW_04_01.wav: male rapper
+    Grants_PunchDrunk_RAW_04_02.wav: male rapper
+    Grants_PunchDrunk_RAW_05_01.wav: high hat
+    Grants_PunchDrunk_RAW_05_02.wav: kick drum
+    Grants_PunchDrunk_RAW_05_03.wav: snare drum
+    Grants_PunchDrunk_RAW_05_04.wav: snare drum
+    Grants_PunchDrunk_RAW_05_05.wav: snare drum
+    Grants_PunchDrunk_RAW_06_01.wav: fx/processed sound
+    Grants_PunchDrunk_RAW_06_02.wav: fx/processed sound
+    Grants_PunchDrunk_RAW_06_03.wav: fx/processed sound
+    Grants_PunchDrunk_RAW_06_04.wav: fx/processed sound
+    Grants_PunchDrunk_RAW_06_05.wav: fx/processed sound
+    Grants_PunchDrunk_RAW_06_06.wav: fx/processed sound
+    Grants_PunchDrunk_RAW_07_01.wav: male rapper
+    Grants_PunchDrunk_RAW_07_02.wav: male rapper
+    Grants_PunchDrunk_RAW_08_01.wav: vocalists
+    Grants_PunchDrunk_RAW_08_02.wav: vocalists
+    Grants_PunchDrunk_RAW_08_03.wav: fx/processed sound
+    Grants_PunchDrunk_RAW_08_04.wav: fx/processed sound
+    Grants_PunchDrunk_RAW_08_05.wav: fx/processed sound
+    Grants_PunchDrunk_RAW_08_06.wav: fx/processed sound
+    Grants_PunchDrunk_RAW_08_07.wav: vocalists
+    Grants_PunchDrunk_RAW_09_01.wav: piano
+    Grants_PunchDrunk_RAW_09_02.wav: piano
+    Grants_PunchDrunk_RAW_09_03.wav: piano
+    Grants_PunchDrunk_RAW_09_04.wav: piano
+    Grants_PunchDrunk_RAW_09_05.wav: piano
+    Grants_PunchDrunk_RAW_09_06.wav: piano
+    Grants_PunchDrunk_RAW_10_01.wav: fx/processed sound
+    Grants_PunchDrunk_RAW_10_02.wav: fx/processed sound
+    Grants_PunchDrunk_RAW_10_03.wav: fx/processed sound
+    Grants_PunchDrunk_RAW_10_04.wav: fx/processed sound
+  MedleyDB_V1/V1/Handel_TornamiAVagheggiar/Handel_TornamiAVagheggiar_RAW:
+    Handel_TornamiAVagheggiar_RAW_01_01.wav: female singer
+    Handel_TornamiAVagheggiar_RAW_02_01.wav: piano
+    Handel_TornamiAVagheggiar_RAW_02_02.wav: piano
+    Handel_TornamiAVagheggiar_RAW_02_03.wav: piano
+    Handel_TornamiAVagheggiar_RAW_02_04.wav: piano
+  MedleyDB_V1/V1/HopAlong_SisterCities/HopAlong_SisterCities_RAW:
+    HopAlong_SisterCities_RAW_01_01.wav: acoustic guitar
+    HopAlong_SisterCities_RAW_01_02.wav: acoustic guitar
+    HopAlong_SisterCities_RAW_01_03.wav: acoustic guitar
+    HopAlong_SisterCities_RAW_01_04.wav: acoustic guitar
+    HopAlong_SisterCities_RAW_02_01.wav: electric bass
+    HopAlong_SisterCities_RAW_02_02.wav: electric bass
+    HopAlong_SisterCities_RAW_03_01.wav: female singer
+    HopAlong_SisterCities_RAW_03_02.wav: female singer
+    HopAlong_SisterCities_RAW_03_03.wav: female singer
+    HopAlong_SisterCities_RAW_04_01.wav: drum set
+    HopAlong_SisterCities_RAW_04_02.wav: drum set
+    HopAlong_SisterCities_RAW_04_03.wav: drum set
+    HopAlong_SisterCities_RAW_04_04.wav: kick drum
+    HopAlong_SisterCities_RAW_04_05.wav: kick drum
+    HopAlong_SisterCities_RAW_04_06.wav: drum set
+    HopAlong_SisterCities_RAW_04_07.wav: drum set
+    HopAlong_SisterCities_RAW_04_08.wav: snare drum
+    HopAlong_SisterCities_RAW_04_09.wav: snare drum
+    HopAlong_SisterCities_RAW_04_10.wav: toms
+    HopAlong_SisterCities_RAW_04_11.wav: toms
+    HopAlong_SisterCities_RAW_05_01.wav: synthesizer
+    HopAlong_SisterCities_RAW_05_02.wav: synthesizer
+    HopAlong_SisterCities_RAW_05_03.wav: vibraphone
+    HopAlong_SisterCities_RAW_06_01.wav: distorted electric guitar
+    HopAlong_SisterCities_RAW_06_02.wav: distorted electric guitar
+    HopAlong_SisterCities_RAW_07_01.wav: female singer
+    HopAlong_SisterCities_RAW_08_01.wav: distorted electric guitar
+    HopAlong_SisterCities_RAW_08_02.wav: distorted electric guitar
+    HopAlong_SisterCities_RAW_08_03.wav: distorted electric guitar
+  MedleyDB_V1/V1/InvisibleFamiliars_DisturbingWildlife/InvisibleFamiliars_DisturbingWildlife_RAW:
+    InvisibleFamiliars_DisturbingWildlife_RAW_01_01.wav: electric bass
+    InvisibleFamiliars_DisturbingWildlife_RAW_02_01.wav: claps
+    InvisibleFamiliars_DisturbingWildlife_RAW_02_02.wav: claps
+    InvisibleFamiliars_DisturbingWildlife_RAW_03_01.wav: trumpet
+    InvisibleFamiliars_DisturbingWildlife_RAW_03_02.wav: trumpet
+    InvisibleFamiliars_DisturbingWildlife_RAW_03_03.wav: trumpet
+    InvisibleFamiliars_DisturbingWildlife_RAW_04_01.wav: toms
+    InvisibleFamiliars_DisturbingWildlife_RAW_04_02.wav: drum set
+    InvisibleFamiliars_DisturbingWildlife_RAW_04_03.wav: drum set
+    InvisibleFamiliars_DisturbingWildlife_RAW_04_04.wav: drum set
+    InvisibleFamiliars_DisturbingWildlife_RAW_04_05.wav: toms
+    InvisibleFamiliars_DisturbingWildlife_RAW_04_06.wav: drum set
+    InvisibleFamiliars_DisturbingWildlife_RAW_04_07.wav: drum set
+    InvisibleFamiliars_DisturbingWildlife_RAW_04_08.wav: kick drum
+    InvisibleFamiliars_DisturbingWildlife_RAW_04_09.wav: snare drum
+    InvisibleFamiliars_DisturbingWildlife_RAW_04_10.wav: snare drum
+    InvisibleFamiliars_DisturbingWildlife_RAW_05_01.wav: clean electric guitar
+    InvisibleFamiliars_DisturbingWildlife_RAW_05_02.wav: clean electric guitar
+    InvisibleFamiliars_DisturbingWildlife_RAW_05_03.wav: clean electric guitar
+    InvisibleFamiliars_DisturbingWildlife_RAW_06_01.wav: shaker
+    InvisibleFamiliars_DisturbingWildlife_RAW_07_01.wav: male singer
+    InvisibleFamiliars_DisturbingWildlife_RAW_07_02.wav: male singer
+    InvisibleFamiliars_DisturbingWildlife_RAW_08_01.wav: female singer
+    InvisibleFamiliars_DisturbingWildlife_RAW_08_02.wav: female singer
+    InvisibleFamiliars_DisturbingWildlife_RAW_08_03.wav: female singer
+    InvisibleFamiliars_DisturbingWildlife_RAW_09_01.wav: male singer
+    InvisibleFamiliars_DisturbingWildlife_RAW_09_02.wav: male singer
+    InvisibleFamiliars_DisturbingWildlife_RAW_10_01.wav: tack piano
+  MedleyDB_V1/V1/JoelHelander_Definition/JoelHelander_Definition_RAW:
+    JoelHelander_Definition_RAW_01_01.wav: piano
+    JoelHelander_Definition_RAW_01_02.wav: piano
+    JoelHelander_Definition_RAW_01_03.wav: piano
+    JoelHelander_Definition_RAW_01_04.wav: piano
+    JoelHelander_Definition_RAW_01_05.wav: piano
+    JoelHelander_Definition_RAW_01_06.wav: piano
+    JoelHelander_Definition_RAW_01_07.wav: piano
+    JoelHelander_Definition_RAW_01_08.wav: piano
+    JoelHelander_Definition_RAW_02_01.wav: violin
+    JoelHelander_Definition_RAW_03_01.wav: violin
+    JoelHelander_Definition_RAW_04_01.wav: viola
+    JoelHelander_Definition_RAW_05_01.wav: cello
+    JoelHelander_Definition_RAW_06_01.wav: string section
+    JoelHelander_Definition_RAW_06_02.wav: string section
+    JoelHelander_Definition_RAW_06_03.wav: string section
+    JoelHelander_Definition_RAW_06_04.wav: string section
+    JoelHelander_Definition_RAW_07_01.wav: chimes
+    JoelHelander_Definition_RAW_07_02.wav: chimes
+    JoelHelander_Definition_RAW_08_01.wav: snare drum
+    JoelHelander_Definition_RAW_08_02.wav: snare drum
+    JoelHelander_Definition_RAW_08_03.wav: snare drum
+    JoelHelander_Definition_RAW_08_04.wav: snare drum
+    JoelHelander_Definition_RAW_08_05.wav: snare drum
+    JoelHelander_Definition_RAW_08_06.wav: snare drum
+    JoelHelander_Definition_RAW_08_07.wav: snare drum
+    JoelHelander_Definition_RAW_08_08.wav: snare drum
+    JoelHelander_Definition_RAW_08_09.wav: snare drum
+    JoelHelander_Definition_RAW_08_10.wav: snare drum
+    JoelHelander_Definition_RAW_08_11.wav: snare drum
+    JoelHelander_Definition_RAW_08_12.wav: snare drum
+    JoelHelander_Definition_RAW_08_13.wav: snare drum
+    JoelHelander_Definition_RAW_08_14.wav: snare drum
+    JoelHelander_Definition_RAW_09_01.wav: flute
+    JoelHelander_Definition_RAW_09_02.wav: flute
+    JoelHelander_Definition_RAW_10_01.wav: flute
+    JoelHelander_Definition_RAW_10_02.wav: flute
+    JoelHelander_Definition_RAW_11_01.wav: french horn
+    JoelHelander_Definition_RAW_12_01.wav: bassoon
+    JoelHelander_Definition_RAW_13_01.wav: horn section
+    JoelHelander_Definition_RAW_13_02.wav: horn section
+    JoelHelander_Definition_RAW_14_01.wav: trombone
+    JoelHelander_Definition_RAW_14_02.wav: trombone
+    JoelHelander_Definition_RAW_15_01.wav: trumpet
+    JoelHelander_Definition_RAW_15_02.wav: trumpet
+  MedleyDB_V1/V1/JoelHelander_IntheAtticBedroom/JoelHelander_IntheAtticBedroom_RAW:
+    JoelHelander_IntheAtticBedroom_RAW_01_01.wav: violin
+    JoelHelander_IntheAtticBedroom_RAW_02_01.wav: violin
+    JoelHelander_IntheAtticBedroom_RAW_03_01.wav: viola
+    JoelHelander_IntheAtticBedroom_RAW_04_01.wav: cello
+    JoelHelander_IntheAtticBedroom_RAW_05_01.wav: Main System
+    JoelHelander_IntheAtticBedroom_RAW_05_02.wav: Main System
+  MedleyDB_V1/V1/KarimDouaidy_Hopscotch/KarimDouaidy_Hopscotch_RAW:
+    KarimDouaidy_Hopscotch_RAW_01_01.wav: electric bass
+    KarimDouaidy_Hopscotch_RAW_02_01.wav: acoustic guitar
+    KarimDouaidy_Hopscotch_RAW_03_01.wav: claps
+    KarimDouaidy_Hopscotch_RAW_03_02.wav: claps
+    KarimDouaidy_Hopscotch_RAW_03_03.wav: claps
+    KarimDouaidy_Hopscotch_RAW_03_04.wav: claps
+    KarimDouaidy_Hopscotch_RAW_03_05.wav: claps
+    KarimDouaidy_Hopscotch_RAW_03_06.wav: claps
+    KarimDouaidy_Hopscotch_RAW_04_01.wav: darbuka
+    KarimDouaidy_Hopscotch_RAW_05_01.wav: doumbek
+    KarimDouaidy_Hopscotch_RAW_06_01.wav: acoustic guitar
+    KarimDouaidy_Hopscotch_RAW_07_01.wav: oud
+    KarimDouaidy_Hopscotch_RAW_08_01.wav: auxiliary percussion
+    KarimDouaidy_Hopscotch_RAW_09_01.wav: piano
+    KarimDouaidy_Hopscotch_RAW_09_02.wav: piano
+  MedleyDB_V1/V1/KarimDouaidy_Yatora/KarimDouaidy_Yatora_RAW:
+    KarimDouaidy_Yatora_RAW_01_01.wav: darbuka
+    KarimDouaidy_Yatora_RAW_01_02.wav: darbuka
+    KarimDouaidy_Yatora_RAW_01_03.wav: doumbek
+    KarimDouaidy_Yatora_RAW_01_04.wav: doumbek
+    KarimDouaidy_Yatora_RAW_02_01.wav: acoustic guitar
+    KarimDouaidy_Yatora_RAW_02_02.wav: acoustic guitar
+    KarimDouaidy_Yatora_RAW_03_01.wav: oud
+    KarimDouaidy_Yatora_RAW_04_01.wav: electric bass
+    KarimDouaidy_Yatora_RAW_05_01.wav: piano
+    KarimDouaidy_Yatora_RAW_05_02.wav: piano
+  MedleyDB_V1/V1/LizNelson_Coldwar/LizNelson_Coldwar_RAW:
+    LizNelson_Coldwar_RAW_01_01.wav: acoustic guitar
+    LizNelson_Coldwar_RAW_02_01.wav: female singer
+  MedleyDB_V1/V1/LizNelson_ImComingHome/LizNelson_ImComingHome_RAW:
+    LizNelson_ImComingHome_RAW_01_01.wav: female singer
+    LizNelson_ImComingHome_RAW_02_01.wav: female singer
+    LizNelson_ImComingHome_RAW_03_01.wav: female singer
+    LizNelson_ImComingHome_RAW_04_01.wav: female singer
+  MedleyDB_V1/V1/LizNelson_Rainfall/LizNelson_Rainfall_RAW:
+    LizNelson_Rainfall_RAW_01_01.wav: female singer
+    LizNelson_Rainfall_RAW_02_01.wav: female singer
+    LizNelson_Rainfall_RAW_03_01.wav: female singer
+    LizNelson_Rainfall_RAW_04_01.wav: acoustic guitar
+    LizNelson_Rainfall_RAW_05_01.wav: clean electric guitar
+  MedleyDB_V1/V1/Lushlife_ToynbeeSuite/Lushlife_ToynbeeSuite_RAW:
+    Lushlife_ToynbeeSuite_RAW_01_01.wav: brass section
+    Lushlife_ToynbeeSuite_RAW_01_02.wav: brass section
+    Lushlife_ToynbeeSuite_RAW_02_01.wav: drum machine
+    Lushlife_ToynbeeSuite_RAW_03_01.wav: claps
+    Lushlife_ToynbeeSuite_RAW_04_01.wav: clarinet
+    Lushlife_ToynbeeSuite_RAW_05_01.wav: synthesizer
+    Lushlife_ToynbeeSuite_RAW_05_02.wav: synthesizer
+    Lushlife_ToynbeeSuite_RAW_06_01.wav: drum machine
+    Lushlife_ToynbeeSuite_RAW_06_02.wav: drum machine
+    Lushlife_ToynbeeSuite_RAW_06_03.wav: drum machine
+    Lushlife_ToynbeeSuite_RAW_06_04.wav: drum machine
+    Lushlife_ToynbeeSuite_RAW_06_05.wav: high hat
+    Lushlife_ToynbeeSuite_RAW_06_06.wav: drum machine
+    Lushlife_ToynbeeSuite_RAW_06_07.wav: snare drum
+    Lushlife_ToynbeeSuite_RAW_07_01.wav: drum set
+    Lushlife_ToynbeeSuite_RAW_07_02.wav: drum set
+    Lushlife_ToynbeeSuite_RAW_07_03.wav: drum set
+    Lushlife_ToynbeeSuite_RAW_07_04.wav: drum set
+    Lushlife_ToynbeeSuite_RAW_07_05.wav: drum set
+    Lushlife_ToynbeeSuite_RAW_07_06.wav: toms
+    Lushlife_ToynbeeSuite_RAW_07_07.wav: toms
+    Lushlife_ToynbeeSuite_RAW_07_08.wav: kick drum
+    Lushlife_ToynbeeSuite_RAW_07_09.wav: kick drum
+    Lushlife_ToynbeeSuite_RAW_07_10.wav: kick drum
+    Lushlife_ToynbeeSuite_RAW_07_11.wav: kick drum
+    Lushlife_ToynbeeSuite_RAW_07_12.wav: snare drum
+    Lushlife_ToynbeeSuite_RAW_07_13.wav: snare drum
+    Lushlife_ToynbeeSuite_RAW_08_01.wav: electric bass
+    Lushlife_ToynbeeSuite_RAW_08_02.wav: electric bass
+    Lushlife_ToynbeeSuite_RAW_08_03.wav: electric bass
+    Lushlife_ToynbeeSuite_RAW_09_01.wav: glockenspiel
+    Lushlife_ToynbeeSuite_RAW_09_02.wav: fx/processed sound
+    Lushlife_ToynbeeSuite_RAW_10_01.wav: clean electric guitar
+    Lushlife_ToynbeeSuite_RAW_10_02.wav: clean electric guitar
+    Lushlife_ToynbeeSuite_RAW_11_01.wav: clean electric guitar
+    Lushlife_ToynbeeSuite_RAW_11_02.wav: clean electric guitar
+    Lushlife_ToynbeeSuite_RAW_12_01.wav: clean electric guitar
+    Lushlife_ToynbeeSuite_RAW_12_02.wav: clean electric guitar
+    Lushlife_ToynbeeSuite_RAW_12_03.wav: clean electric guitar
+    Lushlife_ToynbeeSuite_RAW_13_01.wav: horn section
+    Lushlife_ToynbeeSuite_RAW_13_02.wav: horn section
+    Lushlife_ToynbeeSuite_RAW_14_01.wav: trumpet
+    Lushlife_ToynbeeSuite_RAW_14_02.wav: trumpet
+    Lushlife_ToynbeeSuite_RAW_15_01.wav: fx/processed sound
+    Lushlife_ToynbeeSuite_RAW_16_01.wav: synthesizer
+    Lushlife_ToynbeeSuite_RAW_17_01.wav: male rapper
+    Lushlife_ToynbeeSuite_RAW_18_01.wav: male rapper
+    Lushlife_ToynbeeSuite_RAW_19_01.wav: synthesizer
+    Lushlife_ToynbeeSuite_RAW_20_01.wav: fx/processed sound
+    Lushlife_ToynbeeSuite_RAW_21_01.wav: synthesizer
+    Lushlife_ToynbeeSuite_RAW_22_01.wav: drum machine
+    Lushlife_ToynbeeSuite_RAW_23_01.wav: piano
+    Lushlife_ToynbeeSuite_RAW_24_01.wav: string section
+    Lushlife_ToynbeeSuite_RAW_24_02.wav: string section
+    Lushlife_ToynbeeSuite_RAW_24_03.wav: string section
+    Lushlife_ToynbeeSuite_RAW_25_01.wav: scratches
+    Lushlife_ToynbeeSuite_RAW_26_01.wav: male rapper
+    Lushlife_ToynbeeSuite_RAW_26_02.wav: male rapper
+    Lushlife_ToynbeeSuite_RAW_26_03.wav: male rapper
+  MedleyDB_V1/V1/MatthewEntwistle_DontYouEver/MatthewEntwistle_DontYouEver_RAW:
+    MatthewEntwistle_DontYouEver_RAW_01_01.wav: double bass
+    MatthewEntwistle_DontYouEver_RAW_02_01.wav: piano
+    MatthewEntwistle_DontYouEver_RAW_03_01.wav: brass section
+    MatthewEntwistle_DontYouEver_RAW_04_01.wav: drum set
+    MatthewEntwistle_DontYouEver_RAW_05_01.wav: violin section
+    MatthewEntwistle_DontYouEver_RAW_06_01.wav: violin section
+    MatthewEntwistle_DontYouEver_RAW_07_01.wav: male singer
+  MedleyDB_V1/V1/MatthewEntwistle_FairerHopes/MatthewEntwistle_FairerHopes_RAW:
+    MatthewEntwistle_FairerHopes_RAW_01_01.wav: bass drum
+    MatthewEntwistle_FairerHopes_RAW_02_01.wav: cello section
+    MatthewEntwistle_FairerHopes_RAW_03_01.wav: cello section
+    MatthewEntwistle_FairerHopes_RAW_04_01.wav: cello section
+    MatthewEntwistle_FairerHopes_RAW_05_01.wav: clarinet section
+    MatthewEntwistle_FairerHopes_RAW_06_01.wav: cymbal
+    MatthewEntwistle_FairerHopes_RAW_07_01.wav: double bass
+    MatthewEntwistle_FairerHopes_RAW_08_01.wav: double bass
+    MatthewEntwistle_FairerHopes_RAW_09_01.wav: gong
+    MatthewEntwistle_FairerHopes_RAW_10_01.wav: harp
+    MatthewEntwistle_FairerHopes_RAW_11_01.wav: french horn
+    MatthewEntwistle_FairerHopes_RAW_12_01.wav: french horn
+    MatthewEntwistle_FairerHopes_RAW_13_01.wav: piano
+    MatthewEntwistle_FairerHopes_RAW_13_02.wav: piano
+    MatthewEntwistle_FairerHopes_RAW_14_01.wav: flute
+    MatthewEntwistle_FairerHopes_RAW_15_01.wav: string section
+    MatthewEntwistle_FairerHopes_RAW_16_01.wav: violin section
+    MatthewEntwistle_FairerHopes_RAW_17_01.wav: violin section
+    MatthewEntwistle_FairerHopes_RAW_18_01.wav: violin section
+  MedleyDB_V1/V1/MatthewEntwistle_ImpressionsOfSaturn/MatthewEntwistle_ImpressionsOfSaturn_RAW:
+    MatthewEntwistle_ImpressionsOfSaturn_RAW_01_01.wav: cello
+    MatthewEntwistle_ImpressionsOfSaturn_RAW_02_01.wav: fx/processed sound
+    MatthewEntwistle_ImpressionsOfSaturn_RAW_03_01.wav: fx/processed sound
+    MatthewEntwistle_ImpressionsOfSaturn_RAW_04_01.wav: fx/processed sound
+    MatthewEntwistle_ImpressionsOfSaturn_RAW_05_01.wav: fx/processed sound
+    MatthewEntwistle_ImpressionsOfSaturn_RAW_06_01.wav: piano
+    MatthewEntwistle_ImpressionsOfSaturn_RAW_06_02.wav: piano
+    MatthewEntwistle_ImpressionsOfSaturn_RAW_07_01.wav: viola
+    MatthewEntwistle_ImpressionsOfSaturn_RAW_08_01.wav: violin
+    MatthewEntwistle_ImpressionsOfSaturn_RAW_09_01.wav: violin
+  MedleyDB_V1/V1/MatthewEntwistle_Lontano/MatthewEntwistle_Lontano_RAW:
+    MatthewEntwistle_Lontano_RAW_01_01.wav: piano
+    MatthewEntwistle_Lontano_RAW_01_02.wav: piano
+    MatthewEntwistle_Lontano_RAW_02_01.wav: female singer
+  MedleyDB_V1/V1/MatthewEntwistle_TheArch/MatthewEntwistle_TheArch_RAW:
+    MatthewEntwistle_TheArch_RAW_01_01.wav: fx/processed sound
+    MatthewEntwistle_TheArch_RAW_02_01.wav: fx/processed sound
+    MatthewEntwistle_TheArch_RAW_03_01.wav: synthesizer
+    MatthewEntwistle_TheArch_RAW_04_01.wav: gong
+    MatthewEntwistle_TheArch_RAW_05_01.wav: cello section
+    MatthewEntwistle_TheArch_RAW_06_01.wav: cello section
+    MatthewEntwistle_TheArch_RAW_07_01.wav: flute section
+    MatthewEntwistle_TheArch_RAW_08_01.wav: fx/processed sound
+    MatthewEntwistle_TheArch_RAW_09_01.wav: french horn section
+    MatthewEntwistle_TheArch_RAW_10_01.wav: bamboo flute
+    MatthewEntwistle_TheArch_RAW_11_01.wav: piccolo
+    MatthewEntwistle_TheArch_RAW_12_01.wav: trombone section
+    MatthewEntwistle_TheArch_RAW_13_01.wav: trumpet section
+    MatthewEntwistle_TheArch_RAW_14_01.wav: viola section
+    MatthewEntwistle_TheArch_RAW_15_01.wav: violin section
+    MatthewEntwistle_TheArch_RAW_16_01.wav: violin section
+    MatthewEntwistle_TheArch_RAW_17_01.wav: fx/processed sound
+    MatthewEntwistle_TheArch_RAW_18_01.wav: piano
+    MatthewEntwistle_TheArch_RAW_19_01.wav: cymbal
+  MedleyDB_V1/V1/MatthewEntwistle_TheFlaxenField/MatthewEntwistle_TheFlaxenField_RAW:
+    MatthewEntwistle_TheFlaxenField_RAW_01_01.wav: cello
+    MatthewEntwistle_TheFlaxenField_RAW_02_01.wav: clarinet
+    MatthewEntwistle_TheFlaxenField_RAW_03_01.wav: piano
+    MatthewEntwistle_TheFlaxenField_RAW_03_02.wav: piano
+    MatthewEntwistle_TheFlaxenField_RAW_04_01.wav: violin
+    MatthewEntwistle_TheFlaxenField_RAW_05_01.wav: violin
+  MedleyDB_V1/V1/Meaxic_TakeAStep/Meaxic_TakeAStep_RAW:
+    Meaxic_TakeAStep_RAW_01_01.wav: electric bass
+    Meaxic_TakeAStep_RAW_02_01.wav: clean electric guitar
+    Meaxic_TakeAStep_RAW_02_02.wav: clean electric guitar
+    Meaxic_TakeAStep_RAW_03_01.wav: distorted electric guitar
+    Meaxic_TakeAStep_RAW_03_02.wav: distorted electric guitar
+    Meaxic_TakeAStep_RAW_03_03.wav: distorted electric guitar
+    Meaxic_TakeAStep_RAW_03_04.wav: distorted electric guitar
+    Meaxic_TakeAStep_RAW_03_05.wav: distorted electric guitar
+    Meaxic_TakeAStep_RAW_03_06.wav: distorted electric guitar
+    Meaxic_TakeAStep_RAW_04_01.wav: male singer
+    Meaxic_TakeAStep_RAW_05_01.wav: toms
+    Meaxic_TakeAStep_RAW_05_02.wav: snare drum
+    Meaxic_TakeAStep_RAW_05_03.wav: snare drum
+    Meaxic_TakeAStep_RAW_05_04.wav: kick drum
+    Meaxic_TakeAStep_RAW_05_05.wav: high hat
+    Meaxic_TakeAStep_RAW_05_06.wav: cymbal
+    Meaxic_TakeAStep_RAW_05_07.wav: drum set
+    Meaxic_TakeAStep_RAW_06_01.wav: male singer
+    Meaxic_TakeAStep_RAW_06_02.wav: male singer
+    Meaxic_TakeAStep_RAW_06_03.wav: male singer
+    Meaxic_TakeAStep_RAW_06_04.wav: male singer
+    Meaxic_TakeAStep_RAW_07_01.wav: male singer
+    Meaxic_TakeAStep_RAW_07_02.wav: male singer
+    Meaxic_TakeAStep_RAW_08_01.wav: vocalists
+  MedleyDB_V1/V1/Meaxic_YouListen/Meaxic_YouListen_RAW:
+    Meaxic_YouListen_RAW_01_01.wav: male singer
+    Meaxic_YouListen_RAW_01_02.wav: male singer
+    Meaxic_YouListen_RAW_01_03.wav: male singer
+    Meaxic_YouListen_RAW_02_01.wav: male singer
+    Meaxic_YouListen_RAW_02_02.wav: male singer
+    Meaxic_YouListen_RAW_02_03.wav: male singer
+    Meaxic_YouListen_RAW_02_04.wav: male singer
+    Meaxic_YouListen_RAW_02_05.wav: male singer
+    Meaxic_YouListen_RAW_02_06.wav: male singer
+    Meaxic_YouListen_RAW_02_07.wav: male singer
+    Meaxic_YouListen_RAW_02_08.wav: vocalists
+    Meaxic_YouListen_RAW_03_01.wav: acoustic guitar
+    Meaxic_YouListen_RAW_04_01.wav: electric bass
+    Meaxic_YouListen_RAW_05_01.wav: clean electric guitar
+    Meaxic_YouListen_RAW_05_02.wav: clean electric guitar
+    Meaxic_YouListen_RAW_05_03.wav: clean electric guitar
+    Meaxic_YouListen_RAW_05_04.wav: clean electric guitar
+    Meaxic_YouListen_RAW_05_05.wav: clean electric guitar
+    Meaxic_YouListen_RAW_05_06.wav: clean electric guitar
+    Meaxic_YouListen_RAW_06_01.wav: distorted electric guitar
+    Meaxic_YouListen_RAW_06_02.wav: distorted electric guitar
+    Meaxic_YouListen_RAW_06_03.wav: distorted electric guitar
+    Meaxic_YouListen_RAW_06_04.wav: distorted electric guitar
+    Meaxic_YouListen_RAW_06_05.wav: distorted electric guitar
+    Meaxic_YouListen_RAW_06_06.wav: distorted electric guitar
+    Meaxic_YouListen_RAW_06_07.wav: distorted electric guitar
+    Meaxic_YouListen_RAW_06_08.wav: distorted electric guitar
+    Meaxic_YouListen_RAW_07_01.wav: high hat
+    Meaxic_YouListen_RAW_07_02.wav: kick drum
+    Meaxic_YouListen_RAW_07_03.wav: snare drum
+    Meaxic_YouListen_RAW_07_04.wav: snare drum
+    Meaxic_YouListen_RAW_07_05.wav: toms
+    Meaxic_YouListen_RAW_07_06.wav: drum set
+  MedleyDB_V1/V1/Mozart_BesterJungling/Mozart_BesterJungling_RAW:
+    Mozart_BesterJungling_RAW_01_01.wav: female singer
+    Mozart_BesterJungling_RAW_02_01.wav: piano
+    Mozart_BesterJungling_RAW_02_02.wav: piano
+    Mozart_BesterJungling_RAW_02_03.wav: piano
+    Mozart_BesterJungling_RAW_02_04.wav: piano
+  MedleyDB_V1/V1/Mozart_DiesBildnis/Mozart_DiesBildnis_RAW:
+    Mozart_DiesBildnis_RAW_01_01.wav: male singer
+    Mozart_DiesBildnis_RAW_02_01.wav: piano
+    Mozart_DiesBildnis_RAW_02_02.wav: piano
+    Mozart_DiesBildnis_RAW_02_03.wav: piano
+    Mozart_DiesBildnis_RAW_02_04.wav: piano
+  MedleyDB_V1/V1/MusicDelta_Beatles/MusicDelta_Beatles_RAW:
+    MusicDelta_Beatles_RAW_01_01.wav: drum set
+    MusicDelta_Beatles_RAW_02_01.wav: electric bass
+    MusicDelta_Beatles_RAW_03_01.wav: clean electric guitar
+    MusicDelta_Beatles_RAW_04_01.wav: clean electric guitar
+    MusicDelta_Beatles_RAW_05_01.wav: acoustic guitar
+    MusicDelta_Beatles_RAW_06_01.wav: clean electric guitar
+    MusicDelta_Beatles_RAW_07_01.wav: male singer
+    MusicDelta_Beatles_RAW_08_01.wav: female singer
+  MedleyDB_V1/V1/MusicDelta_BebopJazz/MusicDelta_BebopJazz_RAW:
+    MusicDelta_BebopJazz_RAW_01_01.wav: drum set
+    MusicDelta_BebopJazz_RAW_02_01.wav: double bass
+    MusicDelta_BebopJazz_RAW_03_01.wav: piano
+    MusicDelta_BebopJazz_RAW_04_01.wav: tenor saxophone
+    MusicDelta_BebopJazz_RAW_05_01.wav: trumpet
+  MedleyDB_V1/V1/MusicDelta_Beethoven/MusicDelta_Beethoven_RAW:
+    MusicDelta_Beethoven_RAW_01_01.wav: violin section
+    MusicDelta_Beethoven_RAW_02_01.wav: violin section
+    MusicDelta_Beethoven_RAW_03_01.wav: viola
+    MusicDelta_Beethoven_RAW_04_01.wav: cello
+    MusicDelta_Beethoven_RAW_05_01.wav: double bass
+    MusicDelta_Beethoven_RAW_06_01.wav: flute
+    MusicDelta_Beethoven_RAW_07_01.wav: flute
+    MusicDelta_Beethoven_RAW_08_01.wav: clarinet
+    MusicDelta_Beethoven_RAW_09_01.wav: clarinet
+    MusicDelta_Beethoven_RAW_10_01.wav: oboe
+    MusicDelta_Beethoven_RAW_11_01.wav: oboe
+    MusicDelta_Beethoven_RAW_12_01.wav: bassoon
+    MusicDelta_Beethoven_RAW_13_01.wav: bassoon
+    MusicDelta_Beethoven_RAW_14_01.wav: trumpet
+    MusicDelta_Beethoven_RAW_15_01.wav: trumpet
+    MusicDelta_Beethoven_RAW_16_01.wav: french horn
+    MusicDelta_Beethoven_RAW_17_01.wav: french horn
+    MusicDelta_Beethoven_RAW_18_01.wav: timpani
+  MedleyDB_V1/V1/MusicDelta_Britpop/MusicDelta_Britpop_RAW:
+    MusicDelta_Britpop_RAW_01_01.wav: drum set
+    MusicDelta_Britpop_RAW_02_01.wav: electric bass
+    MusicDelta_Britpop_RAW_03_01.wav: distorted electric guitar
+    MusicDelta_Britpop_RAW_04_01.wav: clean electric guitar
+    MusicDelta_Britpop_RAW_05_01.wav: acoustic guitar
+    MusicDelta_Britpop_RAW_06_01.wav: clean electric guitar
+    MusicDelta_Britpop_RAW_07_01.wav: female singer
+    MusicDelta_Britpop_RAW_08_01.wav: female singer
+  MedleyDB_V1/V1/MusicDelta_ChineseDrama/MusicDelta_ChineseDrama_RAW:
+    MusicDelta_ChineseDrama_RAW_01_01.wav: dizi
+    MusicDelta_ChineseDrama_RAW_02_01.wav: erhu
+    MusicDelta_ChineseDrama_RAW_03_01.wav: guzheng
+    MusicDelta_ChineseDrama_RAW_04_01.wav: yangqin
+    MusicDelta_ChineseDrama_RAW_05_01.wav: zhongruan
+  MedleyDB_V1/V1/MusicDelta_ChineseHenan/MusicDelta_ChineseHenan_RAW:
+    MusicDelta_ChineseHenan_RAW_01_01.wav: dizi
+    MusicDelta_ChineseHenan_RAW_02_01.wav: erhu
+    MusicDelta_ChineseHenan_RAW_03_01.wav: guzheng
+    MusicDelta_ChineseHenan_RAW_04_01.wav: liuqin
+    MusicDelta_ChineseHenan_RAW_05_01.wav: yangqin
+  MedleyDB_V1/V1/MusicDelta_ChineseJiangNan/MusicDelta_ChineseJiangNan_RAW:
+    MusicDelta_ChineseJiangNan_RAW_01_01.wav: dizi
+    MusicDelta_ChineseJiangNan_RAW_02_01.wav: erhu
+    MusicDelta_ChineseJiangNan_RAW_03_01.wav: guzheng
+    MusicDelta_ChineseJiangNan_RAW_04_01.wav: yangqin
+    MusicDelta_ChineseJiangNan_RAW_05_01.wav: zhongruan
+  MedleyDB_V1/V1/MusicDelta_ChineseXinJing/MusicDelta_ChineseXinJing_RAW:
+    MusicDelta_ChineseXinJing_RAW_01_01.wav: erhu
+    MusicDelta_ChineseXinJing_RAW_02_01.wav: gu
+    MusicDelta_ChineseXinJing_RAW_03_01.wav: liuqin
+    MusicDelta_ChineseXinJing_RAW_04_01.wav: yangqin
+    MusicDelta_ChineseXinJing_RAW_05_01.wav: zhongruan
+  MedleyDB_V1/V1/MusicDelta_ChineseYaoZu/MusicDelta_ChineseYaoZu_RAW:
+    MusicDelta_ChineseYaoZu_RAW_01_01.wav: dizi
+    MusicDelta_ChineseYaoZu_RAW_02_01.wav: erhu
+    MusicDelta_ChineseYaoZu_RAW_03_01.wav: guzheng
+    MusicDelta_ChineseYaoZu_RAW_04_01.wav: auxiliary percussion
+    MusicDelta_ChineseYaoZu_RAW_05_01.wav: yangqin
+  MedleyDB_V1/V1/MusicDelta_CoolJazz/MusicDelta_CoolJazz_RAW:
+    MusicDelta_CoolJazz_RAW_01_01.wav: double bass
+    MusicDelta_CoolJazz_RAW_02_01.wav: drum set
+    MusicDelta_CoolJazz_RAW_03_01.wav: piano
+    MusicDelta_CoolJazz_RAW_04_01.wav: baritone saxophone
+    MusicDelta_CoolJazz_RAW_05_01.wav: trumpet
+  MedleyDB_V1/V1/MusicDelta_Country1/MusicDelta_Country1_RAW:
+    MusicDelta_Country1_RAW_01_01.wav: drum set
+    MusicDelta_Country1_RAW_02_01.wav: electric bass
+    MusicDelta_Country1_RAW_03_01.wav: acoustic guitar
+    MusicDelta_Country1_RAW_04_01.wav: acoustic guitar
+    MusicDelta_Country1_RAW_05_01.wav: male singer
+  MedleyDB_V1/V1/MusicDelta_Country2/MusicDelta_Country2_RAW:
+    MusicDelta_Country2_RAW_01_01.wav: drum set
+    MusicDelta_Country2_RAW_02_01.wav: electric bass
+    MusicDelta_Country2_RAW_03_01.wav: clean electric guitar
+    MusicDelta_Country2_RAW_04_01.wav: clean electric guitar
+    MusicDelta_Country2_RAW_05_01.wav: female singer
+  MedleyDB_V1/V1/MusicDelta_Disco/MusicDelta_Disco_RAW:
+    MusicDelta_Disco_RAW_01_01.wav: drum set
+    MusicDelta_Disco_RAW_02_01.wav: electric bass
+    MusicDelta_Disco_RAW_03_01.wav: clean electric guitar
+    MusicDelta_Disco_RAW_04_01.wav: male singer
+  MedleyDB_V1/V1/MusicDelta_FunkJazz/MusicDelta_FunkJazz_RAW:
+    MusicDelta_FunkJazz_RAW_01_01.wav: drum set
+    MusicDelta_FunkJazz_RAW_02_01.wav: electric bass
+    MusicDelta_FunkJazz_RAW_03_01.wav: electric piano
+    MusicDelta_FunkJazz_RAW_04_01.wav: alto saxophone
+  MedleyDB_V1/V1/MusicDelta_FusionJazz/MusicDelta_FusionJazz_RAW:
+    MusicDelta_FusionJazz_RAW_01_01.wav: drum set
+    MusicDelta_FusionJazz_RAW_02_01.wav: electric bass
+    MusicDelta_FusionJazz_RAW_03_01.wav: electric piano
+    MusicDelta_FusionJazz_RAW_04_01.wav: synthesizer
+    MusicDelta_FusionJazz_RAW_05_01.wav: soprano saxophone
+    MusicDelta_FusionJazz_RAW_06_01.wav: trumpet
+  MedleyDB_V1/V1/MusicDelta_Gospel/MusicDelta_Gospel_RAW:
+    MusicDelta_Gospel_RAW_01_01.wav: drum set
+    MusicDelta_Gospel_RAW_02_01.wav: electric bass
+    MusicDelta_Gospel_RAW_03_01.wav: clean electric guitar
+    MusicDelta_Gospel_RAW_04_01.wav: clean electric guitar
+    MusicDelta_Gospel_RAW_05_01.wav: claps
+    MusicDelta_Gospel_RAW_06_01.wav: female singer
+  MedleyDB_V1/V1/MusicDelta_GriegTrolltog/MusicDelta_GriegTrolltog_RAW:
+    MusicDelta_GriegTrolltog_RAW_01_01.wav: violin section
+    MusicDelta_GriegTrolltog_RAW_02_01.wav: violin section
+    MusicDelta_GriegTrolltog_RAW_03_01.wav: viola section
+    MusicDelta_GriegTrolltog_RAW_04_01.wav: cello
+    MusicDelta_GriegTrolltog_RAW_05_01.wav: double bass
+    MusicDelta_GriegTrolltog_RAW_06_01.wav: flute section
+    MusicDelta_GriegTrolltog_RAW_07_01.wav: piccolo
+    MusicDelta_GriegTrolltog_RAW_08_01.wav: piccolo
+    MusicDelta_GriegTrolltog_RAW_09_01.wav: oboe
+    MusicDelta_GriegTrolltog_RAW_10_01.wav: clarinet section
+    MusicDelta_GriegTrolltog_RAW_11_01.wav: clarinet section
+    MusicDelta_GriegTrolltog_RAW_12_01.wav: brass section
+    MusicDelta_GriegTrolltog_RAW_13_01.wav: brass section
+    MusicDelta_GriegTrolltog_RAW_14_01.wav: brass section
+    MusicDelta_GriegTrolltog_RAW_15_01.wav: trumpet section
+    MusicDelta_GriegTrolltog_RAW_16_01.wav: tuba
+    MusicDelta_GriegTrolltog_RAW_17_01.wav: timpani
+    MusicDelta_GriegTrolltog_RAW_18_01.wav: timpani
+    MusicDelta_GriegTrolltog_RAW_19_01.wav: cymbal
+  MedleyDB_V1/V1/MusicDelta_Grunge/MusicDelta_Grunge_RAW:
+    MusicDelta_Grunge_RAW_01_01.wav: drum set
+    MusicDelta_Grunge_RAW_02_01.wav: electric bass
+    MusicDelta_Grunge_RAW_03_01.wav: distorted electric guitar
+    MusicDelta_Grunge_RAW_04_01.wav: distorted electric guitar
+    MusicDelta_Grunge_RAW_05_01.wav: male singer
+  MedleyDB_V1/V1/MusicDelta_InTheHalloftheMountainKing/MusicDelta_InTheHalloftheMountainKing_RAW:
+    MusicDelta_InTheHalloftheMountainKing_RAW_01_01.wav: violin section
+    MusicDelta_InTheHalloftheMountainKing_RAW_02_01.wav: violin section
+    MusicDelta_InTheHalloftheMountainKing_RAW_03_01.wav: viola
+    MusicDelta_InTheHalloftheMountainKing_RAW_04_01.wav: cello
+    MusicDelta_InTheHalloftheMountainKing_RAW_05_01.wav: double bass
+    MusicDelta_InTheHalloftheMountainKing_RAW_06_01.wav: piccolo
+    MusicDelta_InTheHalloftheMountainKing_RAW_07_01.wav: flute
+    MusicDelta_InTheHalloftheMountainKing_RAW_08_01.wav: bassoon
+    MusicDelta_InTheHalloftheMountainKing_RAW_09_01.wav: clarinet
+    MusicDelta_InTheHalloftheMountainKing_RAW_10_01.wav: oboe
+    MusicDelta_InTheHalloftheMountainKing_RAW_11_01.wav: french horn section
+    MusicDelta_InTheHalloftheMountainKing_RAW_12_01.wav: trombone
+    MusicDelta_InTheHalloftheMountainKing_RAW_13_01.wav: trumpet section
+    MusicDelta_InTheHalloftheMountainKing_RAW_14_01.wav: tuba
+    MusicDelta_InTheHalloftheMountainKing_RAW_15_01.wav: cymbal
+    MusicDelta_InTheHalloftheMountainKing_RAW_16_01.wav: toms
+    MusicDelta_InTheHalloftheMountainKing_RAW_17_01.wav: timpani
+  MedleyDB_V1/V1/MusicDelta_LatinJazz/MusicDelta_LatinJazz_RAW:
+    MusicDelta_LatinJazz_RAW_01_01.wav: electric bass
+    MusicDelta_LatinJazz_RAW_02_01.wav: drum set
+    MusicDelta_LatinJazz_RAW_03_01.wav: electric piano
+    MusicDelta_LatinJazz_RAW_04_01.wav: flute
+    MusicDelta_LatinJazz_RAW_05_01.wav: trumpet
+  MedleyDB_V1/V1/MusicDelta_ModalJazz/MusicDelta_ModalJazz_RAW:
+    MusicDelta_ModalJazz_RAW_01_01.wav: drum set
+    MusicDelta_ModalJazz_RAW_02_01.wav: double bass
+    MusicDelta_ModalJazz_RAW_03_01.wav: piano
+    MusicDelta_ModalJazz_RAW_04_01.wav: tenor saxophone
+    MusicDelta_ModalJazz_RAW_05_01.wav: trumpet
+  MedleyDB_V1/V1/MusicDelta_Pachelbel/MusicDelta_Pachelbel_RAW:
+    MusicDelta_Pachelbel_RAW_01_01.wav: violin
+    MusicDelta_Pachelbel_RAW_02_01.wav: cello
+    MusicDelta_Pachelbel_RAW_03_01.wav: viola
+    MusicDelta_Pachelbel_RAW_04_01.wav: violin
+  MedleyDB_V1/V1/MusicDelta_Punk/MusicDelta_Punk_RAW:
+    MusicDelta_Punk_RAW_01_01.wav: drum set
+    MusicDelta_Punk_RAW_02_01.wav: electric bass
+    MusicDelta_Punk_RAW_03_01.wav: distorted electric guitar
+    MusicDelta_Punk_RAW_04_01.wav: male singer
+  MedleyDB_V1/V1/MusicDelta_Reggae/MusicDelta_Reggae_RAW:
+    MusicDelta_Reggae_RAW_01_01.wav: drum set
+    MusicDelta_Reggae_RAW_02_01.wav: electric bass
+    MusicDelta_Reggae_RAW_03_01.wav: clean electric guitar
+    MusicDelta_Reggae_RAW_04_01.wav: male singer
+  MedleyDB_V1/V1/MusicDelta_Rock/MusicDelta_Rock_RAW:
+    MusicDelta_Rock_RAW_01_01.wav: drum set
+    MusicDelta_Rock_RAW_02_01.wav: electric bass
+    MusicDelta_Rock_RAW_03_01.wav: clean electric guitar
+    MusicDelta_Rock_RAW_04_01.wav: clean electric guitar
+    MusicDelta_Rock_RAW_05_01.wav: male singer
+  MedleyDB_V1/V1/MusicDelta_Shadows/MusicDelta_Shadows_RAW:
+    MusicDelta_Shadows_RAW_01_01.wav: electric bass
+    MusicDelta_Shadows_RAW_02_01.wav: drum set
+    MusicDelta_Shadows_RAW_03_01.wav: clean electric guitar
+    MusicDelta_Shadows_RAW_04_01.wav: clean electric guitar
+  MedleyDB_V1/V1/MusicDelta_SwingJazz/MusicDelta_SwingJazz_RAW:
+    MusicDelta_SwingJazz_RAW_01_01.wav: double bass
+    MusicDelta_SwingJazz_RAW_02_01.wav: drum set
+    MusicDelta_SwingJazz_RAW_03_01.wav: piano
+    MusicDelta_SwingJazz_RAW_04_01.wav: clarinet
+  MedleyDB_V1/V1/PortStWillow_StayEven/PortStWillow_StayEven_RAW:
+    PortStWillow_StayEven_RAW_01_01.wav: male singer
+    PortStWillow_StayEven_RAW_01_02.wav: male singer
+    PortStWillow_StayEven_RAW_02_01.wav: cymbal
+    PortStWillow_StayEven_RAW_03_01.wav: drum set
+    PortStWillow_StayEven_RAW_03_02.wav: drum set
+    PortStWillow_StayEven_RAW_03_03.wav: drum set
+    PortStWillow_StayEven_RAW_03_04.wav: drum set
+    PortStWillow_StayEven_RAW_03_05.wav: kick drum
+    PortStWillow_StayEven_RAW_03_06.wav: kick drum
+    PortStWillow_StayEven_RAW_03_07.wav: drum set
+    PortStWillow_StayEven_RAW_03_08.wav: drum set
+    PortStWillow_StayEven_RAW_03_09.wav: drum set
+    PortStWillow_StayEven_RAW_03_10.wav: drum set
+    PortStWillow_StayEven_RAW_03_11.wav: drum set
+    PortStWillow_StayEven_RAW_03_12.wav: snare drum
+    PortStWillow_StayEven_RAW_03_13.wav: snare drum
+    PortStWillow_StayEven_RAW_04_01.wav: drum set
+    PortStWillow_StayEven_RAW_04_02.wav: drum set
+    PortStWillow_StayEven_RAW_04_03.wav: toms
+    PortStWillow_StayEven_RAW_04_04.wav: high hat
+    PortStWillow_StayEven_RAW_04_05.wav: kick drum
+    PortStWillow_StayEven_RAW_04_06.wav: drum set
+    PortStWillow_StayEven_RAW_04_07.wav: drum set
+    PortStWillow_StayEven_RAW_04_08.wav: snare drum
+    PortStWillow_StayEven_RAW_05_01.wav: clean electric guitar
+    PortStWillow_StayEven_RAW_05_02.wav: distorted electric guitar
+    PortStWillow_StayEven_RAW_06_01.wav: clean electric guitar
+    PortStWillow_StayEven_RAW_06_02.wav: clean electric guitar
+    PortStWillow_StayEven_RAW_07_01.wav: clean electric guitar
+    PortStWillow_StayEven_RAW_07_02.wav: clean electric guitar
+    PortStWillow_StayEven_RAW_07_03.wav: clean electric guitar
+    PortStWillow_StayEven_RAW_07_04.wav: clean electric guitar
+    PortStWillow_StayEven_RAW_07_05.wav: fx/processed sound
+    PortStWillow_StayEven_RAW_08_01.wav: male singer
+    PortStWillow_StayEven_RAW_09_01.wav: piano
+    PortStWillow_StayEven_RAW_09_02.wav: piano
+    PortStWillow_StayEven_RAW_09_03.wav: tack piano
+    PortStWillow_StayEven_RAW_09_04.wav: tack piano
+    PortStWillow_StayEven_RAW_10_01.wav: electric bass
+    PortStWillow_StayEven_RAW_10_02.wav: electric bass
+    PortStWillow_StayEven_RAW_11_01.wav: fx/processed sound
+  MedleyDB_V1/V1/Schumann_Mignon/Schumann_Mignon_RAW:
+    Schumann_Mignon_RAW_01_01.wav: piano
+    Schumann_Mignon_RAW_01_02.wav: piano
+    Schumann_Mignon_RAW_01_03.wav: piano
+    Schumann_Mignon_RAW_02_01.wav: female singer
+  MedleyDB_V1/V1/SecretMountains_HighHorse/SecretMountains_HighHorse_RAW:
+    SecretMountains_HighHorse_RAW_01_01.wav: electric bass
+    SecretMountains_HighHorse_RAW_01_02.wav: electric bass
+    SecretMountains_HighHorse_RAW_02_01.wav: female singer
+    SecretMountains_HighHorse_RAW_02_02.wav: female singer
+    SecretMountains_HighHorse_RAW_02_03.wav: female singer
+    SecretMountains_HighHorse_RAW_03_01.wav: cymbal
+    SecretMountains_HighHorse_RAW_03_02.wav: cymbal
+    SecretMountains_HighHorse_RAW_04_01.wav: drum set
+    SecretMountains_HighHorse_RAW_04_02.wav: drum set
+    SecretMountains_HighHorse_RAW_04_03.wav: drum set
+    SecretMountains_HighHorse_RAW_04_04.wav: kick drum
+    SecretMountains_HighHorse_RAW_04_05.wav: drum set
+    SecretMountains_HighHorse_RAW_04_06.wav: drum set
+    SecretMountains_HighHorse_RAW_04_07.wav: snare drum
+    SecretMountains_HighHorse_RAW_04_08.wav: snare drum
+    SecretMountains_HighHorse_RAW_04_09.wav: toms
+    SecretMountains_HighHorse_RAW_04_10.wav: tambourine
+    SecretMountains_HighHorse_RAW_05_01.wav: clean electric guitar
+    SecretMountains_HighHorse_RAW_05_02.wav: clean electric guitar
+    SecretMountains_HighHorse_RAW_06_01.wav: fx/processed sound
+    SecretMountains_HighHorse_RAW_07_01.wav: piano
+    SecretMountains_HighHorse_RAW_07_02.wav: piano
+    SecretMountains_HighHorse_RAW_07_03.wav: piano
+    SecretMountains_HighHorse_RAW_07_04.wav: piano
+    SecretMountains_HighHorse_RAW_08_01.wav: synthesizer
+    SecretMountains_HighHorse_RAW_08_02.wav: synthesizer
+    SecretMountains_HighHorse_RAW_09_01.wav: female singer
+    SecretMountains_HighHorse_RAW_09_02.wav: female singer
+    SecretMountains_HighHorse_RAW_10_01.wav: fx/processed sound
+    SecretMountains_HighHorse_RAW_10_02.wav: fx/processed sound
+  MedleyDB_V1/V1/StevenClark_Bounty/StevenClark_Bounty_RAW:
+    StevenClark_Bounty_RAW_01_01.wav: clean electric guitar
+    StevenClark_Bounty_RAW_01_02.wav: electric bass
+    StevenClark_Bounty_RAW_01_03.wav: electric bass
+    StevenClark_Bounty_RAW_01_04.wav: electric bass
+    StevenClark_Bounty_RAW_02_01.wav: electric bass
+    StevenClark_Bounty_RAW_02_02.wav: electric bass
+    StevenClark_Bounty_RAW_02_03.wav: electric bass
+    StevenClark_Bounty_RAW_03_01.wav: vocalists
+    StevenClark_Bounty_RAW_03_02.wav: vocalists
+    StevenClark_Bounty_RAW_03_03.wav: vocalists
+    StevenClark_Bounty_RAW_03_04.wav: male singer
+    StevenClark_Bounty_RAW_03_05.wav: male singer
+    StevenClark_Bounty_RAW_03_06.wav: male singer
+    StevenClark_Bounty_RAW_03_07.wav: male singer
+    StevenClark_Bounty_RAW_03_08.wav: male singer
+    StevenClark_Bounty_RAW_03_09.wav: male singer
+    StevenClark_Bounty_RAW_03_10.wav: female singer
+    StevenClark_Bounty_RAW_03_11.wav: female singer
+    StevenClark_Bounty_RAW_03_12.wav: female singer
+    StevenClark_Bounty_RAW_03_13.wav: female singer
+    StevenClark_Bounty_RAW_04_01.wav: synthesizer
+    StevenClark_Bounty_RAW_04_02.wav: synthesizer
+    StevenClark_Bounty_RAW_05_01.wav: drum set
+    StevenClark_Bounty_RAW_05_02.wav: drum set
+    StevenClark_Bounty_RAW_05_03.wav: kick drum
+    StevenClark_Bounty_RAW_05_04.wav: kick drum
+    StevenClark_Bounty_RAW_05_05.wav: drum set
+    StevenClark_Bounty_RAW_05_06.wav: drum set
+    StevenClark_Bounty_RAW_05_07.wav: snare drum
+    StevenClark_Bounty_RAW_05_08.wav: snare drum
+    StevenClark_Bounty_RAW_05_09.wav: toms
+    StevenClark_Bounty_RAW_06_01.wav: synthesizer
+    StevenClark_Bounty_RAW_07_01.wav: male singer
+    StevenClark_Bounty_RAW_07_02.wav: male singer
+    StevenClark_Bounty_RAW_07_03.wav: male singer
+    StevenClark_Bounty_RAW_07_04.wav: male singer
+    StevenClark_Bounty_RAW_08_01.wav: male singer
+    StevenClark_Bounty_RAW_09_01.wav: piano
+    StevenClark_Bounty_RAW_09_02.wav: piano
+    StevenClark_Bounty_RAW_10_01.wav: synthesizer
+    StevenClark_Bounty_RAW_10_02.wav: synthesizer
+  MedleyDB_V1/V1/StrandOfOaks_Spacestation/StrandOfOaks_Spacestation_RAW:
+    StrandOfOaks_Spacestation_RAW_01_01.wav: electric bass
+    StrandOfOaks_Spacestation_RAW_02_01.wav: female singer
+    StrandOfOaks_Spacestation_RAW_02_02.wav: female singer
+    StrandOfOaks_Spacestation_RAW_02_03.wav: male singer
+    StrandOfOaks_Spacestation_RAW_03_01.wav: drum set
+    StrandOfOaks_Spacestation_RAW_03_02.wav: drum set
+    StrandOfOaks_Spacestation_RAW_03_03.wav: drum set
+    StrandOfOaks_Spacestation_RAW_03_04.wav: kick drum
+    StrandOfOaks_Spacestation_RAW_03_05.wav: drum set
+    StrandOfOaks_Spacestation_RAW_03_06.wav: drum set
+    StrandOfOaks_Spacestation_RAW_03_07.wav: snare drum
+    StrandOfOaks_Spacestation_RAW_03_08.wav: snare drum
+    StrandOfOaks_Spacestation_RAW_03_09.wav: toms
+    StrandOfOaks_Spacestation_RAW_03_10.wav: toms
+    StrandOfOaks_Spacestation_RAW_04_01.wav: male singer
+    StrandOfOaks_Spacestation_RAW_05_01.wav: shaker
+    StrandOfOaks_Spacestation_RAW_05_02.wav: tambourine
+    StrandOfOaks_Spacestation_RAW_06_01.wav: piano
+    StrandOfOaks_Spacestation_RAW_06_02.wav: piano
+    StrandOfOaks_Spacestation_RAW_06_03.wav: piano
+    StrandOfOaks_Spacestation_RAW_06_04.wav: piano
+    StrandOfOaks_Spacestation_RAW_07_01.wav: synthesizer
+    StrandOfOaks_Spacestation_RAW_08_01.wav: tack piano
+    StrandOfOaks_Spacestation_RAW_08_02.wav: tack piano
+  MedleyDB_V1/V1/SweetLights_YouLetMeDown/SweetLights_YouLetMeDown_RAW:
+    SweetLights_YouLetMeDown_RAW_01_01.wav: acoustic guitar
+    SweetLights_YouLetMeDown_RAW_01_02.wav: acoustic guitar
+    SweetLights_YouLetMeDown_RAW_01_03.wav: acoustic guitar
+    SweetLights_YouLetMeDown_RAW_01_04.wav: acoustic guitar
+    SweetLights_YouLetMeDown_RAW_01_05.wav: acoustic guitar
+    SweetLights_YouLetMeDown_RAW_01_06.wav: acoustic guitar
+    SweetLights_YouLetMeDown_RAW_02_01.wav: electric bass
+    SweetLights_YouLetMeDown_RAW_02_02.wav: electric bass
+    SweetLights_YouLetMeDown_RAW_03_01.wav: male singer
+    SweetLights_YouLetMeDown_RAW_03_02.wav: male singer
+    SweetLights_YouLetMeDown_RAW_03_03.wav: male singer
+    SweetLights_YouLetMeDown_RAW_03_04.wav: male singer
+    SweetLights_YouLetMeDown_RAW_03_05.wav: male singer
+    SweetLights_YouLetMeDown_RAW_03_06.wav: male singer
+    SweetLights_YouLetMeDown_RAW_03_07.wav: male singer
+    SweetLights_YouLetMeDown_RAW_03_08.wav: male singer
+    SweetLights_YouLetMeDown_RAW_03_09.wav: male singer
+    SweetLights_YouLetMeDown_RAW_03_10.wav: male singer
+    SweetLights_YouLetMeDown_RAW_03_11.wav: male singer
+    SweetLights_YouLetMeDown_RAW_03_12.wav: male singer
+    SweetLights_YouLetMeDown_RAW_04_01.wav: synthesizer
+    SweetLights_YouLetMeDown_RAW_05_01.wav: claps
+    SweetLights_YouLetMeDown_RAW_05_02.wav: claps
+    SweetLights_YouLetMeDown_RAW_05_03.wav: claps
+    SweetLights_YouLetMeDown_RAW_05_04.wav: claps
+    SweetLights_YouLetMeDown_RAW_05_05.wav: claps
+    SweetLights_YouLetMeDown_RAW_06_01.wav: kick drum
+    SweetLights_YouLetMeDown_RAW_06_02.wav: drum machine
+    SweetLights_YouLetMeDown_RAW_06_03.wav: drum set
+    SweetLights_YouLetMeDown_RAW_06_04.wav: toms
+    SweetLights_YouLetMeDown_RAW_06_05.wav: kick drum
+    SweetLights_YouLetMeDown_RAW_06_06.wav: kick drum
+    SweetLights_YouLetMeDown_RAW_06_07.wav: kick drum
+    SweetLights_YouLetMeDown_RAW_06_08.wav: drum set
+    SweetLights_YouLetMeDown_RAW_06_09.wav: drum set
+    SweetLights_YouLetMeDown_RAW_06_10.wav: drum set
+    SweetLights_YouLetMeDown_RAW_06_11.wav: drum set
+    SweetLights_YouLetMeDown_RAW_06_12.wav: snare drum
+    SweetLights_YouLetMeDown_RAW_06_13.wav: snare drum
+    SweetLights_YouLetMeDown_RAW_06_14.wav: snare drum
+    SweetLights_YouLetMeDown_RAW_07_01.wav: synthesizer
+    SweetLights_YouLetMeDown_RAW_08_01.wav: male singer
+    SweetLights_YouLetMeDown_RAW_08_02.wav: male singer
+    SweetLights_YouLetMeDown_RAW_09_01.wav: piano
+    SweetLights_YouLetMeDown_RAW_10_01.wav: synthesizer
+    SweetLights_YouLetMeDown_RAW_11_01.wav: tack piano
+    SweetLights_YouLetMeDown_RAW_12_01.wav: timpani
+    SweetLights_YouLetMeDown_RAW_12_02.wav: timpani
+    SweetLights_YouLetMeDown_RAW_12_03.wav: timpani
+    SweetLights_YouLetMeDown_RAW_12_04.wav: timpani
+    SweetLights_YouLetMeDown_RAW_12_05.wav: timpani
+    SweetLights_YouLetMeDown_RAW_13_01.wav: cymbal
+    SweetLights_YouLetMeDown_RAW_13_02.wav: shaker
+    SweetLights_YouLetMeDown_RAW_13_03.wav: tambourine
+    SweetLights_YouLetMeDown_RAW_13_04.wav: vibraphone
+    SweetLights_YouLetMeDown_RAW_13_05.wav: vibraphone
+  MedleyDB_V1/V1/TheDistricts_Vermont/TheDistricts_Vermont_RAW:
+    TheDistricts_Vermont_RAW_01_01.wav: electric bass
+    TheDistricts_Vermont_RAW_01_02.wav: electric bass
+    TheDistricts_Vermont_RAW_02_01.wav: male singer
+    TheDistricts_Vermont_RAW_02_02.wav: male singer
+    TheDistricts_Vermont_RAW_03_01.wav: drum set
+    TheDistricts_Vermont_RAW_03_02.wav: drum set
+    TheDistricts_Vermont_RAW_03_03.wav: drum set
+    TheDistricts_Vermont_RAW_03_04.wav: drum set
+    TheDistricts_Vermont_RAW_03_05.wav: drum set
+    TheDistricts_Vermont_RAW_03_06.wav: drum set
+    TheDistricts_Vermont_RAW_03_07.wav: drum set
+    TheDistricts_Vermont_RAW_03_08.wav: tambourine
+    TheDistricts_Vermont_RAW_03_09.wav: tambourine
+    TheDistricts_Vermont_RAW_03_10.wav: kick drum
+    TheDistricts_Vermont_RAW_03_11.wav: kick drum
+    TheDistricts_Vermont_RAW_03_12.wav: snare drum
+    TheDistricts_Vermont_RAW_03_13.wav: snare drum
+    TheDistricts_Vermont_RAW_04_01.wav: synthesizer
+    TheDistricts_Vermont_RAW_04_02.wav: synthesizer
+    TheDistricts_Vermont_RAW_05_01.wav: male singer
+    TheDistricts_Vermont_RAW_05_02.wav: male singer
+    TheDistricts_Vermont_RAW_06_01.wav: clean electric guitar
+    TheDistricts_Vermont_RAW_06_02.wav: clean electric guitar
+    TheDistricts_Vermont_RAW_06_03.wav: clean electric guitar
+    TheDistricts_Vermont_RAW_07_01.wav: clean electric guitar
+    TheDistricts_Vermont_RAW_07_02.wav: clean electric guitar
+    TheDistricts_Vermont_RAW_07_03.wav: clean electric guitar
+    TheDistricts_Vermont_RAW_07_04.wav: clean electric guitar
+    TheDistricts_Vermont_RAW_07_05.wav: clean electric guitar
+  MedleyDB_V2/V2/CassandraJenkins_PerfectDay/CassandraJenkins_PerfectDay_RAW:
+    CassandraJenkins_PerfectDay_RAW_01_01.wav: string section
+    CassandraJenkins_PerfectDay_RAW_01_02.wav: string section
+    CassandraJenkins_PerfectDay_RAW_01_03.wav: string section
+    CassandraJenkins_PerfectDay_RAW_01_04.wav: string section
+    CassandraJenkins_PerfectDay_RAW_01_05.wav: string section
+    CassandraJenkins_PerfectDay_RAW_01_06.wav: string section
+    CassandraJenkins_PerfectDay_RAW_01_07.wav: string section
+    CassandraJenkins_PerfectDay_RAW_01_08.wav: string section
+    CassandraJenkins_PerfectDay_RAW_01_09.wav: string section
+    CassandraJenkins_PerfectDay_RAW_01_10.wav: string section
+    CassandraJenkins_PerfectDay_RAW_01_11.wav: string section
+    CassandraJenkins_PerfectDay_RAW_01_12.wav: string section
+    CassandraJenkins_PerfectDay_RAW_01_13.wav: string section
+    CassandraJenkins_PerfectDay_RAW_01_14.wav: string section
+    CassandraJenkins_PerfectDay_RAW_01_15.wav: string section
+    CassandraJenkins_PerfectDay_RAW_01_16.wav: string section
+    CassandraJenkins_PerfectDay_RAW_02_01.wav: electric bass
+    CassandraJenkins_PerfectDay_RAW_02_02.wav: electric bass
+    CassandraJenkins_PerfectDay_RAW_02_03.wav: electric bass
+    CassandraJenkins_PerfectDay_RAW_02_04.wav: electric bass
+    CassandraJenkins_PerfectDay_RAW_03_01.wav: piano
+    CassandraJenkins_PerfectDay_RAW_03_02.wav: piano
+    CassandraJenkins_PerfectDay_RAW_03_03.wav: piano
+    CassandraJenkins_PerfectDay_RAW_03_04.wav: piano
+    CassandraJenkins_PerfectDay_RAW_04_01.wav: drum set
+    CassandraJenkins_PerfectDay_RAW_04_02.wav: drum set
+    CassandraJenkins_PerfectDay_RAW_04_03.wav: drum set
+    CassandraJenkins_PerfectDay_RAW_04_04.wav: drum set
+    CassandraJenkins_PerfectDay_RAW_04_05.wav: drum set
+    CassandraJenkins_PerfectDay_RAW_04_06.wav: drum set
+    CassandraJenkins_PerfectDay_RAW_04_07.wav: drum set
+    CassandraJenkins_PerfectDay_RAW_04_08.wav: drum set
+    CassandraJenkins_PerfectDay_RAW_04_09.wav: drum set
+    CassandraJenkins_PerfectDay_RAW_04_10.wav: drum set
+    CassandraJenkins_PerfectDay_RAW_04_11.wav: drum set
+    CassandraJenkins_PerfectDay_RAW_04_12.wav: drum set
+    CassandraJenkins_PerfectDay_RAW_04_13.wav: drum set
+    CassandraJenkins_PerfectDay_RAW_04_14.wav: drum set
+    CassandraJenkins_PerfectDay_RAW_04_15.wav: drum set
+    CassandraJenkins_PerfectDay_RAW_04_16.wav: drum set
+    CassandraJenkins_PerfectDay_RAW_04_17.wav: drum set
+    CassandraJenkins_PerfectDay_RAW_04_18.wav: drum set
+    CassandraJenkins_PerfectDay_RAW_04_19.wav: drum set
+    CassandraJenkins_PerfectDay_RAW_04_20.wav: drum set
+    CassandraJenkins_PerfectDay_RAW_04_21.wav: drum set
+    CassandraJenkins_PerfectDay_RAW_04_22.wav: drum set
+    CassandraJenkins_PerfectDay_RAW_04_23.wav: drum set
+    CassandraJenkins_PerfectDay_RAW_04_24.wav: drum set
+    CassandraJenkins_PerfectDay_RAW_04_25.wav: drum set
+    CassandraJenkins_PerfectDay_RAW_04_26.wav: drum set
+    CassandraJenkins_PerfectDay_RAW_04_27.wav: drum set
+    CassandraJenkins_PerfectDay_RAW_04_28.wav: drum set
+    CassandraJenkins_PerfectDay_RAW_04_29.wav: drum set
+    CassandraJenkins_PerfectDay_RAW_04_30.wav: drum set
+    CassandraJenkins_PerfectDay_RAW_04_31.wav: drum set
+    CassandraJenkins_PerfectDay_RAW_05_01.wav: horn section
+    CassandraJenkins_PerfectDay_RAW_05_02.wav: horn section
+    CassandraJenkins_PerfectDay_RAW_05_03.wav: horn section
+    CassandraJenkins_PerfectDay_RAW_05_04.wav: horn section
+    CassandraJenkins_PerfectDay_RAW_05_05.wav: horn section
+    CassandraJenkins_PerfectDay_RAW_05_06.wav: horn section
+    CassandraJenkins_PerfectDay_RAW_05_07.wav: horn section
+    CassandraJenkins_PerfectDay_RAW_05_08.wav: horn section
+    CassandraJenkins_PerfectDay_RAW_05_09.wav: horn section
+    CassandraJenkins_PerfectDay_RAW_05_10.wav: horn section
+    CassandraJenkins_PerfectDay_RAW_05_11.wav: horn section
+    CassandraJenkins_PerfectDay_RAW_05_12.wav: horn section
+    CassandraJenkins_PerfectDay_RAW_05_13.wav: horn section
+    CassandraJenkins_PerfectDay_RAW_05_14.wav: horn section
+    CassandraJenkins_PerfectDay_RAW_05_15.wav: horn section
+    CassandraJenkins_PerfectDay_RAW_05_16.wav: horn section
+    CassandraJenkins_PerfectDay_RAW_05_17.wav: horn section
+    CassandraJenkins_PerfectDay_RAW_05_18.wav: horn section
+    CassandraJenkins_PerfectDay_RAW_06_01.wav: acoustic guitar
+    CassandraJenkins_PerfectDay_RAW_06_02.wav: acoustic guitar
+    CassandraJenkins_PerfectDay_RAW_07_01.wav: female singer
+    CassandraJenkins_PerfectDay_RAW_07_02.wav: female singer
+    CassandraJenkins_PerfectDay_RAW_07_03.wav: female singer
+    CassandraJenkins_PerfectDay_RAW_07_04.wav: female singer
+    CassandraJenkins_PerfectDay_RAW_07_05.wav: female singer
+    CassandraJenkins_PerfectDay_RAW_07_06.wav: female singer
+    CassandraJenkins_PerfectDay_RAW_07_07.wav: female singer
+    CassandraJenkins_PerfectDay_RAW_07_08.wav: female singer
+    CassandraJenkins_PerfectDay_RAW_07_09.wav: female singer
+    CassandraJenkins_PerfectDay_RAW_07_10.wav: female singer
+    CassandraJenkins_PerfectDay_RAW_08_01.wav: acoustic guitar
+    CassandraJenkins_PerfectDay_RAW_08_02.wav: acoustic guitar
+    CassandraJenkins_PerfectDay_RAW_09_01.wav: synthesizer
+    CassandraJenkins_PerfectDay_RAW_09_02.wav: synthesizer
+  MedleyDB_V2/V2/Cayetana_MissThing/Cayetana_MissThing_RAW:
+    Cayetana_MissThing_RAW_01_01.wav: drum set
+    Cayetana_MissThing_RAW_01_02.wav: drum set
+    Cayetana_MissThing_RAW_01_03.wav: drum set
+    Cayetana_MissThing_RAW_01_04.wav: drum set
+    Cayetana_MissThing_RAW_01_05.wav: drum set
+    Cayetana_MissThing_RAW_01_06.wav: drum set
+    Cayetana_MissThing_RAW_01_07.wav: drum set
+    Cayetana_MissThing_RAW_01_08.wav: drum set
+    Cayetana_MissThing_RAW_01_09.wav: drum set
+    Cayetana_MissThing_RAW_01_10.wav: drum set
+    Cayetana_MissThing_RAW_01_11.wav: drum set
+    Cayetana_MissThing_RAW_01_12.wav: drum set
+    Cayetana_MissThing_RAW_01_13.wav: drum set
+    Cayetana_MissThing_RAW_01_14.wav: drum set
+    Cayetana_MissThing_RAW_01_15.wav: drum set
+    Cayetana_MissThing_RAW_02_01.wav: distorted electric guitar
+    Cayetana_MissThing_RAW_02_02.wav: distorted electric guitar
+    Cayetana_MissThing_RAW_02_03.wav: distorted electric guitar
+    Cayetana_MissThing_RAW_02_04.wav: distorted electric guitar
+    Cayetana_MissThing_RAW_02_05.wav: distorted electric guitar
+    Cayetana_MissThing_RAW_02_06.wav: distorted electric guitar
+    Cayetana_MissThing_RAW_03_01.wav: distorted electric guitar
+    Cayetana_MissThing_RAW_03_02.wav: distorted electric guitar
+    Cayetana_MissThing_RAW_04_01.wav: electric bass
+    Cayetana_MissThing_RAW_05_01.wav: female singer
+    Cayetana_MissThing_RAW_05_02.wav: female singer
+    Cayetana_MissThing_RAW_05_03.wav: female singer
+    Cayetana_MissThing_RAW_05_04.wav: female singer
+    Cayetana_MissThing_RAW_06_01.wav: distorted electric guitar
+    Cayetana_MissThing_RAW_06_02.wav: distorted electric guitar
+    Cayetana_MissThing_RAW_07_01.wav: female singer
+    Cayetana_MissThing_RAW_07_02.wav: female singer
+  MedleyDB_V2/V2/FilthyBird_IdLikeToKnow/FilthyBird_IdLikeToKnow_RAW:
+    FilthyBird_IdLikeToKnow_RAW_01_01.wav: acoustic guitar
+    FilthyBird_IdLikeToKnow_RAW_02_01.wav: female singer
+    FilthyBird_IdLikeToKnow_RAW_02_02.wav: female singer
+    FilthyBird_IdLikeToKnow_RAW_02_03.wav: female singer
+    FilthyBird_IdLikeToKnow_RAW_02_04.wav: female singer
+    FilthyBird_IdLikeToKnow_RAW_02_05.wav: female singer
+    FilthyBird_IdLikeToKnow_RAW_02_06.wav: female singer
+    FilthyBird_IdLikeToKnow_RAW_02_07.wav: female singer
+    FilthyBird_IdLikeToKnow_RAW_03_01.wav: tambourine
+    FilthyBird_IdLikeToKnow_RAW_03_02.wav: tambourine
+    FilthyBird_IdLikeToKnow_RAW_04_01.wav: distorted electric guitar
+    FilthyBird_IdLikeToKnow_RAW_05_01.wav: drum set
+    FilthyBird_IdLikeToKnow_RAW_05_02.wav: drum set
+    FilthyBird_IdLikeToKnow_RAW_05_03.wav: drum set
+    FilthyBird_IdLikeToKnow_RAW_05_04.wav: drum set
+    FilthyBird_IdLikeToKnow_RAW_05_05.wav: drum set
+    FilthyBird_IdLikeToKnow_RAW_05_06.wav: drum set
+    FilthyBird_IdLikeToKnow_RAW_05_07.wav: drum set
+    FilthyBird_IdLikeToKnow_RAW_05_08.wav: drum set
+    FilthyBird_IdLikeToKnow_RAW_05_09.wav: drum set
+    FilthyBird_IdLikeToKnow_RAW_06_01.wav: distorted electric guitar
+    FilthyBird_IdLikeToKnow_RAW_06_02.wav: distorted electric guitar
+    FilthyBird_IdLikeToKnow_RAW_07_01.wav: distorted electric guitar
+    FilthyBird_IdLikeToKnow_RAW_07_02.wav: distorted electric guitar
+    FilthyBird_IdLikeToKnow_RAW_08_01.wav: electric bass
+    FilthyBird_IdLikeToKnow_RAW_08_02.wav: electric bass
+    FilthyBird_IdLikeToKnow_RAW_09_01.wav: female singer
+    FilthyBird_IdLikeToKnow_RAW_09_02.wav: female singer
+    FilthyBird_IdLikeToKnow_RAW_10_01.wav: distorted electric guitar
+  MedleyDB_V2/V2/FruitCathedral_KeepMeRunnin/FruitCathedral_KeepMeRunnin_RAW:
+    FruitCathedral_KeepMeRunnin_RAW_01_01.wav: drum set
+    FruitCathedral_KeepMeRunnin_RAW_01_02.wav: drum set
+    FruitCathedral_KeepMeRunnin_RAW_01_03.wav: drum set
+    FruitCathedral_KeepMeRunnin_RAW_01_04.wav: drum set
+    FruitCathedral_KeepMeRunnin_RAW_01_05.wav: drum set
+    FruitCathedral_KeepMeRunnin_RAW_01_06.wav: drum set
+    FruitCathedral_KeepMeRunnin_RAW_01_07.wav: drum set
+    FruitCathedral_KeepMeRunnin_RAW_01_08.wav: drum set
+    FruitCathedral_KeepMeRunnin_RAW_01_09.wav: drum set
+    FruitCathedral_KeepMeRunnin_RAW_01_10.wav: drum set
+    FruitCathedral_KeepMeRunnin_RAW_02_01.wav: distorted electric guitar
+    FruitCathedral_KeepMeRunnin_RAW_02_02.wav: distorted electric guitar
+    FruitCathedral_KeepMeRunnin_RAW_02_03.wav: distorted electric guitar
+    FruitCathedral_KeepMeRunnin_RAW_02_04.wav: distorted electric guitar
+    FruitCathedral_KeepMeRunnin_RAW_02_05.wav: distorted electric guitar
+    FruitCathedral_KeepMeRunnin_RAW_02_06.wav: distorted electric guitar
+    FruitCathedral_KeepMeRunnin_RAW_02_07.wav: distorted electric guitar
+    FruitCathedral_KeepMeRunnin_RAW_02_08.wav: distorted electric guitar
+    FruitCathedral_KeepMeRunnin_RAW_02_09.wav: distorted electric guitar
+    FruitCathedral_KeepMeRunnin_RAW_02_10.wav: distorted electric guitar
+    FruitCathedral_KeepMeRunnin_RAW_02_11.wav: distorted electric guitar
+    FruitCathedral_KeepMeRunnin_RAW_02_12.wav: distorted electric guitar
+    FruitCathedral_KeepMeRunnin_RAW_02_13.wav: distorted electric guitar
+    FruitCathedral_KeepMeRunnin_RAW_02_14.wav: distorted electric guitar
+    FruitCathedral_KeepMeRunnin_RAW_03_01.wav: acoustic guitar
+    FruitCathedral_KeepMeRunnin_RAW_03_02.wav: acoustic guitar
+    FruitCathedral_KeepMeRunnin_RAW_03_03.wav: acoustic guitar
+    FruitCathedral_KeepMeRunnin_RAW_03_04.wav: acoustic guitar
+    FruitCathedral_KeepMeRunnin_RAW_03_05.wav: acoustic guitar
+    FruitCathedral_KeepMeRunnin_RAW_03_06.wav: acoustic guitar
+    FruitCathedral_KeepMeRunnin_RAW_03_07.wav: acoustic guitar
+    FruitCathedral_KeepMeRunnin_RAW_04_01.wav: vocalists
+    FruitCathedral_KeepMeRunnin_RAW_04_02.wav: vocalists
+    FruitCathedral_KeepMeRunnin_RAW_04_03.wav: vocalists
+    FruitCathedral_KeepMeRunnin_RAW_04_04.wav: vocalists
+    FruitCathedral_KeepMeRunnin_RAW_04_05.wav: vocalists
+    FruitCathedral_KeepMeRunnin_RAW_04_06.wav: vocalists
+    FruitCathedral_KeepMeRunnin_RAW_05_01.wav: shaker
+    FruitCathedral_KeepMeRunnin_RAW_05_02.wav: shaker
+    FruitCathedral_KeepMeRunnin_RAW_06_01.wav: electric bass
+    FruitCathedral_KeepMeRunnin_RAW_06_02.wav: electric bass
+  MedleyDB_V2/V2/HopsNVinyl_ChickenFriedSteak/HopsNVinyl_ChickenFriedSteak_RAW:
+    HopsNVinyl_ChickenFriedSteak_RAW_01_01.wav: kick drum
+    HopsNVinyl_ChickenFriedSteak_RAW_01_02.wav: kick drum
+    HopsNVinyl_ChickenFriedSteak_RAW_01_03.wav: drum set
+    HopsNVinyl_ChickenFriedSteak_RAW_01_04.wav: drum set
+    HopsNVinyl_ChickenFriedSteak_RAW_01_05.wav: drum set
+    HopsNVinyl_ChickenFriedSteak_RAW_01_06.wav: drum set
+    HopsNVinyl_ChickenFriedSteak_RAW_02_01.wav: tenor saxophone
+    HopsNVinyl_ChickenFriedSteak_RAW_02_02.wav: tenor saxophone
+    HopsNVinyl_ChickenFriedSteak_RAW_02_03.wav: tenor saxophone
+    HopsNVinyl_ChickenFriedSteak_RAW_02_04.wav: tenor saxophone
+    HopsNVinyl_ChickenFriedSteak_RAW_03_01.wav: Main System
+    HopsNVinyl_ChickenFriedSteak_RAW_03_02.wav: Main System
+    HopsNVinyl_ChickenFriedSteak_RAW_03_03.wav: Main System
+    HopsNVinyl_ChickenFriedSteak_RAW_03_04.wav: Main System
+    HopsNVinyl_ChickenFriedSteak_RAW_03_05.wav: Main System
+    HopsNVinyl_ChickenFriedSteak_RAW_03_06.wav: Main System
+    HopsNVinyl_ChickenFriedSteak_RAW_03_07.wav: Main System
+    HopsNVinyl_ChickenFriedSteak_RAW_03_08.wav: Main System
+    HopsNVinyl_ChickenFriedSteak_RAW_04_01.wav: double bass
+    HopsNVinyl_ChickenFriedSteak_RAW_04_02.wav: double bass
+    HopsNVinyl_ChickenFriedSteak_RAW_04_03.wav: double bass
+    HopsNVinyl_ChickenFriedSteak_RAW_04_04.wav: double bass
+    HopsNVinyl_ChickenFriedSteak_RAW_05_01.wav: vibraphone
+    HopsNVinyl_ChickenFriedSteak_RAW_05_02.wav: vibraphone
+    HopsNVinyl_ChickenFriedSteak_RAW_05_03.wav: vibraphone
+    HopsNVinyl_ChickenFriedSteak_RAW_05_04.wav: vibraphone
+  MedleyDB_V2/V2/MidnightBlue_HuntingSeason/MidnightBlue_HuntingSeason_RAW:
+    MidnightBlue_HuntingSeason_RAW_01_01.wav: male singer
+    MidnightBlue_HuntingSeason_RAW_02_01.wav: male singer
+    MidnightBlue_HuntingSeason_RAW_03_01.wav: distorted electric guitar
+    MidnightBlue_HuntingSeason_RAW_03_02.wav: distorted electric guitar
+    MidnightBlue_HuntingSeason_RAW_04_01.wav: distorted electric guitar
+    MidnightBlue_HuntingSeason_RAW_04_02.wav: distorted electric guitar
+    MidnightBlue_HuntingSeason_RAW_05_01.wav: drum set
+    MidnightBlue_HuntingSeason_RAW_05_02.wav: drum set
+    MidnightBlue_HuntingSeason_RAW_05_03.wav: drum set
+    MidnightBlue_HuntingSeason_RAW_05_04.wav: drum set
+    MidnightBlue_HuntingSeason_RAW_05_05.wav: drum set
+    MidnightBlue_HuntingSeason_RAW_05_06.wav: drum set
+    MidnightBlue_HuntingSeason_RAW_05_07.wav: drum set
+    MidnightBlue_HuntingSeason_RAW_05_08.wav: drum set
+    MidnightBlue_HuntingSeason_RAW_05_09.wav: drum set
+    MidnightBlue_HuntingSeason_RAW_05_10.wav: drum set
+    MidnightBlue_HuntingSeason_RAW_05_11.wav: drum set
+    MidnightBlue_HuntingSeason_RAW_06_01.wav: electric bass
+    MidnightBlue_HuntingSeason_RAW_06_02.wav: electric bass
+    MidnightBlue_HuntingSeason_RAW_07_01.wav: distorted electric guitar
+    MidnightBlue_HuntingSeason_RAW_08_01.wav: piano
+    MidnightBlue_HuntingSeason_RAW_08_02.wav: piano
+  MedleyDB_V2/V2/MutualBenefit_NotForNothing/MutualBenefit_NotForNothing_RAW:
+    MutualBenefit_NotForNothing_RAW_01_01.wav: male singer
+    MutualBenefit_NotForNothing_RAW_01_02.wav: male singer
+    MutualBenefit_NotForNothing_RAW_01_03.wav: male singer
+    MutualBenefit_NotForNothing_RAW_01_04.wav: male singer
+    MutualBenefit_NotForNothing_RAW_01_05.wav: male singer
+    MutualBenefit_NotForNothing_RAW_02_01.wav: drum set
+    MutualBenefit_NotForNothing_RAW_02_02.wav: drum set
+    MutualBenefit_NotForNothing_RAW_02_03.wav: drum set
+    MutualBenefit_NotForNothing_RAW_02_04.wav: drum set
+    MutualBenefit_NotForNothing_RAW_02_05.wav: drum set
+    MutualBenefit_NotForNothing_RAW_02_06.wav: drum set
+    MutualBenefit_NotForNothing_RAW_02_07.wav: drum set
+    MutualBenefit_NotForNothing_RAW_02_08.wav: drum set
+    MutualBenefit_NotForNothing_RAW_02_09.wav: drum set
+    MutualBenefit_NotForNothing_RAW_02_10.wav: drum set
+    MutualBenefit_NotForNothing_RAW_02_11.wav: drum set
+    MutualBenefit_NotForNothing_RAW_02_12.wav: drum set
+    MutualBenefit_NotForNothing_RAW_02_13.wav: drum set
+    MutualBenefit_NotForNothing_RAW_03_01.wav: violin
+    MutualBenefit_NotForNothing_RAW_04_01.wav: acoustic guitar
+    MutualBenefit_NotForNothing_RAW_04_02.wav: acoustic guitar
+    MutualBenefit_NotForNothing_RAW_05_01.wav: electric bass
+    MutualBenefit_NotForNothing_RAW_06_01.wav: male singer
+    MutualBenefit_NotForNothing_RAW_07_01.wav: acoustic guitar
+    MutualBenefit_NotForNothing_RAW_07_02.wav: acoustic guitar
+    MutualBenefit_NotForNothing_RAW_08_01.wav: violin section
+    MutualBenefit_NotForNothing_RAW_08_02.wav: violin section
+    MutualBenefit_NotForNothing_RAW_08_03.wav: violin section
+    MutualBenefit_NotForNothing_RAW_08_04.wav: violin section
+    MutualBenefit_NotForNothing_RAW_08_05.wav: violin section
+    MutualBenefit_NotForNothing_RAW_08_06.wav: violin section
+    MutualBenefit_NotForNothing_RAW_08_07.wav: violin section
+    MutualBenefit_NotForNothing_RAW_08_08.wav: violin section
+    MutualBenefit_NotForNothing_RAW_08_09.wav: violin section
+    MutualBenefit_NotForNothing_RAW_08_10.wav: violin section
+    MutualBenefit_NotForNothing_RAW_08_11.wav: violin section
+    MutualBenefit_NotForNothing_RAW_08_12.wav: violin section
+    MutualBenefit_NotForNothing_RAW_08_13.wav: violin section
+    MutualBenefit_NotForNothing_RAW_09_01.wav: acoustic guitar
+    MutualBenefit_NotForNothing_RAW_10_01.wav: piano
+    MutualBenefit_NotForNothing_RAW_10_02.wav: piano
+    MutualBenefit_NotForNothing_RAW_11_01.wav: violin section
+    MutualBenefit_NotForNothing_RAW_11_02.wav: violin section
+    MutualBenefit_NotForNothing_RAW_11_03.wav: violin section
+    MutualBenefit_NotForNothing_RAW_11_04.wav: violin section
+    MutualBenefit_NotForNothing_RAW_11_05.wav: violin section
+    MutualBenefit_NotForNothing_RAW_11_06.wav: violin section
+    MutualBenefit_NotForNothing_RAW_11_07.wav: violin section
+    MutualBenefit_NotForNothing_RAW_11_08.wav: violin section
+    MutualBenefit_NotForNothing_RAW_11_09.wav: violin section
+  MedleyDB_V2/V2/QuantumChromos_Circuits/QuantumChromos_Circuits_RAW:
+    QuantumChromos_Circuits_RAW_01_01.wav: bass drum
+    QuantumChromos_Circuits_RAW_01_02.wav: bass drum
+    QuantumChromos_Circuits_RAW_01_03.wav: bass drum
+    QuantumChromos_Circuits_RAW_01_04.wav: bass drum
+    QuantumChromos_Circuits_RAW_01_05.wav: bass drum
+    QuantumChromos_Circuits_RAW_01_06.wav: bass drum
+    QuantumChromos_Circuits_RAW_02_01.wav: violin
+    QuantumChromos_Circuits_RAW_02_02.wav: violin
+    QuantumChromos_Circuits_RAW_03_01.wav: piano
+    QuantumChromos_Circuits_RAW_03_02.wav: piano
+    QuantumChromos_Circuits_RAW_04_01.wav: clarinet
+    QuantumChromos_Circuits_RAW_04_02.wav: clarinet
+    QuantumChromos_Circuits_RAW_05_01.wav: double bass
+    QuantumChromos_Circuits_RAW_05_02.wav: double bass
+    QuantumChromos_Circuits_RAW_05_03.wav: double bass
+    QuantumChromos_Circuits_RAW_05_04.wav: double bass
+    QuantumChromos_Circuits_RAW_06_01.wav: male singer
+    QuantumChromos_Circuits_RAW_06_02.wav: male singer
+    QuantumChromos_Circuits_RAW_07_01.wav: Main System
+    QuantumChromos_Circuits_RAW_07_02.wav: Main System
+  MedleyDB_V2/V2/Sweat_AlmostAlways/Sweat_AlmostAlways_RAW:
+    Sweat_AlmostAlways_RAW_01_01.wav: Main System
+    Sweat_AlmostAlways_RAW_01_02.wav: Main System
+    Sweat_AlmostAlways_RAW_01_03.wav: Main System
+    Sweat_AlmostAlways_RAW_01_04.wav: Main System
+    Sweat_AlmostAlways_RAW_01_05.wav: Main System
+    Sweat_AlmostAlways_RAW_01_06.wav: Main System
+    Sweat_AlmostAlways_RAW_01_07.wav: Main System
+    Sweat_AlmostAlways_RAW_01_08.wav: Main System
+    Sweat_AlmostAlways_RAW_01_09.wav: Main System
+    Sweat_AlmostAlways_RAW_01_10.wav: Main System
+    Sweat_AlmostAlways_RAW_01_11.wav: Main System
+    Sweat_AlmostAlways_RAW_01_12.wav: Main System
+    Sweat_AlmostAlways_RAW_01_13.wav: Main System
+    Sweat_AlmostAlways_RAW_01_14.wav: Main System
+    Sweat_AlmostAlways_RAW_01_15.wav: Main System
+    Sweat_AlmostAlways_RAW_01_16.wav: Main System
+    Sweat_AlmostAlways_RAW_01_17.wav: Main System
+    Sweat_AlmostAlways_RAW_01_18.wav: Main System
+    Sweat_AlmostAlways_RAW_01_19.wav: Main System
+    Sweat_AlmostAlways_RAW_01_20.wav: Main System
+    Sweat_AlmostAlways_RAW_01_21.wav: Main System
+    Sweat_AlmostAlways_RAW_01_22.wav: Main System
+    Sweat_AlmostAlways_RAW_01_23.wav: Main System
+    Sweat_AlmostAlways_RAW_01_24.wav: Main System
+    Sweat_AlmostAlways_RAW_02_01.wav: tenor saxophone
+    Sweat_AlmostAlways_RAW_02_02.wav: tenor saxophone
+    Sweat_AlmostAlways_RAW_02_03.wav: tenor saxophone
+    Sweat_AlmostAlways_RAW_02_04.wav: tenor saxophone
+    Sweat_AlmostAlways_RAW_03_01.wav: drum set
+    Sweat_AlmostAlways_RAW_03_02.wav: drum set
+    Sweat_AlmostAlways_RAW_03_03.wav: drum set
+    Sweat_AlmostAlways_RAW_03_04.wav: drum set
+    Sweat_AlmostAlways_RAW_03_05.wav: drum set
+    Sweat_AlmostAlways_RAW_03_06.wav: drum set
+    Sweat_AlmostAlways_RAW_03_07.wav: drum set
+    Sweat_AlmostAlways_RAW_03_08.wav: drum set
+    Sweat_AlmostAlways_RAW_03_09.wav: drum set
+    Sweat_AlmostAlways_RAW_03_10.wav: drum set
+    Sweat_AlmostAlways_RAW_03_11.wav: drum set
+    Sweat_AlmostAlways_RAW_03_12.wav: drum set
+    Sweat_AlmostAlways_RAW_03_13.wav: drum set
+    Sweat_AlmostAlways_RAW_03_14.wav: drum set
+    Sweat_AlmostAlways_RAW_03_15.wav: drum set
+    Sweat_AlmostAlways_RAW_03_16.wav: drum set
+    Sweat_AlmostAlways_RAW_03_17.wav: drum set
+    Sweat_AlmostAlways_RAW_03_18.wav: drum set
+    Sweat_AlmostAlways_RAW_03_19.wav: drum set
+    Sweat_AlmostAlways_RAW_03_20.wav: drum set
+    Sweat_AlmostAlways_RAW_04_01.wav: piano
+    Sweat_AlmostAlways_RAW_04_02.wav: piano
+    Sweat_AlmostAlways_RAW_04_03.wav: piano
+    Sweat_AlmostAlways_RAW_04_04.wav: piano
+    Sweat_AlmostAlways_RAW_04_05.wav: piano
+    Sweat_AlmostAlways_RAW_04_06.wav: piano
+    Sweat_AlmostAlways_RAW_04_07.wav: piano
+    Sweat_AlmostAlways_RAW_04_08.wav: piano
+    Sweat_AlmostAlways_RAW_05_01.wav: Main System
+    Sweat_AlmostAlways_RAW_05_02.wav: Main System
+    Sweat_AlmostAlways_RAW_05_03.wav: Main System
+    Sweat_AlmostAlways_RAW_05_04.wav: Main System
+    Sweat_AlmostAlways_RAW_06_01.wav: clean electric guitar
+    Sweat_AlmostAlways_RAW_06_02.wav: clean electric guitar
+    Sweat_AlmostAlways_RAW_06_03.wav: clean electric guitar
+    Sweat_AlmostAlways_RAW_06_04.wav: clean electric guitar
+    Sweat_AlmostAlways_RAW_06_05.wav: clean electric guitar
+    Sweat_AlmostAlways_RAW_06_06.wav: clean electric guitar
+    Sweat_AlmostAlways_RAW_07_01.wav: synthesizer
+    Sweat_AlmostAlways_RAW_07_02.wav: synthesizer
+  MedleyDB_V2/V2/Sweat_Anecdoche/Sweat_Anecdoche_RAW:
+    Sweat_Anecdoche_RAW_01_01.wav: clean electric guitar
+    Sweat_Anecdoche_RAW_01_02.wav: clean electric guitar
+    Sweat_Anecdoche_RAW_01_03.wav: clean electric guitar
+    Sweat_Anecdoche_RAW_01_04.wav: clean electric guitar
+    Sweat_Anecdoche_RAW_01_05.wav: clean electric guitar
+    Sweat_Anecdoche_RAW_01_06.wav: clean electric guitar
+    Sweat_Anecdoche_RAW_02_01.wav: Main System
+    Sweat_Anecdoche_RAW_02_02.wav: Main System
+    Sweat_Anecdoche_RAW_02_03.wav: Main System
+    Sweat_Anecdoche_RAW_02_04.wav: Main System
+    Sweat_Anecdoche_RAW_02_05.wav: Main System
+    Sweat_Anecdoche_RAW_02_06.wav: Main System
+    Sweat_Anecdoche_RAW_02_07.wav: Main System
+    Sweat_Anecdoche_RAW_02_08.wav: Main System
+    Sweat_Anecdoche_RAW_02_09.wav: Main System
+    Sweat_Anecdoche_RAW_02_10.wav: Main System
+    Sweat_Anecdoche_RAW_02_11.wav: Main System
+    Sweat_Anecdoche_RAW_02_12.wav: Main System
+    Sweat_Anecdoche_RAW_02_13.wav: Main System
+    Sweat_Anecdoche_RAW_02_14.wav: Main System
+    Sweat_Anecdoche_RAW_02_15.wav: Main System
+    Sweat_Anecdoche_RAW_02_16.wav: Main System
+    Sweat_Anecdoche_RAW_02_17.wav: Main System
+    Sweat_Anecdoche_RAW_02_18.wav: Main System
+    Sweat_Anecdoche_RAW_02_19.wav: Main System
+    Sweat_Anecdoche_RAW_02_20.wav: Main System
+    Sweat_Anecdoche_RAW_02_21.wav: Main System
+    Sweat_Anecdoche_RAW_02_22.wav: Main System
+    Sweat_Anecdoche_RAW_02_23.wav: Main System
+    Sweat_Anecdoche_RAW_02_24.wav: Main System
+    Sweat_Anecdoche_RAW_03_01.wav: Main System
+    Sweat_Anecdoche_RAW_03_02.wav: Main System
+    Sweat_Anecdoche_RAW_03_03.wav: Main System
+    Sweat_Anecdoche_RAW_03_04.wav: Main System
+    Sweat_Anecdoche_RAW_04_01.wav: drum set
+    Sweat_Anecdoche_RAW_04_02.wav: drum set
+    Sweat_Anecdoche_RAW_04_03.wav: drum set
+    Sweat_Anecdoche_RAW_04_04.wav: drum set
+    Sweat_Anecdoche_RAW_04_05.wav: drum set
+    Sweat_Anecdoche_RAW_04_06.wav: drum set
+    Sweat_Anecdoche_RAW_04_07.wav: drum set
+    Sweat_Anecdoche_RAW_04_08.wav: drum set
+    Sweat_Anecdoche_RAW_04_09.wav: drum set
+    Sweat_Anecdoche_RAW_04_10.wav: drum set
+    Sweat_Anecdoche_RAW_04_11.wav: drum set
+    Sweat_Anecdoche_RAW_04_12.wav: drum set
+    Sweat_Anecdoche_RAW_04_13.wav: drum set
+    Sweat_Anecdoche_RAW_04_14.wav: drum set
+    Sweat_Anecdoche_RAW_04_15.wav: drum set
+    Sweat_Anecdoche_RAW_04_16.wav: drum set
+    Sweat_Anecdoche_RAW_04_17.wav: drum set
+    Sweat_Anecdoche_RAW_04_18.wav: drum set
+    Sweat_Anecdoche_RAW_04_19.wav: drum set
+    Sweat_Anecdoche_RAW_04_20.wav: drum set
+    Sweat_Anecdoche_RAW_04_21.wav: drum set
+    Sweat_Anecdoche_RAW_04_22.wav: drum set
+    Sweat_Anecdoche_RAW_04_23.wav: drum set
+    Sweat_Anecdoche_RAW_04_24.wav: drum set
+    Sweat_Anecdoche_RAW_05_01.wav: alto saxophone
+    Sweat_Anecdoche_RAW_05_02.wav: alto saxophone
+    Sweat_Anecdoche_RAW_05_03.wav: alto saxophone
+    Sweat_Anecdoche_RAW_05_04.wav: alto saxophone
+    Sweat_Anecdoche_RAW_06_01.wav: piano
+    Sweat_Anecdoche_RAW_06_02.wav: piano
+    Sweat_Anecdoche_RAW_06_03.wav: piano
+    Sweat_Anecdoche_RAW_06_04.wav: piano
+    Sweat_Anecdoche_RAW_06_05.wav: piano
+    Sweat_Anecdoche_RAW_06_06.wav: piano
+    Sweat_Anecdoche_RAW_06_07.wav: piano
+    Sweat_Anecdoche_RAW_06_08.wav: piano
+  MedleyDB_V2/V2/Sweat_Elegy/Sweat_Elegy_RAW:
+    Sweat_Elegy_RAW_01_01.wav: drum set
+    Sweat_Elegy_RAW_01_02.wav: drum set
+    Sweat_Elegy_RAW_01_03.wav: drum set
+    Sweat_Elegy_RAW_01_04.wav: drum set
+    Sweat_Elegy_RAW_01_05.wav: drum set
+    Sweat_Elegy_RAW_01_06.wav: drum set
+    Sweat_Elegy_RAW_01_07.wav: drum set
+    Sweat_Elegy_RAW_01_08.wav: drum set
+    Sweat_Elegy_RAW_01_09.wav: drum set
+    Sweat_Elegy_RAW_01_10.wav: drum set
+    Sweat_Elegy_RAW_01_11.wav: drum set
+    Sweat_Elegy_RAW_01_12.wav: drum set
+    Sweat_Elegy_RAW_01_13.wav: drum set
+    Sweat_Elegy_RAW_01_14.wav: drum set
+    Sweat_Elegy_RAW_01_15.wav: drum set
+    Sweat_Elegy_RAW_01_16.wav: drum set
+    Sweat_Elegy_RAW_01_17.wav: drum set
+    Sweat_Elegy_RAW_01_18.wav: drum set
+    Sweat_Elegy_RAW_01_19.wav: drum set
+    Sweat_Elegy_RAW_01_20.wav: drum set
+    Sweat_Elegy_RAW_01_21.wav: drum set
+    Sweat_Elegy_RAW_01_22.wav: drum set
+    Sweat_Elegy_RAW_01_23.wav: drum set
+    Sweat_Elegy_RAW_01_24.wav: drum set
+    Sweat_Elegy_RAW_02_01.wav: Main System
+    Sweat_Elegy_RAW_02_02.wav: Main System
+    Sweat_Elegy_RAW_02_03.wav: Main System
+    Sweat_Elegy_RAW_02_04.wav: Main System
+    Sweat_Elegy_RAW_02_05.wav: Main System
+    Sweat_Elegy_RAW_02_06.wav: Main System
+    Sweat_Elegy_RAW_02_07.wav: Main System
+    Sweat_Elegy_RAW_02_08.wav: Main System
+    Sweat_Elegy_RAW_02_09.wav: Main System
+    Sweat_Elegy_RAW_02_10.wav: Main System
+    Sweat_Elegy_RAW_02_11.wav: Main System
+    Sweat_Elegy_RAW_02_12.wav: Main System
+    Sweat_Elegy_RAW_02_13.wav: Main System
+    Sweat_Elegy_RAW_02_14.wav: Main System
+    Sweat_Elegy_RAW_02_15.wav: Main System
+    Sweat_Elegy_RAW_02_16.wav: Main System
+    Sweat_Elegy_RAW_02_17.wav: Main System
+    Sweat_Elegy_RAW_02_18.wav: Main System
+    Sweat_Elegy_RAW_02_19.wav: Main System
+    Sweat_Elegy_RAW_02_20.wav: Main System
+    Sweat_Elegy_RAW_02_21.wav: Main System
+    Sweat_Elegy_RAW_02_22.wav: Main System
+    Sweat_Elegy_RAW_02_23.wav: Main System
+    Sweat_Elegy_RAW_02_24.wav: Main System
+    Sweat_Elegy_RAW_03_01.wav: piano
+    Sweat_Elegy_RAW_03_02.wav: piano
+    Sweat_Elegy_RAW_03_03.wav: piano
+    Sweat_Elegy_RAW_03_04.wav: piano
+    Sweat_Elegy_RAW_03_05.wav: piano
+    Sweat_Elegy_RAW_03_06.wav: piano
+    Sweat_Elegy_RAW_03_07.wav: piano
+    Sweat_Elegy_RAW_03_08.wav: piano
+    Sweat_Elegy_RAW_04_01.wav: tenor saxophone
+    Sweat_Elegy_RAW_04_02.wav: tenor saxophone
+    Sweat_Elegy_RAW_04_03.wav: tenor saxophone
+    Sweat_Elegy_RAW_04_04.wav: tenor saxophone
+    Sweat_Elegy_RAW_04_05.wav: tenor saxophone
+    Sweat_Elegy_RAW_04_06.wav: tenor saxophone
+    Sweat_Elegy_RAW_05_01.wav: Main System
+    Sweat_Elegy_RAW_05_02.wav: Main System
+    Sweat_Elegy_RAW_05_03.wav: Main System
+    Sweat_Elegy_RAW_05_04.wav: Main System
+    Sweat_Elegy_RAW_06_01.wav: clean electric guitar
+    Sweat_Elegy_RAW_06_02.wav: clean electric guitar
+    Sweat_Elegy_RAW_06_03.wav: clean electric guitar
+    Sweat_Elegy_RAW_06_04.wav: clean electric guitar
+    Sweat_Elegy_RAW_06_05.wav: clean electric guitar
+    Sweat_Elegy_RAW_06_06.wav: clean electric guitar
+    Sweat_Elegy_RAW_06_07.wav: clean electric guitar
+    Sweat_Elegy_RAW_06_08.wav: clean electric guitar
+  MedleyDB_V2/V2/Sweat_Mesozoic/Sweat_Mesozoic_RAW:
+    Sweat_Mesozoic_RAW_01_01.wav: Main System
+    Sweat_Mesozoic_RAW_01_02.wav: Main System
+    Sweat_Mesozoic_RAW_01_03.wav: Main System
+    Sweat_Mesozoic_RAW_01_04.wav: Main System
+    Sweat_Mesozoic_RAW_02_01.wav: clean electric guitar
+    Sweat_Mesozoic_RAW_02_02.wav: clean electric guitar
+    Sweat_Mesozoic_RAW_02_03.wav: clean electric guitar
+    Sweat_Mesozoic_RAW_02_04.wav: clean electric guitar
+    Sweat_Mesozoic_RAW_02_05.wav: clean electric guitar
+    Sweat_Mesozoic_RAW_02_06.wav: clean electric guitar
+    Sweat_Mesozoic_RAW_03_01.wav: drum set
+    Sweat_Mesozoic_RAW_03_02.wav: drum set
+    Sweat_Mesozoic_RAW_03_03.wav: drum set
+    Sweat_Mesozoic_RAW_03_04.wav: drum set
+    Sweat_Mesozoic_RAW_03_05.wav: drum set
+    Sweat_Mesozoic_RAW_03_06.wav: drum set
+    Sweat_Mesozoic_RAW_03_07.wav: drum set
+    Sweat_Mesozoic_RAW_03_08.wav: drum set
+    Sweat_Mesozoic_RAW_03_09.wav: drum set
+    Sweat_Mesozoic_RAW_03_10.wav: drum set
+    Sweat_Mesozoic_RAW_03_11.wav: drum set
+    Sweat_Mesozoic_RAW_03_12.wav: drum set
+    Sweat_Mesozoic_RAW_03_13.wav: drum set
+    Sweat_Mesozoic_RAW_03_14.wav: drum set
+    Sweat_Mesozoic_RAW_03_15.wav: drum set
+    Sweat_Mesozoic_RAW_03_16.wav: drum set
+    Sweat_Mesozoic_RAW_03_17.wav: drum set
+    Sweat_Mesozoic_RAW_03_18.wav: drum set
+    Sweat_Mesozoic_RAW_03_19.wav: drum set
+    Sweat_Mesozoic_RAW_03_20.wav: drum set
+    Sweat_Mesozoic_RAW_03_21.wav: drum set
+    Sweat_Mesozoic_RAW_03_22.wav: drum set
+    Sweat_Mesozoic_RAW_03_23.wav: drum set
+    Sweat_Mesozoic_RAW_03_24.wav: drum set
+    Sweat_Mesozoic_RAW_04_01.wav: piano
+    Sweat_Mesozoic_RAW_04_02.wav: piano
+    Sweat_Mesozoic_RAW_04_03.wav: piano
+    Sweat_Mesozoic_RAW_04_04.wav: piano
+    Sweat_Mesozoic_RAW_04_05.wav: piano
+    Sweat_Mesozoic_RAW_04_06.wav: piano
+    Sweat_Mesozoic_RAW_04_07.wav: piano
+    Sweat_Mesozoic_RAW_04_08.wav: piano
+    Sweat_Mesozoic_RAW_05_01.wav: Main System
+    Sweat_Mesozoic_RAW_05_02.wav: Main System
+    Sweat_Mesozoic_RAW_05_03.wav: Main System
+    Sweat_Mesozoic_RAW_05_04.wav: Main System
+    Sweat_Mesozoic_RAW_05_05.wav: Main System
+    Sweat_Mesozoic_RAW_05_06.wav: Main System
+    Sweat_Mesozoic_RAW_05_07.wav: Main System
+    Sweat_Mesozoic_RAW_05_08.wav: Main System
+    Sweat_Mesozoic_RAW_05_09.wav: Main System
+    Sweat_Mesozoic_RAW_05_10.wav: Main System
+    Sweat_Mesozoic_RAW_05_11.wav: Main System
+    Sweat_Mesozoic_RAW_05_12.wav: Main System
+    Sweat_Mesozoic_RAW_05_13.wav: Main System
+    Sweat_Mesozoic_RAW_05_14.wav: Main System
+    Sweat_Mesozoic_RAW_05_15.wav: Main System
+    Sweat_Mesozoic_RAW_05_16.wav: Main System
+    Sweat_Mesozoic_RAW_05_17.wav: Main System
+    Sweat_Mesozoic_RAW_05_18.wav: Main System
+    Sweat_Mesozoic_RAW_05_19.wav: Main System
+    Sweat_Mesozoic_RAW_05_20.wav: Main System
+    Sweat_Mesozoic_RAW_05_21.wav: Main System
+    Sweat_Mesozoic_RAW_05_22.wav: Main System
+    Sweat_Mesozoic_RAW_05_23.wav: Main System
+    Sweat_Mesozoic_RAW_05_24.wav: Main System
+    Sweat_Mesozoic_RAW_06_01.wav: synthesizer
+    Sweat_Mesozoic_RAW_06_02.wav: synthesizer
+    Sweat_Mesozoic_RAW_07_01.wav: tenor saxophone
+    Sweat_Mesozoic_RAW_07_02.wav: tenor saxophone
+    Sweat_Mesozoic_RAW_07_03.wav: tenor saxophone
+    Sweat_Mesozoic_RAW_07_04.wav: tenor saxophone
+    Sweat_Mesozoic_RAW_07_05.wav: tenor saxophone
+    Sweat_Mesozoic_RAW_07_06.wav: tenor saxophone
+  MedleyDB_V2/V2/Sweat_Sn1572/Sweat_Sn1572_RAW:
+    Sweat_Sn1572_RAW_01_01.wav: Main System
+    Sweat_Sn1572_RAW_01_02.wav: Main System
+    Sweat_Sn1572_RAW_01_03.wav: Main System
+    Sweat_Sn1572_RAW_01_04.wav: Main System
+    Sweat_Sn1572_RAW_02_01.wav: kick drum
+    Sweat_Sn1572_RAW_02_02.wav: drum set
+    Sweat_Sn1572_RAW_02_03.wav: drum set
+    Sweat_Sn1572_RAW_02_04.wav: toms
+    Sweat_Sn1572_RAW_02_05.wav: snare drum
+    Sweat_Sn1572_RAW_02_06.wav: drum set
+    Sweat_Sn1572_RAW_02_07.wav: toms
+    Sweat_Sn1572_RAW_02_08.wav: high hat
+    Sweat_Sn1572_RAW_02_09.wav: cymbal
+    Sweat_Sn1572_RAW_02_10.wav: kick drum
+    Sweat_Sn1572_RAW_02_11.wav: kick drum
+    Sweat_Sn1572_RAW_02_12.wav: toms
+    Sweat_Sn1572_RAW_02_13.wav: drum set
+    Sweat_Sn1572_RAW_02_14.wav: kick drum
+    Sweat_Sn1572_RAW_02_15.wav: cymbal
+    Sweat_Sn1572_RAW_02_16.wav: cymbal
+    Sweat_Sn1572_RAW_02_17.wav: snare drum
+    Sweat_Sn1572_RAW_02_18.wav: cymbal
+    Sweat_Sn1572_RAW_02_19.wav: snare drum
+    Sweat_Sn1572_RAW_02_20.wav: toms
+    Sweat_Sn1572_RAW_02_21.wav: high hat
+    Sweat_Sn1572_RAW_02_22.wav: snare drum
+    Sweat_Sn1572_RAW_03_01.wav: electric bass
+    Sweat_Sn1572_RAW_03_02.wav: electric bass
+    Sweat_Sn1572_RAW_03_03.wav: electric bass
+    Sweat_Sn1572_RAW_03_04.wav: electric bass
+    Sweat_Sn1572_RAW_04_01.wav: distorted electric guitar
+    Sweat_Sn1572_RAW_04_02.wav: distorted electric guitar
+    Sweat_Sn1572_RAW_04_03.wav: distorted electric guitar
+    Sweat_Sn1572_RAW_04_04.wav: distorted electric guitar
+    Sweat_Sn1572_RAW_04_05.wav: distorted electric guitar
+    Sweat_Sn1572_RAW_04_06.wav: distorted electric guitar
+    Sweat_Sn1572_RAW_04_07.wav: distorted electric guitar
+    Sweat_Sn1572_RAW_04_08.wav: distorted electric guitar
+    Sweat_Sn1572_RAW_04_09.wav: distorted electric guitar
+    Sweat_Sn1572_RAW_04_10.wav: distorted electric guitar
+    Sweat_Sn1572_RAW_04_11.wav: distorted electric guitar
+    Sweat_Sn1572_RAW_04_12.wav: distorted electric guitar
+    Sweat_Sn1572_RAW_05_01.wav: electric piano
+    Sweat_Sn1572_RAW_05_02.wav: electric piano
+    Sweat_Sn1572_RAW_05_03.wav: electric piano
+    Sweat_Sn1572_RAW_05_04.wav: electric piano
+  MedleyDB_V2/V2/Sweat_Tact/Sweat_Tact_RAW:
+    Sweat_Tact_RAW_01_01.wav: Main System
+    Sweat_Tact_RAW_01_02.wav: Main System
+    Sweat_Tact_RAW_01_03.wav: Main System
+    Sweat_Tact_RAW_01_04.wav: Main System
+    Sweat_Tact_RAW_02_01.wav: piano
+    Sweat_Tact_RAW_02_02.wav: piano
+    Sweat_Tact_RAW_02_03.wav: piano
+    Sweat_Tact_RAW_02_04.wav: piano
+    Sweat_Tact_RAW_02_05.wav: piano
+    Sweat_Tact_RAW_02_06.wav: piano
+    Sweat_Tact_RAW_02_07.wav: piano
+    Sweat_Tact_RAW_02_08.wav: piano
+    Sweat_Tact_RAW_03_01.wav: tenor saxophone
+    Sweat_Tact_RAW_03_02.wav: tenor saxophone
+    Sweat_Tact_RAW_03_03.wav: tenor saxophone
+    Sweat_Tact_RAW_03_04.wav: tenor saxophone
+    Sweat_Tact_RAW_03_05.wav: tenor saxophone
+    Sweat_Tact_RAW_03_06.wav: tenor saxophone
+    Sweat_Tact_RAW_04_01.wav: clean electric guitar
+    Sweat_Tact_RAW_04_02.wav: clean electric guitar
+    Sweat_Tact_RAW_04_03.wav: clean electric guitar
+    Sweat_Tact_RAW_04_04.wav: clean electric guitar
+    Sweat_Tact_RAW_04_05.wav: clean electric guitar
+    Sweat_Tact_RAW_04_06.wav: clean electric guitar
+    Sweat_Tact_RAW_04_07.wav: clean electric guitar
+    Sweat_Tact_RAW_04_08.wav: clean electric guitar
+    Sweat_Tact_RAW_05_01.wav: drum set
+    Sweat_Tact_RAW_05_02.wav: drum set
+    Sweat_Tact_RAW_05_03.wav: drum set
+    Sweat_Tact_RAW_05_04.wav: drum set
+    Sweat_Tact_RAW_05_05.wav: drum set
+    Sweat_Tact_RAW_05_06.wav: drum set
+    Sweat_Tact_RAW_05_07.wav: drum set
+    Sweat_Tact_RAW_05_08.wav: drum set
+    Sweat_Tact_RAW_05_09.wav: drum set
+    Sweat_Tact_RAW_05_10.wav: drum set
+    Sweat_Tact_RAW_05_11.wav: drum set
+    Sweat_Tact_RAW_05_12.wav: drum set
+    Sweat_Tact_RAW_05_13.wav: drum set
+    Sweat_Tact_RAW_05_14.wav: drum set
+    Sweat_Tact_RAW_05_15.wav: drum set
+    Sweat_Tact_RAW_05_16.wav: drum set
+    Sweat_Tact_RAW_05_17.wav: drum set
+    Sweat_Tact_RAW_05_18.wav: drum set
+    Sweat_Tact_RAW_05_19.wav: drum set
+    Sweat_Tact_RAW_05_20.wav: drum set
+    Sweat_Tact_RAW_05_21.wav: drum set
+    Sweat_Tact_RAW_05_22.wav: drum set
+    Sweat_Tact_RAW_05_23.wav: drum set
+    Sweat_Tact_RAW_05_24.wav: drum set
+    Sweat_Tact_RAW_06_01.wav: Main System
+    Sweat_Tact_RAW_06_02.wav: Main System
+    Sweat_Tact_RAW_06_03.wav: Main System
+    Sweat_Tact_RAW_06_04.wav: Main System
+    Sweat_Tact_RAW_06_05.wav: Main System
+    Sweat_Tact_RAW_06_06.wav: Main System
+    Sweat_Tact_RAW_06_07.wav: Main System
+    Sweat_Tact_RAW_06_08.wav: Main System
+    Sweat_Tact_RAW_06_09.wav: Main System
+    Sweat_Tact_RAW_06_10.wav: Main System
+    Sweat_Tact_RAW_06_11.wav: Main System
+    Sweat_Tact_RAW_06_12.wav: Main System
+    Sweat_Tact_RAW_06_13.wav: Main System
+    Sweat_Tact_RAW_06_14.wav: Main System
+    Sweat_Tact_RAW_06_15.wav: Main System
+    Sweat_Tact_RAW_06_16.wav: Main System
+    Sweat_Tact_RAW_06_17.wav: Main System
+    Sweat_Tact_RAW_06_18.wav: Main System
+    Sweat_Tact_RAW_06_19.wav: Main System
+    Sweat_Tact_RAW_06_20.wav: Main System
+    Sweat_Tact_RAW_06_21.wav: Main System
+    Sweat_Tact_RAW_06_22.wav: Main System
+    Sweat_Tact_RAW_06_23.wav: Main System
+    Sweat_Tact_RAW_06_24.wav: Main System
+  MedleyDB_V2/V2/TheKitchenettes_Alive/TheKitchenettes_Alive_RAW:
+    TheKitchenettes_Alive_RAW_01_01.wav: vocalists
+    TheKitchenettes_Alive_RAW_02_01.wav: acoustic guitar
+    TheKitchenettes_Alive_RAW_03_01.wav: electric bass
+    TheKitchenettes_Alive_RAW_03_02.wav: electric bass
+    TheKitchenettes_Alive_RAW_04_01.wav: violin
+    TheKitchenettes_Alive_RAW_04_02.wav: violin
+    TheKitchenettes_Alive_RAW_05_01.wav: piano
+    TheKitchenettes_Alive_RAW_05_02.wav: piano
+    TheKitchenettes_Alive_RAW_06_01.wav: clean electric guitar
+    TheKitchenettes_Alive_RAW_07_01.wav: drum set
+    TheKitchenettes_Alive_RAW_07_02.wav: drum set
+    TheKitchenettes_Alive_RAW_07_03.wav: drum set
+    TheKitchenettes_Alive_RAW_07_04.wav: drum set
+    TheKitchenettes_Alive_RAW_07_05.wav: drum set
+    TheKitchenettes_Alive_RAW_07_06.wav: drum set
+    TheKitchenettes_Alive_RAW_07_07.wav: drum set
+    TheKitchenettes_Alive_RAW_07_08.wav: drum set
+    TheKitchenettes_Alive_RAW_08_01.wav: female singer
+    TheKitchenettes_Alive_RAW_08_02.wav: female singer
+    TheKitchenettes_Alive_RAW_08_03.wav: female singer
+    TheKitchenettes_Alive_RAW_08_04.wav: female singer
+  MedleyDB_V2/V2/TrevorAndTheSoundwaves_AloneAndSad/TrevorAndTheSoundwaves_AloneAndSad_RAW:
+    TrevorAndTheSoundwaves_AloneAndSad_RAW_01_01.wav: male singer
+    TrevorAndTheSoundwaves_AloneAndSad_RAW_01_02.wav: male singer
+    TrevorAndTheSoundwaves_AloneAndSad_RAW_02_01.wav: drum set
+    TrevorAndTheSoundwaves_AloneAndSad_RAW_02_02.wav: drum set
+    TrevorAndTheSoundwaves_AloneAndSad_RAW_02_03.wav: drum set
+    TrevorAndTheSoundwaves_AloneAndSad_RAW_02_04.wav: drum set
+    TrevorAndTheSoundwaves_AloneAndSad_RAW_02_05.wav: drum set
+    TrevorAndTheSoundwaves_AloneAndSad_RAW_02_06.wav: drum set
+    TrevorAndTheSoundwaves_AloneAndSad_RAW_02_07.wav: drum set
+    TrevorAndTheSoundwaves_AloneAndSad_RAW_02_08.wav: drum set
+    TrevorAndTheSoundwaves_AloneAndSad_RAW_02_09.wav: drum set
+    TrevorAndTheSoundwaves_AloneAndSad_RAW_02_10.wav: drum set
+    TrevorAndTheSoundwaves_AloneAndSad_RAW_02_11.wav: drum set
+    TrevorAndTheSoundwaves_AloneAndSad_RAW_02_12.wav: drum set
+    TrevorAndTheSoundwaves_AloneAndSad_RAW_02_13.wav: drum set
+    TrevorAndTheSoundwaves_AloneAndSad_RAW_02_14.wav: drum set
+    TrevorAndTheSoundwaves_AloneAndSad_RAW_03_01.wav: clean electric guitar
+    TrevorAndTheSoundwaves_AloneAndSad_RAW_03_02.wav: clean electric guitar
+    TrevorAndTheSoundwaves_AloneAndSad_RAW_03_03.wav: clean electric guitar
+    TrevorAndTheSoundwaves_AloneAndSad_RAW_03_04.wav: clean electric guitar
+    TrevorAndTheSoundwaves_AloneAndSad_RAW_04_01.wav: electric bass
+    TrevorAndTheSoundwaves_AloneAndSad_RAW_04_02.wav: electric bass
+    TrevorAndTheSoundwaves_AloneAndSad_RAW_05_01.wav: distorted electric guitar
+    TrevorAndTheSoundwaves_AloneAndSad_RAW_05_02.wav: distorted electric guitar
+    TrevorAndTheSoundwaves_AloneAndSad_RAW_05_03.wav: distorted electric guitar
+    TrevorAndTheSoundwaves_AloneAndSad_RAW_05_04.wav: distorted electric guitar
+    TrevorAndTheSoundwaves_AloneAndSad_RAW_05_05.wav: distorted electric guitar
+    TrevorAndTheSoundwaves_AloneAndSad_RAW_05_06.wav: distorted electric guitar
+    TrevorAndTheSoundwaves_AloneAndSad_RAW_05_07.wav: distorted electric guitar
+    TrevorAndTheSoundwaves_AloneAndSad_RAW_05_08.wav: distorted electric guitar
+val:
+  MedleyDB_V1/V1/AClassicEducation_NightOwl/AClassicEducation_NightOwl_RAW:
+    AClassicEducation_NightOwl_RAW_01_01.wav: electric bass
+    AClassicEducation_NightOwl_RAW_01_02.wav: electric bass
+    AClassicEducation_NightOwl_RAW_02_01.wav: drum set
+    AClassicEducation_NightOwl_RAW_02_02.wav: drum set
+    AClassicEducation_NightOwl_RAW_02_03.wav: drum set
+    AClassicEducation_NightOwl_RAW_02_04.wav: drum set
+    AClassicEducation_NightOwl_RAW_02_05.wav: drum set
+    AClassicEducation_NightOwl_RAW_02_06.wav: drum set
+    AClassicEducation_NightOwl_RAW_02_07.wav: drum set
+    AClassicEducation_NightOwl_RAW_02_08.wav: drum set
+    AClassicEducation_NightOwl_RAW_02_09.wav: kick drum
+    AClassicEducation_NightOwl_RAW_02_10.wav: snare drum
+    AClassicEducation_NightOwl_RAW_02_11.wav: snare drum
+    AClassicEducation_NightOwl_RAW_02_12.wav: snare drum
+    AClassicEducation_NightOwl_RAW_02_13.wav: snare drum
+    AClassicEducation_NightOwl_RAW_02_14.wav: snare drum
+    AClassicEducation_NightOwl_RAW_02_15.wav: snare drum
+    AClassicEducation_NightOwl_RAW_03_01.wav: distorted electric guitar
+    AClassicEducation_NightOwl_RAW_04_01.wav: distorted electric guitar
+    AClassicEducation_NightOwl_RAW_05_01.wav: clean electric guitar
+    AClassicEducation_NightOwl_RAW_06_01.wav: distorted electric guitar
+    AClassicEducation_NightOwl_RAW_07_01.wav: distorted electric guitar
+    AClassicEducation_NightOwl_RAW_08_01.wav: male singer
+    AClassicEducation_NightOwl_RAW_09_01.wav: synthesizer
+    AClassicEducation_NightOwl_RAW_09_02.wav: synthesizer
+    AClassicEducation_NightOwl_RAW_10_01.wav: female singer
+    AClassicEducation_NightOwl_RAW_10_02.wav: female singer
+    AClassicEducation_NightOwl_RAW_11_01.wav: tambourine
+    AClassicEducation_NightOwl_RAW_12_01.wav: fx/processed sound
+    AClassicEducation_NightOwl_RAW_13_01.wav: male singer
+    AClassicEducation_NightOwl_RAW_13_02.wav: male singer
+    AClassicEducation_NightOwl_RAW_13_03.wav: male singer
+    AClassicEducation_NightOwl_RAW_13_04.wav: male singer
+  MedleyDB_V1/V1/BrandonWebster_DontHearAThing/BrandonWebster_DontHearAThing_RAW:
+    BrandonWebster_DontHearAThing_RAW_01_01.wav: male speaker
+    BrandonWebster_DontHearAThing_RAW_02_01.wav: female singer
+    BrandonWebster_DontHearAThing_RAW_03_01.wav: piano
+    BrandonWebster_DontHearAThing_RAW_03_02.wav: piano
+  MedleyDB_V1/V1/EthanHein_BluesForNofi/EthanHein_BluesForNofi_RAW:
+    EthanHein_BluesForNofi_RAW_01_01.wav: drum set
+    EthanHein_BluesForNofi_RAW_01_02.wav: drum set
+    EthanHein_BluesForNofi_RAW_02_01.wav: electric bass
+  MedleyDB_V1/V1/FacesOnFilm_WaitingForGa/FacesOnFilm_WaitingForGa_RAW:
+    FacesOnFilm_WaitingForGa_RAW_01_01.wav: acoustic guitar
+    FacesOnFilm_WaitingForGa_RAW_01_02.wav: acoustic guitar
+    FacesOnFilm_WaitingForGa_RAW_02_01.wav: electric bass
+    FacesOnFilm_WaitingForGa_RAW_02_02.wav: electric bass
+    FacesOnFilm_WaitingForGa_RAW_03_01.wav: male singer
+    FacesOnFilm_WaitingForGa_RAW_04_01.wav: cymbal
+    FacesOnFilm_WaitingForGa_RAW_04_02.wav: cymbal
+    FacesOnFilm_WaitingForGa_RAW_04_03.wav: toms
+    FacesOnFilm_WaitingForGa_RAW_04_04.wav: toms
+    FacesOnFilm_WaitingForGa_RAW_04_05.wav: toms
+    FacesOnFilm_WaitingForGa_RAW_04_06.wav: kick drum
+    FacesOnFilm_WaitingForGa_RAW_05_01.wav: clean electric guitar
+    FacesOnFilm_WaitingForGa_RAW_06_01.wav: clean electric guitar
+    FacesOnFilm_WaitingForGa_RAW_07_01.wav: synthesizer
+    FacesOnFilm_WaitingForGa_RAW_08_01.wav: vibraphone
+    FacesOnFilm_WaitingForGa_RAW_09_01.wav: female singer
+    FacesOnFilm_WaitingForGa_RAW_09_02.wav: female singer
+    FacesOnFilm_WaitingForGa_RAW_09_03.wav: female singer
+    FacesOnFilm_WaitingForGa_RAW_09_04.wav: female singer
+    FacesOnFilm_WaitingForGa_RAW_09_05.wav: female singer
+    FacesOnFilm_WaitingForGa_RAW_09_06.wav: female singer
+    FacesOnFilm_WaitingForGa_RAW_09_07.wav: female singer
+    FacesOnFilm_WaitingForGa_RAW_10_01.wav: male singer
+    FacesOnFilm_WaitingForGa_RAW_10_02.wav: male singer
+    FacesOnFilm_WaitingForGa_RAW_10_03.wav: male singer
+    FacesOnFilm_WaitingForGa_RAW_10_04.wav: male singer
+    FacesOnFilm_WaitingForGa_RAW_10_05.wav: male singer
+    FacesOnFilm_WaitingForGa_RAW_10_06.wav: male singer
+    FacesOnFilm_WaitingForGa_RAW_11_01.wav: cabasa
+  MedleyDB_V1/V1/JoelHelander_ExcessiveResistancetoChange/JoelHelander_ExcessiveResistancetoChange_RAW:
+    JoelHelander_ExcessiveResistancetoChange_RAW_01_01.wav: piano
+    JoelHelander_ExcessiveResistancetoChange_RAW_01_02.wav: piano
+    JoelHelander_ExcessiveResistancetoChange_RAW_01_03.wav: piano
+    JoelHelander_ExcessiveResistancetoChange_RAW_01_04.wav: tack piano
+    JoelHelander_ExcessiveResistancetoChange_RAW_01_05.wav: tack piano
+    JoelHelander_ExcessiveResistancetoChange_RAW_01_06.wav: tack piano
+    JoelHelander_ExcessiveResistancetoChange_RAW_01_07.wav: tack piano
+    JoelHelander_ExcessiveResistancetoChange_RAW_01_08.wav: tack piano
+    JoelHelander_ExcessiveResistancetoChange_RAW_02_01.wav: tack piano
+    JoelHelander_ExcessiveResistancetoChange_RAW_02_02.wav: tack piano
+    JoelHelander_ExcessiveResistancetoChange_RAW_02_03.wav: tack piano
+    JoelHelander_ExcessiveResistancetoChange_RAW_02_04.wav: tack piano
+    JoelHelander_ExcessiveResistancetoChange_RAW_02_05.wav: tack piano
+    JoelHelander_ExcessiveResistancetoChange_RAW_02_06.wav: tack piano
+    JoelHelander_ExcessiveResistancetoChange_RAW_02_07.wav: tack piano
+    JoelHelander_ExcessiveResistancetoChange_RAW_02_08.wav: tack piano
+    JoelHelander_ExcessiveResistancetoChange_RAW_03_01.wav: piano
+    JoelHelander_ExcessiveResistancetoChange_RAW_03_02.wav: piano
+    JoelHelander_ExcessiveResistancetoChange_RAW_03_03.wav: piano
+    JoelHelander_ExcessiveResistancetoChange_RAW_03_04.wav: piano
+    JoelHelander_ExcessiveResistancetoChange_RAW_03_05.wav: piano
+    JoelHelander_ExcessiveResistancetoChange_RAW_04_01.wav: tack piano
+    JoelHelander_ExcessiveResistancetoChange_RAW_04_02.wav: tack piano
+    JoelHelander_ExcessiveResistancetoChange_RAW_04_03.wav: tack piano
+    JoelHelander_ExcessiveResistancetoChange_RAW_05_01.wav: double bass
+    JoelHelander_ExcessiveResistancetoChange_RAW_05_02.wav: double bass
+    JoelHelander_ExcessiveResistancetoChange_RAW_05_03.wav: double bass
+    JoelHelander_ExcessiveResistancetoChange_RAW_06_01.wav: kick drum
+    JoelHelander_ExcessiveResistancetoChange_RAW_06_02.wav: kick drum
+    JoelHelander_ExcessiveResistancetoChange_RAW_06_03.wav: snare drum
+    JoelHelander_ExcessiveResistancetoChange_RAW_06_04.wav: snare drum
+    JoelHelander_ExcessiveResistancetoChange_RAW_06_05.wav: toms
+    JoelHelander_ExcessiveResistancetoChange_RAW_06_06.wav: toms
+    JoelHelander_ExcessiveResistancetoChange_RAW_06_07.wav: drum set
+    JoelHelander_ExcessiveResistancetoChange_RAW_06_08.wav: drum set
+    JoelHelander_ExcessiveResistancetoChange_RAW_06_09.wav: drum set
+    JoelHelander_ExcessiveResistancetoChange_RAW_06_10.wav: drum set
+    JoelHelander_ExcessiveResistancetoChange_RAW_06_11.wav: drum set
+    JoelHelander_ExcessiveResistancetoChange_RAW_07_01.wav: auxiliary percussion
+    JoelHelander_ExcessiveResistancetoChange_RAW_08_01.wav: clarinet
+    JoelHelander_ExcessiveResistancetoChange_RAW_08_02.wav: clarinet
+    JoelHelander_ExcessiveResistancetoChange_RAW_09_01.wav: acoustic guitar
+    JoelHelander_ExcessiveResistancetoChange_RAW_09_02.wav: acoustic guitar
+    JoelHelander_ExcessiveResistancetoChange_RAW_10_01.wav: french horn
+    JoelHelander_ExcessiveResistancetoChange_RAW_11_01.wav: bassoon
+    JoelHelander_ExcessiveResistancetoChange_RAW_12_01.wav: horn section
+    JoelHelander_ExcessiveResistancetoChange_RAW_12_02.wav: horn section
+    JoelHelander_ExcessiveResistancetoChange_RAW_13_01.wav: violin
+    JoelHelander_ExcessiveResistancetoChange_RAW_14_01.wav: violin
+    JoelHelander_ExcessiveResistancetoChange_RAW_15_01.wav: violin section
+    JoelHelander_ExcessiveResistancetoChange_RAW_15_02.wav: violin section
+  MedleyDB_V1/V1/MichaelKropf_AllGoodThings/MichaelKropf_AllGoodThings_RAW:
+    MichaelKropf_AllGoodThings_RAW_01_01.wav: piano
+    MichaelKropf_AllGoodThings_RAW_01_02.wav: piano
+    MichaelKropf_AllGoodThings_RAW_02_01.wav: violin
+  MedleyDB_V1/V1/MusicDelta_ChineseChaoZhou/MusicDelta_ChineseChaoZhou_RAW:
+    MusicDelta_ChineseChaoZhou_RAW_01_01.wav: dizi
+    MusicDelta_ChineseChaoZhou_RAW_02_01.wav: erhu
+    MusicDelta_ChineseChaoZhou_RAW_03_01.wav: guzheng
+    MusicDelta_ChineseChaoZhou_RAW_04_01.wav: yangqin
+  MedleyDB_V1/V1/MusicDelta_FreeJazz/MusicDelta_FreeJazz_RAW:
+    MusicDelta_FreeJazz_RAW_01_01.wav: drum set
+    MusicDelta_FreeJazz_RAW_02_01.wav: double bass
+    MusicDelta_FreeJazz_RAW_03_01.wav: bass clarinet
+  MedleyDB_V1/V1/MusicDelta_Rockabilly/MusicDelta_Rockabilly_RAW:
+    MusicDelta_Rockabilly_RAW_01_01.wav: drum set
+    MusicDelta_Rockabilly_RAW_02_01.wav: electric bass
+    MusicDelta_Rockabilly_RAW_03_01.wav: distorted electric guitar
+    MusicDelta_Rockabilly_RAW_04_01.wav: clean electric guitar
+    MusicDelta_Rockabilly_RAW_05_01.wav: female singer
+  MedleyDB_V1/V1/MusicDelta_SpeedMetal/MusicDelta_SpeedMetal_RAW:
+    MusicDelta_SpeedMetal_RAW_01_01.wav: drum set
+    MusicDelta_SpeedMetal_RAW_02_01.wav: electric bass
+    MusicDelta_SpeedMetal_RAW_03_01.wav: distorted electric guitar
+    MusicDelta_SpeedMetal_RAW_04_01.wav: distorted electric guitar
+  MedleyDB_V1/V1/MusicDelta_Vivaldi/MusicDelta_Vivaldi_RAW:
+    MusicDelta_Vivaldi_RAW_01_01.wav: double bass
+    MusicDelta_Vivaldi_RAW_02_01.wav: viola section
+    MusicDelta_Vivaldi_RAW_03_01.wav: cello
+    MusicDelta_Vivaldi_RAW_04_01.wav: violin section
+    MusicDelta_Vivaldi_RAW_05_01.wav: violin section
+  MedleyDB_V1/V1/MusicDelta_Zeppelin/MusicDelta_Zeppelin_RAW:
+    MusicDelta_Zeppelin_RAW_01_01.wav: electric bass
+    MusicDelta_Zeppelin_RAW_02_01.wav: drum set
+    MusicDelta_Zeppelin_RAW_03_01.wav: distorted electric guitar
+    MusicDelta_Zeppelin_RAW_04_01.wav: distorted electric guitar
+  MedleyDB_V1/V1/Phoenix_ColliersDaughter/Phoenix_ColliersDaughter_RAW:
+    Phoenix_ColliersDaughter_RAW_01_01.wav: acoustic guitar
+    Phoenix_ColliersDaughter_RAW_02_01.wav: flute
+    Phoenix_ColliersDaughter_RAW_03_01.wav: violin
+    Phoenix_ColliersDaughter_RAW_04_01.wav: electric bass
+    Phoenix_ColliersDaughter_RAW_05_01.wav: Main System
+    Phoenix_ColliersDaughter_RAW_05_02.wav: Main System
+  MedleyDB_V1/V1/Phoenix_ElzicsFarewell/Phoenix_ElzicsFarewell_RAW:
+    Phoenix_ElzicsFarewell_RAW_01_01.wav: acoustic guitar
+    Phoenix_ElzicsFarewell_RAW_02_01.wav: mandolin
+    Phoenix_ElzicsFarewell_RAW_03_01.wav: violin
+    Phoenix_ElzicsFarewell_RAW_04_01.wav: Main System
+    Phoenix_ElzicsFarewell_RAW_04_02.wav: Main System
+  MedleyDB_V1/V1/Phoenix_LarkOnTheStrandDrummondCastle/Phoenix_LarkOnTheStrandDrummondCastle_RAW:
+    Phoenix_LarkOnTheStrandDrummondCastle_RAW_01_01.wav: acoustic guitar
+    Phoenix_LarkOnTheStrandDrummondCastle_RAW_02_01.wav: flute
+    Phoenix_LarkOnTheStrandDrummondCastle_RAW_03_01.wav: violin
+    Phoenix_LarkOnTheStrandDrummondCastle_RAW_04_01.wav: Main System
+    Phoenix_LarkOnTheStrandDrummondCastle_RAW_04_02.wav: Main System
+  MedleyDB_V1/V1/Phoenix_ScotchMorris/Phoenix_ScotchMorris_RAW:
+    Phoenix_ScotchMorris_RAW_01_01.wav: acoustic guitar
+    Phoenix_ScotchMorris_RAW_02_01.wav: flute
+    Phoenix_ScotchMorris_RAW_03_01.wav: violin
+    Phoenix_ScotchMorris_RAW_04_01.wav: Main System
+    Phoenix_ScotchMorris_RAW_04_02.wav: Main System
+  MedleyDB_V1/V1/Phoenix_SeanCaughlinsTheScartaglen/Phoenix_SeanCaughlinsTheScartaglen_RAW:
+    Phoenix_SeanCaughlinsTheScartaglen_RAW_01_01.wav: acoustic guitar
+    Phoenix_SeanCaughlinsTheScartaglen_RAW_02_01.wav: mandolin
+    Phoenix_SeanCaughlinsTheScartaglen_RAW_03_01.wav: violin
+    Phoenix_SeanCaughlinsTheScartaglen_RAW_04_01.wav: electric bass
+    Phoenix_SeanCaughlinsTheScartaglen_RAW_05_01.wav: Main System
+    Phoenix_SeanCaughlinsTheScartaglen_RAW_05_02.wav: Main System
+  MedleyDB_V1/V1/Schubert_Erstarrung/Schubert_Erstarrung_RAW:
+    Schubert_Erstarrung_RAW_01_01.wav: male singer
+    Schubert_Erstarrung_RAW_02_01.wav: piano
+    Schubert_Erstarrung_RAW_02_02.wav: piano
+    Schubert_Erstarrung_RAW_02_03.wav: piano
+    Schubert_Erstarrung_RAW_02_04.wav: piano
+  MedleyDB_V1/V1/TablaBreakbeatScience_Animoog/TablaBreakbeatScience_Animoog_RAW:
+    TablaBreakbeatScience_Animoog_RAW_01_01.wav: drum machine
+    TablaBreakbeatScience_Animoog_RAW_01_02.wav: drum machine
+    TablaBreakbeatScience_Animoog_RAW_02_01.wav: electric bass
+    TablaBreakbeatScience_Animoog_RAW_03_01.wav: electric bass
+    TablaBreakbeatScience_Animoog_RAW_04_01.wav: tabla
+    TablaBreakbeatScience_Animoog_RAW_04_02.wav: tabla
+    TablaBreakbeatScience_Animoog_RAW_05_01.wav: tabla
+    TablaBreakbeatScience_Animoog_RAW_05_02.wav: tabla
+    TablaBreakbeatScience_Animoog_RAW_06_01.wav: fx/processed sound
+    TablaBreakbeatScience_Animoog_RAW_06_02.wav: fx/processed sound
+  MedleyDB_V1/V1/TablaBreakbeatScience_CaptainSky/TablaBreakbeatScience_CaptainSky_RAW:
+    TablaBreakbeatScience_CaptainSky_RAW_01_01.wav: drum machine
+    TablaBreakbeatScience_CaptainSky_RAW_01_02.wav: drum machine
+    TablaBreakbeatScience_CaptainSky_RAW_02_01.wav: electric bass
+    TablaBreakbeatScience_CaptainSky_RAW_03_01.wav: tabla
+    TablaBreakbeatScience_CaptainSky_RAW_03_02.wav: tabla
+  MedleyDB_V1/V1/TablaBreakbeatScience_MiloVsMongo/TablaBreakbeatScience_MiloVsMongo_RAW:
+    TablaBreakbeatScience_MiloVsMongo_RAW_01_01.wav: drum machine
+    TablaBreakbeatScience_MiloVsMongo_RAW_01_02.wav: drum machine
+    TablaBreakbeatScience_MiloVsMongo_RAW_02_01.wav: fx/processed sound
+    TablaBreakbeatScience_MiloVsMongo_RAW_03_01.wav: synthesizer
+    TablaBreakbeatScience_MiloVsMongo_RAW_04_01.wav: fx/processed sound
+    TablaBreakbeatScience_MiloVsMongo_RAW_05_01.wav: synthesizer
+    TablaBreakbeatScience_MiloVsMongo_RAW_06_01.wav: synthesizer
+    TablaBreakbeatScience_MiloVsMongo_RAW_06_02.wav: synthesizer
+    TablaBreakbeatScience_MiloVsMongo_RAW_07_01.wav: fx/processed sound
+    TablaBreakbeatScience_MiloVsMongo_RAW_08_01.wav: mandolin
+    TablaBreakbeatScience_MiloVsMongo_RAW_09_01.wav: tabla
+    TablaBreakbeatScience_MiloVsMongo_RAW_09_02.wav: tabla
+  MedleyDB_V1/V1/TablaBreakbeatScience_MoodyPlucks/TablaBreakbeatScience_MoodyPlucks_RAW:
+    TablaBreakbeatScience_MoodyPlucks_RAW_01_01.wav: drum machine
+    TablaBreakbeatScience_MoodyPlucks_RAW_02_01.wav: fx/processed sound
+    TablaBreakbeatScience_MoodyPlucks_RAW_03_01.wav: fx/processed sound
+    TablaBreakbeatScience_MoodyPlucks_RAW_04_01.wav: synthesizer
+    TablaBreakbeatScience_MoodyPlucks_RAW_05_01.wav: synthesizer
+    TablaBreakbeatScience_MoodyPlucks_RAW_06_01.wav: harp
+    TablaBreakbeatScience_MoodyPlucks_RAW_06_02.wav: harp
+    TablaBreakbeatScience_MoodyPlucks_RAW_07_01.wav: synthesizer
+    TablaBreakbeatScience_MoodyPlucks_RAW_07_02.wav: synthesizer
+    TablaBreakbeatScience_MoodyPlucks_RAW_08_01.wav: fx/processed sound
+    TablaBreakbeatScience_MoodyPlucks_RAW_09_01.wav: clean electric guitar
+    TablaBreakbeatScience_MoodyPlucks_RAW_10_01.wav: tabla
+    TablaBreakbeatScience_MoodyPlucks_RAW_10_02.wav: tabla
+    TablaBreakbeatScience_MoodyPlucks_RAW_11_01.wav: tabla
+    TablaBreakbeatScience_MoodyPlucks_RAW_11_02.wav: tabla
+  MedleyDB_V1/V1/TablaBreakbeatScience_PhaseTransition/TablaBreakbeatScience_PhaseTransition_RAW:
+    TablaBreakbeatScience_PhaseTransition_RAW_01_01.wav: drum machine
+    TablaBreakbeatScience_PhaseTransition_RAW_01_02.wav: drum machine
+    TablaBreakbeatScience_PhaseTransition_RAW_02_01.wav: fx/processed sound
+    TablaBreakbeatScience_PhaseTransition_RAW_02_02.wav: fx/processed sound
+    TablaBreakbeatScience_PhaseTransition_RAW_03_01.wav: electric bass
+    TablaBreakbeatScience_PhaseTransition_RAW_04_01.wav: accordion
+    TablaBreakbeatScience_PhaseTransition_RAW_04_02.wav: accordion
+    TablaBreakbeatScience_PhaseTransition_RAW_05_01.wav: mandolin
+    TablaBreakbeatScience_PhaseTransition_RAW_06_01.wav: synthesizer
+    TablaBreakbeatScience_PhaseTransition_RAW_06_02.wav: synthesizer
+    TablaBreakbeatScience_PhaseTransition_RAW_07_01.wav: tabla
+    TablaBreakbeatScience_PhaseTransition_RAW_07_02.wav: tabla
+    TablaBreakbeatScience_PhaseTransition_RAW_08_01.wav: tabla
+    TablaBreakbeatScience_PhaseTransition_RAW_08_02.wav: tabla
+  MedleyDB_V1/V1/TablaBreakbeatScience_RockSteady/TablaBreakbeatScience_RockSteady_RAW:
+    TablaBreakbeatScience_RockSteady_RAW_01_01.wav: drum machine
+    TablaBreakbeatScience_RockSteady_RAW_01_02.wav: drum machine
+    TablaBreakbeatScience_RockSteady_RAW_02_01.wav: accordion
+    TablaBreakbeatScience_RockSteady_RAW_02_02.wav: accordion
+    TablaBreakbeatScience_RockSteady_RAW_03_01.wav: mandolin
+    TablaBreakbeatScience_RockSteady_RAW_04_01.wav: tabla
+    TablaBreakbeatScience_RockSteady_RAW_04_02.wav: tabla
+    TablaBreakbeatScience_RockSteady_RAW_05_01.wav: tabla
+    TablaBreakbeatScience_RockSteady_RAW_05_02.wav: tabla
+  MedleyDB_V1/V1/TablaBreakbeatScience_Scorpio/TablaBreakbeatScience_Scorpio_RAW:
+    TablaBreakbeatScience_Scorpio_RAW_01_01.wav: drum machine
+    TablaBreakbeatScience_Scorpio_RAW_01_02.wav: drum machine
+    TablaBreakbeatScience_Scorpio_RAW_02_01.wav: drum machine
+    TablaBreakbeatScience_Scorpio_RAW_02_02.wav: drum machine
+    TablaBreakbeatScience_Scorpio_RAW_03_01.wav: clean electric guitar
+    TablaBreakbeatScience_Scorpio_RAW_04_01.wav: accordion
+    TablaBreakbeatScience_Scorpio_RAW_04_02.wav: accordion
+    TablaBreakbeatScience_Scorpio_RAW_05_01.wav: synthesizer
+    TablaBreakbeatScience_Scorpio_RAW_05_02.wav: synthesizer
+    TablaBreakbeatScience_Scorpio_RAW_06_01.wav: fx/processed sound
+    TablaBreakbeatScience_Scorpio_RAW_07_01.wav: tabla
+    TablaBreakbeatScience_Scorpio_RAW_07_02.wav: tabla
+  MedleyDB_V1/V1/TablaBreakbeatScience_Vger/TablaBreakbeatScience_Vger_RAW:
+    TablaBreakbeatScience_Vger_RAW_01_01.wav: auxiliary percussion
+    TablaBreakbeatScience_Vger_RAW_01_02.wav: auxiliary percussion
+    TablaBreakbeatScience_Vger_RAW_02_01.wav: drum machine
+    TablaBreakbeatScience_Vger_RAW_02_02.wav: drum machine
+    TablaBreakbeatScience_Vger_RAW_03_01.wav: synthesizer
+    TablaBreakbeatScience_Vger_RAW_04_01.wav: fx/processed sound
+    TablaBreakbeatScience_Vger_RAW_05_01.wav: accordion
+    TablaBreakbeatScience_Vger_RAW_05_02.wav: accordion
+    TablaBreakbeatScience_Vger_RAW_06_01.wav: clean electric guitar
+    TablaBreakbeatScience_Vger_RAW_07_01.wav: synthesizer
+    TablaBreakbeatScience_Vger_RAW_07_02.wav: synthesizer
+    TablaBreakbeatScience_Vger_RAW_08_01.wav: mandolin
+    TablaBreakbeatScience_Vger_RAW_09_01.wav: tabla
+    TablaBreakbeatScience_Vger_RAW_09_02.wav: tabla
+    TablaBreakbeatScience_Vger_RAW_10_01.wav: tabla
+    TablaBreakbeatScience_Vger_RAW_10_02.wav: tabla
+  MedleyDB_V1/V1/TablaBreakbeatScience_WhoIsIt/TablaBreakbeatScience_WhoIsIt_RAW:
+    TablaBreakbeatScience_WhoIsIt_RAW_01_01.wav: drum machine
+    TablaBreakbeatScience_WhoIsIt_RAW_01_02.wav: drum machine
+    TablaBreakbeatScience_WhoIsIt_RAW_02_01.wav: synthesizer
+    TablaBreakbeatScience_WhoIsIt_RAW_02_02.wav: synthesizer
+    TablaBreakbeatScience_WhoIsIt_RAW_03_01.wav: clean electric guitar
+    TablaBreakbeatScience_WhoIsIt_RAW_04_01.wav: accordion
+    TablaBreakbeatScience_WhoIsIt_RAW_04_02.wav: accordion
+    TablaBreakbeatScience_WhoIsIt_RAW_05_01.wav: mandolin
+    TablaBreakbeatScience_WhoIsIt_RAW_06_01.wav: tabla
+    TablaBreakbeatScience_WhoIsIt_RAW_06_02.wav: tabla
+  MedleyDB_V1/V1/TheScarletBrand_LesFleursDuMal/TheScarletBrand_LesFleursDuMal_RAW:
+    TheScarletBrand_LesFleursDuMal_RAW_01_01.wav: kick drum
+    TheScarletBrand_LesFleursDuMal_RAW_01_02.wav: drum set
+    TheScarletBrand_LesFleursDuMal_RAW_01_03.wav: snare drum
+    TheScarletBrand_LesFleursDuMal_RAW_01_04.wav: drum set
+    TheScarletBrand_LesFleursDuMal_RAW_01_05.wav: drum set
+    TheScarletBrand_LesFleursDuMal_RAW_01_06.wav: toms
+    TheScarletBrand_LesFleursDuMal_RAW_01_07.wav: high hat
+    TheScarletBrand_LesFleursDuMal_RAW_01_08.wav: drum set
+    TheScarletBrand_LesFleursDuMal_RAW_01_09.wav: drum set
+    TheScarletBrand_LesFleursDuMal_RAW_02_01.wav: electric bass
+    TheScarletBrand_LesFleursDuMal_RAW_03_01.wav: clean electric guitar
+    TheScarletBrand_LesFleursDuMal_RAW_04_01.wav: distorted electric guitar
+    TheScarletBrand_LesFleursDuMal_RAW_05_01.wav: distorted electric guitar
+    TheScarletBrand_LesFleursDuMal_RAW_06_01.wav: fx/processed sound
+    TheScarletBrand_LesFleursDuMal_RAW_06_02.wav: fx/processed sound
+    TheScarletBrand_LesFleursDuMal_RAW_06_03.wav: fx/processed sound
+    TheScarletBrand_LesFleursDuMal_RAW_07_01.wav: clean electric guitar
+    TheScarletBrand_LesFleursDuMal_RAW_08_01.wav: male singer
+  MedleyDB_V1/V1/Wolf_DieBekherte/Wolf_DieBekherte_RAW:
+    Wolf_DieBekherte_RAW_01_01.wav: female singer
+    Wolf_DieBekherte_RAW_02_01.wav: piano
+    Wolf_DieBekherte_RAW_02_02.wav: piano
+    Wolf_DieBekherte_RAW_02_03.wav: piano
+    Wolf_DieBekherte_RAW_02_04.wav: piano
+  MedleyDB_V2/V2/Allegria_MendelssohnMovement1/Allegria_MendelssohnMovement1_RAW:
+    Allegria_MendelssohnMovement1_RAW_01_01.wav: cello
+    Allegria_MendelssohnMovement1_RAW_02_01.wav: violin
+    Allegria_MendelssohnMovement1_RAW_03_01.wav: violin
+    Allegria_MendelssohnMovement1_RAW_04_01.wav: viola
+    Allegria_MendelssohnMovement1_RAW_05_01.wav: Main System
+    Allegria_MendelssohnMovement1_RAW_05_02.wav: Main System
+    Allegria_MendelssohnMovement1_RAW_05_03.wav: Main System
+    Allegria_MendelssohnMovement1_RAW_05_04.wav: Main System
+  MedleyDB_V2/V2/AmadeusRedux_MozartAllegro/AmadeusRedux_MozartAllegro_RAW:
+    AmadeusRedux_MozartAllegro_RAW_01_01.wav: cello
+    AmadeusRedux_MozartAllegro_RAW_02_01.wav: violin
+    AmadeusRedux_MozartAllegro_RAW_03_01.wav: viola
+    AmadeusRedux_MozartAllegro_RAW_04_01.wav: Main System
+    AmadeusRedux_MozartAllegro_RAW_04_02.wav: Main System
+  MedleyDB_V2/V2/AmadeusRedux_SchubertMovement2/AmadeusRedux_SchubertMovement2_RAW:
+    AmadeusRedux_SchubertMovement2_RAW_01_01.wav: cello
+    AmadeusRedux_SchubertMovement2_RAW_02_01.wav: violin
+    AmadeusRedux_SchubertMovement2_RAW_03_01.wav: viola
+    AmadeusRedux_SchubertMovement2_RAW_04_01.wav: Main System
+    AmadeusRedux_SchubertMovement2_RAW_04_02.wav: Main System
+    AmadeusRedux_SchubertMovement2_RAW_04_03.wav: Main System
+    AmadeusRedux_SchubertMovement2_RAW_04_04.wav: Main System
+  MedleyDB_V2/V2/AmadeusRedux_SchubertMovement3/AmadeusRedux_SchubertMovement3_RAW:
+    AmadeusRedux_SchubertMovement3_RAW_01_01.wav: cello
+    AmadeusRedux_SchubertMovement3_RAW_02_01.wav: violin
+    AmadeusRedux_SchubertMovement3_RAW_03_01.wav: viola
+    AmadeusRedux_SchubertMovement3_RAW_04_01.wav: Main System
+    AmadeusRedux_SchubertMovement3_RAW_04_02.wav: Main System
+  MedleyDB_V2/V2/BarefootSisters_RedJetta/BarefootSisters_RedJetta_RAW:
+    BarefootSisters_RedJetta_RAW_01_01.wav: vocalists
+    BarefootSisters_RedJetta_RAW_01_02.wav: vocalists
+    BarefootSisters_RedJetta_RAW_02_01.wav: acoustic guitar
+    BarefootSisters_RedJetta_RAW_02_02.wav: acoustic guitar
+    BarefootSisters_RedJetta_RAW_02_03.wav: acoustic guitar
+    BarefootSisters_RedJetta_RAW_02_04.wav: acoustic guitar
+    BarefootSisters_RedJetta_RAW_02_05.wav: acoustic guitar
+    BarefootSisters_RedJetta_RAW_02_06.wav: acoustic guitar
+    BarefootSisters_RedJetta_RAW_03_01.wav: piano
+    BarefootSisters_RedJetta_RAW_03_02.wav: piano
+    BarefootSisters_RedJetta_RAW_04_01.wav: high hat
+    BarefootSisters_RedJetta_RAW_04_02.wav: kick drum
+    BarefootSisters_RedJetta_RAW_04_03.wav: high hat
+    BarefootSisters_RedJetta_RAW_04_04.wav: snare drum
+    BarefootSisters_RedJetta_RAW_04_05.wav: kick drum
+    BarefootSisters_RedJetta_RAW_04_06.wav: snare drum
+  MedleyDB_V2/V2/CatMartino_IPromise/CatMartino_IPromise_RAW:
+    CatMartino_IPromise_RAW_01_01.wav: synthesizer
+    CatMartino_IPromise_RAW_01_02.wav: synthesizer
+    CatMartino_IPromise_RAW_01_03.wav: synthesizer
+    CatMartino_IPromise_RAW_02_01.wav: drum set
+    CatMartino_IPromise_RAW_02_02.wav: drum set
+    CatMartino_IPromise_RAW_02_03.wav: drum set
+    CatMartino_IPromise_RAW_02_04.wav: drum set
+    CatMartino_IPromise_RAW_02_05.wav: drum set
+    CatMartino_IPromise_RAW_02_06.wav: drum set
+    CatMartino_IPromise_RAW_02_07.wav: drum set
+    CatMartino_IPromise_RAW_02_08.wav: drum set
+    CatMartino_IPromise_RAW_02_09.wav: drum set
+    CatMartino_IPromise_RAW_02_10.wav: drum set
+    CatMartino_IPromise_RAW_03_01.wav: synthesizer
+    CatMartino_IPromise_RAW_04_01.wav: drum machine
+    CatMartino_IPromise_RAW_04_02.wav: drum machine
+    CatMartino_IPromise_RAW_04_03.wav: drum machine
+    CatMartino_IPromise_RAW_05_01.wav: fx/processed sound
+    CatMartino_IPromise_RAW_05_02.wav: fx/processed sound
+    CatMartino_IPromise_RAW_05_03.wav: fx/processed sound
+    CatMartino_IPromise_RAW_05_04.wav: fx/processed sound
+    CatMartino_IPromise_RAW_05_05.wav: fx/processed sound
+    CatMartino_IPromise_RAW_05_06.wav: fx/processed sound
+    CatMartino_IPromise_RAW_05_07.wav: fx/processed sound
+    CatMartino_IPromise_RAW_05_08.wav: fx/processed sound
+    CatMartino_IPromise_RAW_05_09.wav: fx/processed sound
+    CatMartino_IPromise_RAW_05_10.wav: fx/processed sound
+    CatMartino_IPromise_RAW_06_01.wav: female singer
+    CatMartino_IPromise_RAW_07_01.wav: synthesizer
+    CatMartino_IPromise_RAW_07_02.wav: synthesizer
+    CatMartino_IPromise_RAW_07_03.wav: synthesizer
+    CatMartino_IPromise_RAW_08_01.wav: female singer
+    CatMartino_IPromise_RAW_08_02.wav: female singer
+    CatMartino_IPromise_RAW_08_03.wav: female singer
+    CatMartino_IPromise_RAW_08_04.wav: female singer
+    CatMartino_IPromise_RAW_08_05.wav: female singer
+    CatMartino_IPromise_RAW_08_06.wav: female singer
+    CatMartino_IPromise_RAW_08_07.wav: female singer
+    CatMartino_IPromise_RAW_08_08.wav: female singer
+    CatMartino_IPromise_RAW_09_01.wav: drum machine
+    CatMartino_IPromise_RAW_09_02.wav: drum machine
+    CatMartino_IPromise_RAW_09_03.wav: drum machine
+    CatMartino_IPromise_RAW_09_04.wav: drum machine
+    CatMartino_IPromise_RAW_10_01.wav: electronic organ
+    CatMartino_IPromise_RAW_10_02.wav: electronic organ
+    CatMartino_IPromise_RAW_10_03.wav: electronic organ
+    CatMartino_IPromise_RAW_10_04.wav: electronic organ
+    CatMartino_IPromise_RAW_10_05.wav: electronic organ
+    CatMartino_IPromise_RAW_11_01.wav: female singer
+    CatMartino_IPromise_RAW_11_02.wav: female singer
+    CatMartino_IPromise_RAW_12_01.wav: female singer
+    CatMartino_IPromise_RAW_12_02.wav: female singer
+    CatMartino_IPromise_RAW_12_03.wav: female singer
+  MedleyDB_V2/V2/DeadMilkmen_PrisonersCinema/DeadMilkmen_PrisonersCinema_RAW:
+    DeadMilkmen_PrisonersCinema_RAW_01_01.wav: acoustic guitar
+    DeadMilkmen_PrisonersCinema_RAW_01_02.wav: acoustic guitar
+    DeadMilkmen_PrisonersCinema_RAW_02_01.wav: electronic organ
+    DeadMilkmen_PrisonersCinema_RAW_03_01.wav: tambourine
+    DeadMilkmen_PrisonersCinema_RAW_04_01.wav: electronic organ
+    DeadMilkmen_PrisonersCinema_RAW_05_01.wav: shaker
+    DeadMilkmen_PrisonersCinema_RAW_06_01.wav: glockenspiel
+    DeadMilkmen_PrisonersCinema_RAW_06_02.wav: glockenspiel
+    DeadMilkmen_PrisonersCinema_RAW_07_01.wav: drum set
+    DeadMilkmen_PrisonersCinema_RAW_07_02.wav: drum set
+    DeadMilkmen_PrisonersCinema_RAW_07_03.wav: drum set
+    DeadMilkmen_PrisonersCinema_RAW_07_04.wav: drum set
+    DeadMilkmen_PrisonersCinema_RAW_07_05.wav: drum set
+    DeadMilkmen_PrisonersCinema_RAW_07_06.wav: drum set
+    DeadMilkmen_PrisonersCinema_RAW_07_07.wav: drum set
+    DeadMilkmen_PrisonersCinema_RAW_07_08.wav: drum set
+    DeadMilkmen_PrisonersCinema_RAW_07_09.wav: drum set
+    DeadMilkmen_PrisonersCinema_RAW_08_01.wav: castanet
+    DeadMilkmen_PrisonersCinema_RAW_09_01.wav: clean electric guitar
+    DeadMilkmen_PrisonersCinema_RAW_09_02.wav: clean electric guitar
+    DeadMilkmen_PrisonersCinema_RAW_10_01.wav: clean electric guitar
+    DeadMilkmen_PrisonersCinema_RAW_10_02.wav: clean electric guitar
+    DeadMilkmen_PrisonersCinema_RAW_11_01.wav: electric bass
+    DeadMilkmen_PrisonersCinema_RAW_12_01.wav: male singer
+    DeadMilkmen_PrisonersCinema_RAW_13_01.wav: distorted electric guitar
+    DeadMilkmen_PrisonersCinema_RAW_13_02.wav: distorted electric guitar
+    DeadMilkmen_PrisonersCinema_RAW_14_01.wav: fx/processed sound
+    DeadMilkmen_PrisonersCinema_RAW_14_02.wav: fx/processed sound
+    DeadMilkmen_PrisonersCinema_RAW_15_01.wav: vocalists
+    DeadMilkmen_PrisonersCinema_RAW_15_02.wav: vocalists
+    DeadMilkmen_PrisonersCinema_RAW_15_03.wav: vocalists
+    DeadMilkmen_PrisonersCinema_RAW_15_04.wav: vocalists
+    DeadMilkmen_PrisonersCinema_RAW_15_05.wav: vocalists
+    DeadMilkmen_PrisonersCinema_RAW_15_06.wav: vocalists
+  MedleyDB_V2/V2/DeclareAString_MendelssohnPianoTrio1Movement1/DeclareAString_MendelssohnPianoTrio1Movement1_RAW: 
+    DeclareAString_MendelssohnPianoTrio1Movement1_RAW_01_03.wav: piano
+    DeclareAString_MendelssohnPianoTrio1Movement1_RAW_01_04.wav: piano
+    DeclareAString_MendelssohnPianoTrio1Movement1_RAW_02_01.wav: violin
+    DeclareAString_MendelssohnPianoTrio1Movement1_RAW_03_01.wav: cello
+    DeclareAString_MendelssohnPianoTrio1Movement1_RAW_03_02.wav: cello
+    DeclareAString_MendelssohnPianoTrio1Movement1_RAW_03_03.wav: cello
+    DeclareAString_MendelssohnPianoTrio1Movement1_RAW_04_01.wav: Main System
+    DeclareAString_MendelssohnPianoTrio1Movement1_RAW_04_02.wav: Main System
+  MedleyDB_V2/V2/LewisAndClarke_TheSilverSea/LewisAndClarke_TheSilverSea_RAW:
+    LewisAndClarke_TheSilverSea_RAW_01_01.wav: male singer
+    LewisAndClarke_TheSilverSea_RAW_01_02.wav: male singer
+    LewisAndClarke_TheSilverSea_RAW_01_03.wav: male singer
+    LewisAndClarke_TheSilverSea_RAW_01_04.wav: male singer
+    LewisAndClarke_TheSilverSea_RAW_01_05.wav: male singer
+    LewisAndClarke_TheSilverSea_RAW_01_06.wav: male singer
+    LewisAndClarke_TheSilverSea_RAW_01_07.wav: male singer
+    LewisAndClarke_TheSilverSea_RAW_01_08.wav: male singer
+    LewisAndClarke_TheSilverSea_RAW_01_09.wav: male singer
+    LewisAndClarke_TheSilverSea_RAW_01_10.wav: male singer
+    LewisAndClarke_TheSilverSea_RAW_02_01.wav: string section
+    LewisAndClarke_TheSilverSea_RAW_02_02.wav: string section
+    LewisAndClarke_TheSilverSea_RAW_02_03.wav: string section
+    LewisAndClarke_TheSilverSea_RAW_02_04.wav: string section
+    LewisAndClarke_TheSilverSea_RAW_02_05.wav: string section
+    LewisAndClarke_TheSilverSea_RAW_02_06.wav: string section
+    LewisAndClarke_TheSilverSea_RAW_02_07.wav: string section
+    LewisAndClarke_TheSilverSea_RAW_02_08.wav: string section
+    LewisAndClarke_TheSilverSea_RAW_02_09.wav: string section
+    LewisAndClarke_TheSilverSea_RAW_02_10.wav: string section
+    LewisAndClarke_TheSilverSea_RAW_02_11.wav: string section
+    LewisAndClarke_TheSilverSea_RAW_02_12.wav: string section
+    LewisAndClarke_TheSilverSea_RAW_02_13.wav: string section
+    LewisAndClarke_TheSilverSea_RAW_02_14.wav: string section
+    LewisAndClarke_TheSilverSea_RAW_02_15.wav: string section
+    LewisAndClarke_TheSilverSea_RAW_02_16.wav: string section
+    LewisAndClarke_TheSilverSea_RAW_03_01.wav: drum set
+    LewisAndClarke_TheSilverSea_RAW_03_02.wav: drum set
+    LewisAndClarke_TheSilverSea_RAW_03_03.wav: drum set
+    LewisAndClarke_TheSilverSea_RAW_03_04.wav: drum set
+    LewisAndClarke_TheSilverSea_RAW_03_05.wav: drum set
+    LewisAndClarke_TheSilverSea_RAW_03_06.wav: drum set
+    LewisAndClarke_TheSilverSea_RAW_03_07.wav: drum set
+    LewisAndClarke_TheSilverSea_RAW_03_08.wav: drum set
+    LewisAndClarke_TheSilverSea_RAW_03_09.wav: drum set
+    LewisAndClarke_TheSilverSea_RAW_03_10.wav: drum set
+    LewisAndClarke_TheSilverSea_RAW_03_11.wav: drum set
+    LewisAndClarke_TheSilverSea_RAW_03_12.wav: drum set
+    LewisAndClarke_TheSilverSea_RAW_03_13.wav: drum set
+    LewisAndClarke_TheSilverSea_RAW_03_14.wav: drum set
+    LewisAndClarke_TheSilverSea_RAW_03_15.wav: drum set
+    LewisAndClarke_TheSilverSea_RAW_03_16.wav: drum set
+    LewisAndClarke_TheSilverSea_RAW_03_17.wav: drum set
+    LewisAndClarke_TheSilverSea_RAW_03_18.wav: drum set
+    LewisAndClarke_TheSilverSea_RAW_03_19.wav: drum set
+    LewisAndClarke_TheSilverSea_RAW_03_20.wav: drum set
+    LewisAndClarke_TheSilverSea_RAW_03_21.wav: drum set
+    LewisAndClarke_TheSilverSea_RAW_03_22.wav: drum set
+    LewisAndClarke_TheSilverSea_RAW_04_01.wav: acoustic guitar
+    LewisAndClarke_TheSilverSea_RAW_04_02.wav: acoustic guitar
+    LewisAndClarke_TheSilverSea_RAW_04_03.wav: acoustic guitar
+    LewisAndClarke_TheSilverSea_RAW_04_04.wav: acoustic guitar
+    LewisAndClarke_TheSilverSea_RAW_05_01.wav: cello
+    LewisAndClarke_TheSilverSea_RAW_05_02.wav: cello
+    LewisAndClarke_TheSilverSea_RAW_06_01.wav: synthesizer
+    LewisAndClarke_TheSilverSea_RAW_06_02.wav: synthesizer
+    LewisAndClarke_TheSilverSea_RAW_06_03.wav: synthesizer
+    LewisAndClarke_TheSilverSea_RAW_06_04.wav: synthesizer
+    LewisAndClarke_TheSilverSea_RAW_06_05.wav: synthesizer
+    LewisAndClarke_TheSilverSea_RAW_06_06.wav: synthesizer
+    LewisAndClarke_TheSilverSea_RAW_06_07.wav: synthesizer
+    LewisAndClarke_TheSilverSea_RAW_06_08.wav: synthesizer
+    LewisAndClarke_TheSilverSea_RAW_07_01.wav: electric bass
+    LewisAndClarke_TheSilverSea_RAW_07_02.wav: electric bass
+    LewisAndClarke_TheSilverSea_RAW_07_03.wav: electric bass
+    LewisAndClarke_TheSilverSea_RAW_07_04.wav: electric bass
+    LewisAndClarke_TheSilverSea_RAW_07_05.wav: electric bass
+    LewisAndClarke_TheSilverSea_RAW_07_06.wav: electric bass
+    LewisAndClarke_TheSilverSea_RAW_07_07.wav: electric bass
+    LewisAndClarke_TheSilverSea_RAW_07_08.wav: electric bass
+    LewisAndClarke_TheSilverSea_RAW_07_09.wav: electric bass
+    LewisAndClarke_TheSilverSea_RAW_07_10.wav: electric bass
+    LewisAndClarke_TheSilverSea_RAW_08_01.wav: cymbal
+    LewisAndClarke_TheSilverSea_RAW_08_02.wav: cymbal
+    LewisAndClarke_TheSilverSea_RAW_08_03.wav: cymbal
+    LewisAndClarke_TheSilverSea_RAW_08_04.wav: cymbal
+    LewisAndClarke_TheSilverSea_RAW_09_01.wav: electric piano
+    LewisAndClarke_TheSilverSea_RAW_09_02.wav: electric piano
+    LewisAndClarke_TheSilverSea_RAW_09_03.wav: electric piano
+    LewisAndClarke_TheSilverSea_RAW_09_04.wav: electric piano
+    LewisAndClarke_TheSilverSea_RAW_09_05.wav: electric piano
+    LewisAndClarke_TheSilverSea_RAW_09_06.wav: electric piano
+    LewisAndClarke_TheSilverSea_RAW_10_01.wav: male singer
+    LewisAndClarke_TheSilverSea_RAW_10_02.wav: male singer
+  MedleyDB_V2/V2/PatternIsMovement_SaveMe/PatternIsMovement_SaveMe_RAW:
+    PatternIsMovement_SaveMe_RAW_01_01.wav: electronic organ
+    PatternIsMovement_SaveMe_RAW_01_02.wav: electronic organ
+    PatternIsMovement_SaveMe_RAW_01_03.wav: electronic organ
+    PatternIsMovement_SaveMe_RAW_02_01.wav: electronic organ
+    PatternIsMovement_SaveMe_RAW_02_02.wav: electronic organ
+    PatternIsMovement_SaveMe_RAW_02_03.wav: electronic organ
+    PatternIsMovement_SaveMe_RAW_03_01.wav: electronic organ
+    PatternIsMovement_SaveMe_RAW_03_02.wav: electronic organ
+    PatternIsMovement_SaveMe_RAW_03_03.wav: electronic organ
+    PatternIsMovement_SaveMe_RAW_04_01.wav: male singer
+    PatternIsMovement_SaveMe_RAW_04_02.wav: male singer
+    PatternIsMovement_SaveMe_RAW_04_03.wav: male singer
+    PatternIsMovement_SaveMe_RAW_05_01.wav: electronic organ
+    PatternIsMovement_SaveMe_RAW_05_02.wav: electronic organ
+    PatternIsMovement_SaveMe_RAW_06_01.wav: drum set
+    PatternIsMovement_SaveMe_RAW_06_02.wav: drum set
+    PatternIsMovement_SaveMe_RAW_06_03.wav: drum set
+    PatternIsMovement_SaveMe_RAW_06_04.wav: drum set
+    PatternIsMovement_SaveMe_RAW_06_05.wav: drum set
+    PatternIsMovement_SaveMe_RAW_06_06.wav: drum set
+    PatternIsMovement_SaveMe_RAW_06_07.wav: drum set
+    PatternIsMovement_SaveMe_RAW_06_08.wav: drum set
+    PatternIsMovement_SaveMe_RAW_06_09.wav: drum set
+    PatternIsMovement_SaveMe_RAW_07_01.wav: male singer
+    PatternIsMovement_SaveMe_RAW_07_02.wav: male singer
+    PatternIsMovement_SaveMe_RAW_08_01.wav: electronic organ
+    PatternIsMovement_SaveMe_RAW_08_02.wav: electronic organ
+    PatternIsMovement_SaveMe_RAW_09_01.wav: electronic organ
+    PatternIsMovement_SaveMe_RAW_09_02.wav: electronic organ
+    PatternIsMovement_SaveMe_RAW_09_03.wav: electronic organ
+  MedleyDB_V2/V2/Plasma_GoodShout/Plasma_GoodShout_RAW:
+    Plasma_GoodShout_RAW_01_01.wav: drum set
+    Plasma_GoodShout_RAW_01_02.wav: drum set
+    Plasma_GoodShout_RAW_01_03.wav: drum set
+    Plasma_GoodShout_RAW_01_04.wav: drum set
+    Plasma_GoodShout_RAW_01_05.wav: drum set
+    Plasma_GoodShout_RAW_01_06.wav: drum set
+    Plasma_GoodShout_RAW_02_01.wav: distorted electric guitar
+    Plasma_GoodShout_RAW_02_02.wav: distorted electric guitar
+    Plasma_GoodShout_RAW_02_03.wav: distorted electric guitar
+    Plasma_GoodShout_RAW_02_04.wav: distorted electric guitar
+    Plasma_GoodShout_RAW_02_05.wav: distorted electric guitar
+    Plasma_GoodShout_RAW_02_06.wav: distorted electric guitar
+    Plasma_GoodShout_RAW_03_01.wav: clean electric guitar
+    Plasma_GoodShout_RAW_03_02.wav: clean electric guitar
+    Plasma_GoodShout_RAW_04_01.wav: electric bass
+    Plasma_GoodShout_RAW_04_02.wav: electric bass
+    Plasma_GoodShout_RAW_04_03.wav: electric bass
+    Plasma_GoodShout_RAW_04_04.wav: electric bass
+    Plasma_GoodShout_RAW_05_01.wav: distorted electric guitar
+    Plasma_GoodShout_RAW_05_02.wav: distorted electric guitar
+    Plasma_GoodShout_RAW_05_03.wav: distorted electric guitar
+    Plasma_GoodShout_RAW_05_04.wav: distorted electric guitar
+    Plasma_GoodShout_RAW_05_05.wav: distorted electric guitar
+    Plasma_GoodShout_RAW_05_06.wav: distorted electric guitar
