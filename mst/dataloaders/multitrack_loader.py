@@ -17,13 +17,15 @@ from typing import List
 import string
 from os.path import dirname as up
 from string import digits
+from mst.system import System 
 
 
 
 class multitrack_dataset(torch.utils.data.Dataset):
     def __init__(
         self,
-        root_dirs: dict = {"/import/c4dm-multitrack-private/C4DM Multitrack Collection/mixing-secrets/":"./data/cambridge.yaml" , "/import/c4dm-datasets/" : "./data/medley.yaml" },
+        root_dirs: list = [ "/import/c4dm-multitrack-private/C4DM Multitrack Collection/mixing-secrets/",  "/import/c4dm-datasets/"],
+        split: list = ["./data/cambridge.yaml", "./data/medley.yaml"],
         instrument_id_json: str = "./data/instrument_name2id.json",
         sample_rate: int = 44100,
         length: int = 524288,
@@ -55,16 +57,16 @@ class multitrack_dataset(torch.utils.data.Dataset):
         
         self.song_dirs = {}
         self.dirs = []
-        
-        for  directory, split in root_dirs.items():
-            with open(split, "r") as f:
-                data = yaml.safe_load(f)
-                for songs, track_info in data[self.subset].items():
-                    full_song_dir = directory + songs
-                    self.song_dirs[full_song_dir] = track_info
-                    self.dirs.append(full_song_dir)
-                    
-                    
+
+        for (i, dataset_dir) in enumerate(root_dirs):
+                with open(split[i], "r") as f:
+                    data = yaml.safe_load(f)
+                    for songs, track_info in data[self.subset].items():
+                        full_song_dir = dataset_dir + songs
+                        #print(full_song_dir)
+                        self.song_dirs[full_song_dir] = track_info
+                        self.dirs.append(full_song_dir)
+                              
         print(len(self.dirs))
 
         self.items_since_load = self.buffer_reload_rate
@@ -197,7 +199,8 @@ class multitrack_dataset(torch.utils.data.Dataset):
 class MultitrackDataModule(pl.LightningDataModule):
     def __init__(
         self,
-        root_dir: dict,
+        root_dirs: list,
+        split: list,
         length: int,
         min_tracks: int = 4,
         max_tracks: int = 20,
@@ -212,12 +215,15 @@ class MultitrackDataModule(pl.LightningDataModule):
         self.save_hyperparameters()
         self.current_epoch = -1
         self.max_tracks = self.hparams.min_tracks
+        
+        
 
     def setup(self, stage=None):
         pass
 
 
     def train_dataloader(self):
+        
          # count number of times setup is called
         self.current_epoch += 1
 
@@ -230,23 +236,24 @@ class MultitrackDataModule(pl.LightningDataModule):
         # batch_size = (self.hparams.max_tracks // self.max_tracks) // 2
         # if batch_size < 1:
         #    batch_size = 1
-        if self.global_step == self.hparams.active_eq_step:
-            print("EQ is now active")
-            self.max_tracks = self.hparams.min_tracks
-        if self.global_step == self.hparams.active_compressor_step:
-            print("Compressor is now active")
-            self.max_tracks = self.hparams.min_tracks
-        if self.global_step == self.hparams.active_fx_bus_step:
-            print("FX bus is now active")
-            self.max_tracks = self.hparams.min_tracks
-        if self.global_step == self.hparams.active_master_bus_step:
-            print("Master bus is now active")
-            self.max_tracks = self.hparams.min_tracks
+        # if self.global_step == self.hparams.active_eq_step:
+        #     print("EQ is now active")
+        #     self.max_tracks = self.hparams.min_tracks
+        # if self.global_step == self.hparams.active_compressor_step:
+        #     print("Compressor is now active")
+        #     self.max_tracks = self.hparams.min_tracks
+        # if self.global_step == self.hparams.active_fx_bus_step:
+        #     print("FX bus is now active")
+        #     self.max_tracks = self.hparams.min_tracks
+        # if self.global_step == self.hparams.active_master_bus_step:
+        #     print("Master bus is now active")
+        #     self.max_tracks = self.hparams.min_tracks
     
         print(f"Current epoch: {self.current_epoch} with max_tracks: {self.max_tracks}")
 
         self.train_dataset = multitrack_dataset(
             root_dirs=self.hparams.root_dirs,
+            split = self.hparams.split,
             subset="train",
             min_tracks=self.hparams.min_tracks,
             max_tracks=self.max_tracks,
@@ -267,6 +274,7 @@ class MultitrackDataModule(pl.LightningDataModule):
 
         self.val_dataset = multitrack_dataset(
             root_dirs=self.hparams.root_dirs,
+            split = self.hparams.split,
             subset="val",
             min_tracks=self.hparams.min_tracks,
             max_tracks=self.max_tracks,
@@ -284,6 +292,7 @@ class MultitrackDataModule(pl.LightningDataModule):
     def test_dataloader(self):
         self.test_dataset = multitrack_dataset(
             root_dirs=self.hparams.root_dirs,
+            split = self.hparams.split,
             subset="test",
             min_tracks=self.hparams.min_tracks,
             max_tracks=self.max_tracks,
