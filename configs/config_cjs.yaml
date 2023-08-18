@@ -1,4 +1,5 @@
 seed_everything: 42
+#ckpt_path: /import/c4dm-datasets-ext/Diff-MST/DiffMST/4bjbp29c/checkpoints/epoch=118-step=148750.ckpt
 
 trainer:
   logger: 

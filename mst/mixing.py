@@ -1,19 +1,5 @@
 # Store mixing functions here (e.g. knowledge engineering)
-import json
 import torch
-import os
-import json
-import random
-import numpy as np
-import mst.modules
-import pyloudnorm as pyln
-from mst.modules import BasicMixConsole, AdvancedMixConsole
-
-import mst.dataloaders.medley
-from mst.dataloaders.cambridge import CambridgeDataset
-from yaml import load, dump, Loader, Dumper
-from mst.dataloaders.medley import MedleyDBDataset
-import torchaudio
 import random
 
 
@@ -55,8 +41,6 @@ def naive_random_mix(
     use_track_panner: bool = True,
     use_fx_bus: bool = True,
     use_master_bus: bool = True,
-    sample_rate: int = 44100,
-    warmup: int = 0,
     **kwargs,
 ):
     """Generate a random mix by sampling parameters uniformly on the parameter ranges.
@@ -106,15 +90,6 @@ def naive_random_mix(
             use_fx_bus=use_fx_bus,
         )
 
-        # remove warmup samples
-        mix = mix[..., warmup:]
-        mixed_tracks = mixed_tracks[..., warmup:]
-
-        # peak normalize mixes
-        gain_lin = mix.abs().max(dim=-1, keepdim=True)[0]
-        gain_lin = gain_lin.max(dim=-2, keepdim=True)[0]
-        mix /= gain_lin
-
     return mixed_tracks, mix, track_param_dict, fx_bus_param_dict, master_bus_param_dict
 
 
@@ -133,7 +108,6 @@ def knowledge_engineering_mix(
     use_master_bus: bool = True,
     sample_rate: int = 44100,
     warmup: int = 0,
-
 ):
     """Generate a mix using knowledge engineering"""
 
@@ -951,8 +925,10 @@ def knowledge_engineering_mix(
                 KE["master_bus"]["compressor"]["makeup_gain_db"][0],
                 KE["master_bus"]["compressor"]["makeup_gain_db"][1],
             )
-            master_params[j, 24] = random.uniform(KE["master_bus"]["fader"]["gain_db"][0],
-                                                    KE["master_bus"]["fader"]["gain_db"][1])
+            master_params[j, 24] = random.uniform(
+                KE["master_bus"]["fader"]["gain_db"][0],
+                KE["master_bus"]["fader"]["gain_db"][1],
+            )
 
     if mix_console.num_track_control_params == 2:
         mix_params[:, :, 1] = pan_params[:, :, 0]

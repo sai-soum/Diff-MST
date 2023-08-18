@@ -4,11 +4,10 @@ import yaml
 import torch
 import auraloss
 import pytorch_lightning as pl
-from argparse import ArgumentParser
 
 from typing import Callable
 from mst.mixing import knowledge_engineering_mix
-from mst.modules import causal_crop
+from mst.utils import batch_stereo_peak_normalize
 
 
 class System(pl.LightningModule):
@@ -26,7 +25,6 @@ class System(pl.LightningModule):
         active_compressor_step: int = 0,
         active_fx_bus_step: int = 0,
         active_master_bus_step: int = 0,
-        warmup: int = 4096,
         **kwargs,
     ) -> None:
         super().__init__()
@@ -40,7 +38,6 @@ class System(pl.LightningModule):
         self.active_compressor_step = active_compressor_step
         self.active_fx_bus_step = active_fx_bus_step
         self.active_master_bus_step = active_master_bus_step
-        self.warmup = warmup
 
         # losses for evaluation
         self.sisdr = auraloss.time.SISDRLoss()
@@ -122,7 +119,6 @@ class System(pl.LightningModule):
             stereo_id=stereo_info,
             instrument_number_file=self.instrument_number_lookup,
             ke_dict=self.knowledge_engineering_dict,
-            warmup=self.warmup,
         )
 
         if torch.isnan(ref_mix).any():
@@ -130,19 +126,24 @@ class System(pl.LightningModule):
             raise ValueError("Found nan in ref_mix")
 
         # now split into A and B sections (accounting for warmup)
-        ref_middle_idx = (tracks.shape[-1] // 2) - self.warmup
-        input_middle_idx = tracks.shape[-1] // 2
+        middle_idx = tracks.shape[-1] // 2
 
-        ref_mix_a = ref_mix[..., :ref_middle_idx]
-        ref_mix_tracks_a = ref_mix_tracks[..., :ref_middle_idx]
+        ref_mix_a = ref_mix[..., :middle_idx]  # this is passed to the model
+        ref_mix_b = ref_mix[..., middle_idx:]  # this is used for loss computation
 
-        ref_mix_b = ref_mix[..., ref_middle_idx:]
-        ref_mix_tracks_b = ref_mix_tracks[..., ref_middle_idx:]
+        # normalize the mixes
+        ref_mix_a = batch_stereo_peak_normalize(ref_mix_a)
+        ref_mix_b = batch_stereo_peak_normalize(ref_mix_b)
 
-        tracks_a = tracks[..., :input_middle_idx]
-        tracks_b = tracks[..., input_middle_idx:]  # not used currently
+        # tracks_a = tracks[..., :input_middle_idx] # not used currently
+        tracks_b = tracks[..., middle_idx:]  # this is passed to the model
 
-        bs, num_tracks, seq_len = tracks_a.shape
+        bs, num_tracks, seq_len = tracks_b.shape
+
+        # apply random gain to input tracks
+        tracks_b *= 10 ** (
+            (torch.rand(bs, num_tracks, 1).type_as(tracks_b) * -12.0) / 20.0
+        )
 
         #  ---- run model with tracks from section A using reference mix from section B ----
         (
@@ -162,31 +163,14 @@ class System(pl.LightningModule):
             use_master_bus=use_master_bus,
         )
 
-        # don't compute error on start of the audio (warmup)
-        ref_mix_b = ref_mix_b[..., self.warmup :]
-        pred_mix_b = pred_mix_b[..., self.warmup :]
+        # normalize the predicted mix before computing the loss
+        pred_mix_b = batch_stereo_peak_normalize(pred_mix_b)
 
-        # peak normalize mixes
-        gain_lin = ref_mix_b.abs().max(dim=-1, keepdim=True)[0]
-        gain_lin = gain_lin.max(dim=-2, keepdim=True)[0]
-        ref_mix_b_norm = ref_mix_b / gain_lin.clamp(min=1e-8)
-
-        gain_lin = pred_mix_b.abs().max(dim=-1, keepdim=True)[0]
-        gain_lin = gain_lin.max(dim=-2, keepdim=True)[0]
-        pred_mix_b_norm = pred_mix_b / gain_lin.clamp(min=1e-8)
-
-        # compute loss on the predicted section A mix vs the ground truth reference mix
+        # compute loss on the predicted section B mix vs the ground truth reference mix B
         loss = 0
         if self.use_mix_loss:
-            mix_loss = self.loss(pred_mix_b_norm, ref_mix_b_norm)
+            mix_loss = self.loss(pred_mix_b, ref_mix_b)
             loss += mix_loss
-
-        if self.use_track_loss:
-            track_loss = self.loss(
-                pred_mix_tracks_b.view(bs, num_tracks * 2, seq_len),
-                ref_mix_tracks_b.view(bs, num_tracks * 2, seq_len),
-            )
-            loss += track_loss
 
         # log the losses
         self.log(
@@ -199,7 +183,7 @@ class System(pl.LightningModule):
             sync_dist=True,
         )
 
-        sisdr_error = -self.sisdr(pred_mix_b_norm, ref_mix_b_norm)
+        sisdr_error = -self.sisdr(pred_mix_b, ref_mix_b)
         # log the SI-SDR error
         self.log(
             ("train" if train else "val") + "/si-sdr",
@@ -211,7 +195,7 @@ class System(pl.LightningModule):
             sync_dist=True,
         )
 
-        mrstft_error = self.mrstft(pred_mix_b_norm, ref_mix_b_norm)
+        mrstft_error = self.mrstft(pred_mix_b, ref_mix_b)
         # log the MR-STFT error
         self.log(
             ("train" if train else "val") + "/mrstft",
@@ -224,11 +208,13 @@ class System(pl.LightningModule):
         )
 
         # for plotting down the line
+        sum_mix_b = tracks_b.sum(dim=1, keepdim=True).detach().float().cpu()
+        sum_mix_b = batch_stereo_peak_normalize(sum_mix_b)
         data_dict = {
             "ref_mix_a": ref_mix_a.detach().float().cpu(),
-            "ref_mix_b_norm": ref_mix_b_norm.detach().float().cpu(),
-            "pred_mix_b_norm": pred_mix_b_norm.detach().float().cpu(),
-            "sum_mix_a": tracks_a.sum(dim=1, keepdim=True).detach().float().cpu(),
+            "ref_mix_b_norm": ref_mix_b.detach().float().cpu(),
+            "pred_mix_b_norm": pred_mix_b.detach().float().cpu(),
+            "sum_mix_b": sum_mix_b,
             "ref_track_param_dict": ref_track_param_dict,
             "pred_track_param_dict": pred_track_param_dict,
             "ref_fx_bus_param_dict": ref_fx_bus_param_dict,

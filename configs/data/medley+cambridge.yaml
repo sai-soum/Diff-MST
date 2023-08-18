@@ -1,0 +1,18 @@
+data:
+  class_path: mst.dataloader.MultitrackDataModule
+  init_args:
+    root_dirs: 
+      - /import/c4dm-multitrack-private/C4DM Multitrack Collection/mixing-secrets/
+      - /import/c4dm-datasets/
+    metadata_files: 
+      - ./data/cambridge.yaml 
+      - ./data/medley.yaml
+    length: 262144
+    min_tracks: 4
+    max_tracks: 20
+    batch_size: 4
+    num_workers: 4
+    num_examples_per_epoch: 10000
+    train_buffer_size_gb: 4.0
+    val_buffer_size_gb: 0.1
+    target_track_lufs_db: -32.0

@@ -565,6 +565,7 @@ class SpectrogramResNetEncoder(torch.nn.Module):
         n_fft: int = 2048,
         hop_length: int = 512,
         input_batchnorm: bool = False,
+        encoder_batchnorm: bool = True,
     ) -> None:
         super().__init__()
         self.embed_dim = embed_dim
@@ -575,7 +576,7 @@ class SpectrogramResNetEncoder(torch.nn.Module):
         self.register_buffer("window", torch.hann_window(window_length=window_length))
 
         # self.model = torchvision.models.resnet.resnet18(num_classes=embed_dim)
-        self.model = Cnn14(num_classes=embed_dim, use_batchnorm=False)
+        self.model = Cnn14(num_classes=embed_dim, use_batchnorm=encoder_batchnorm)
 
         if self.input_batchnorm:
             self.bn = torch.nn.BatchNorm2d(3)
