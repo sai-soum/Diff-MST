@@ -21,10 +21,10 @@ class System(pl.LightningModule):
         use_mix_loss: bool = True,
         instrument_id_json: str = "data/instrument_name2id.json",
         knowledge_engineering_yaml: str = "data/knowledge_engineering.yaml",
-        active_eq_step: int = 0,
-        active_compressor_step: int = 0,
-        active_fx_bus_step: int = 0,
-        active_master_bus_step: int = 0,
+        active_eq_epoch: int = 0,
+        active_compressor_epoch: int = 0,
+        active_fx_bus_epoch: int = 0,
+        active_master_bus_epoch: int = 0,
         **kwargs,
     ) -> None:
         super().__init__()
@@ -34,10 +34,10 @@ class System(pl.LightningModule):
         self.loss = loss
         self.use_track_loss = use_track_loss
         self.use_mix_loss = use_mix_loss
-        self.active_eq_step = active_eq_step
-        self.active_compressor_step = active_compressor_step
-        self.active_fx_bus_step = active_fx_bus_step
-        self.active_master_bus_step = active_master_bus_step
+        self.active_eq_epoch = active_eq_epoch
+        self.active_compressor_epoch = active_compressor_epoch
+        self.active_fx_bus_epoch = active_fx_bus_epoch
+        self.active_master_bus_epoch = active_master_bus_epoch
 
         # losses for evaluation
         self.sisdr = auraloss.time.SISDRLoss()
@@ -61,6 +61,14 @@ class System(pl.LightningModule):
         else:
             self.instrument_number_lookup = None
             self.knowledge_engineering_dict = None
+
+        # default
+        self.use_track_gain = True
+        self.use_track_panner = True
+        self.use_track_eq = False
+        self.use_track_compressor = False
+        self.use_fx_bus = False
+        self.use_master_bus = False
 
     def forward(self, tracks: torch.Tensor, ref_mix: torch.Tensor) -> torch.Tensor:
         """Apply model to audio waveform tracks.
@@ -90,16 +98,17 @@ class System(pl.LightningModule):
         tracks, instrument_id, stereo_info = batch
 
         # disable parts of the mix console based on global step
-        self.use_track_gain = True
-        self.use_track_panner = True
-        self.use_track_eq = True if self.global_step >= self.active_eq_step else False
-        self.use_track_compressor = (
-            True if self.global_step >= self.active_compressor_step else False
-        )
-        self.use_fx_bus = True if self.global_step >= self.active_fx_bus_step else False
-        self.use_master_bus = (
-            True if self.global_step >= self.active_master_bus_step else False
-        )
+        if self.current_epoch >= self.active_eq_epoch:
+            self.use_track_eq = True
+
+        if self.current_epoch >= self.active_compressor_epoch:
+            self.use_track_compressor = True
+
+        if self.current_epoch >= self.active_fx_bus_epoch:
+            self.use_fx_bus = True
+
+        if self.current_epoch >= self.active_master_bus_epoch:
+            self.use_master_bus = True
 
         # --------- create a random mix (on GPU, if applicable) ---------
         (

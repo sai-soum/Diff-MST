@@ -8,6 +8,8 @@ import pyloudnorm as pyln
 import pytorch_lightning as pl
 from typing import List
 
+from mst.utils import batch_stereo_peak_normalize
+
 
 class LogReferenceMix(pl.callbacks.Callback):
     def __init__(
@@ -90,7 +92,13 @@ class LogReferenceMix(pl.callbacks.Callback):
             start_idx = (tracks.shape[-1] // 2) - (262144 // 2)
             stop_idx = start_idx + 262144
             tracks_chunk = tracks[..., start_idx:stop_idx]
+
+            start_idx = (ref_mix.shape[-1] // 2) - (262144 // 2)
+            stop_idx = start_idx + 262144
             ref_mix_chunk = ref_mix[..., start_idx:stop_idx]
+
+            # normalize the mix
+            ref_mix_chunk = batch_stereo_peak_normalize(ref_mix_chunk)
 
             # move to gpu
             tracks_chunk = tracks_chunk.cuda()
@@ -126,6 +134,10 @@ class LogReferenceMix(pl.callbacks.Callback):
                     use_master_bus=pl_module.use_master_bus,
                 )
 
+            # normalize predicted mix
+            pred_mix_chunk = batch_stereo_peak_normalize(pred_mix_chunk)
+
+            # move back to cpu
             pred_mix_chunk = pred_mix_chunk.squeeze(0).cpu()
             ref_mix_chunk = ref_mix_chunk.squeeze(0).cpu()
 

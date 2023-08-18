@@ -12,7 +12,8 @@ data:
     max_tracks: 20
     batch_size: 4
     num_workers: 8
-    num_examples_per_epoch: 20000
+    num_train_passes: 10
+    num_val_passes: 1
     train_buffer_size_gb: 2.0
     val_buffer_size_gb: 0.1
     target_track_lufs_db: -32.0

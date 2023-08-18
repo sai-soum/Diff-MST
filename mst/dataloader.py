@@ -24,10 +24,9 @@ class MultitrackDataset(torch.utils.data.Dataset):
         min_tracks: int = 4,
         max_tracks: int = 20,
         subset: str = "train",
-        buffer_reload_rate: int = 4000,
-        num_examples_per_epoch: int = 10000,
         buffer_size_gb: float = 0.01,
         target_track_lufs_db: float = -32.0,
+        num_passes: int = 1,
     ) -> None:
         super().__init__()
         self.sample_rate = sample_rate
@@ -35,12 +34,11 @@ class MultitrackDataset(torch.utils.data.Dataset):
         self.min_tracks = min_tracks
         self.max_tracks = max_tracks
         self.subset = subset
-        self.buffer_reload_rate = buffer_reload_rate
-        self.num_examples_per_epoch = num_examples_per_epoch
         self.buffer_size_gb = buffer_size_gb
         self.target_track_lufs_db = target_track_lufs_db
         self.meter = pyln.Meter(sample_rate)
         self.length = self.length
+        self.num_passes = num_passes
 
         with open(instrument_id_json, "r") as f:
             self.instrument_ids = json.load(f)
@@ -56,12 +54,13 @@ class MultitrackDataset(torch.utils.data.Dataset):
                     self.song_dirs[full_song_dir] = track_info
                     self.dirs.append(full_song_dir)
 
-        print(len(self.dirs))
+        print(f"Located {len(self.dirs)} song directories.")
 
-        self.items_since_load = self.buffer_reload_rate
+        # call reload buffer to load initial buffer
+        self.reload_buffer()
 
     def __len__(self):
-        return self.num_examples_per_epoch
+        return len(self.examples) * self.num_passes
 
     def reload_buffer(self):
         self.examples = []  # clear buffer
@@ -169,13 +168,9 @@ class MultitrackDataset(torch.utils.data.Dataset):
             if nbytes_loaded > self.buffer_size_gb * 1e9:
                 break
 
-    def __getitem__(self, _):
-        self.items_since_load += 1
+    def __getitem__(self, idx):
+        example_idx = idx % len(self.examples)
 
-        if self.items_since_load >= self.buffer_reload_rate:
-            self.reload_buffer()
-
-        example_idx = np.random.randint(0, len(self.examples))
         example = self.examples[example_idx]
 
         tracks = example[0]
@@ -195,6 +190,8 @@ class MultitrackDataModule(pl.LightningDataModule):
         max_tracks: int = 20,
         num_workers: int = 4,
         batch_size: int = 16,
+        num_train_passes: int = 1,
+        num_val_passes: int = 1,
         train_buffer_size_gb: float = 0.01,
         val_buffer_size_gb: float = 0.1,
         num_examples_per_epoch: int = 10000,
@@ -241,8 +238,8 @@ class MultitrackDataModule(pl.LightningDataModule):
             min_tracks=self.hparams.min_tracks,
             max_tracks=self.max_tracks,
             length=self.hparams.length,
+            num_passes=self.hparams.num_train_passes,
             buffer_size_gb=self.hparams.train_buffer_size_gb,
-            num_examples_per_epoch=self.hparams.num_examples_per_epoch,
             target_track_lufs_db=self.hparams.target_track_lufs_db,
         )
 
@@ -262,8 +259,8 @@ class MultitrackDataModule(pl.LightningDataModule):
             min_tracks=self.hparams.min_tracks,
             max_tracks=self.max_tracks,
             length=self.hparams.length,
+            num_passes=self.hparams.num_val_passes,
             buffer_size_gb=self.hparams.val_buffer_size_gb,
-            num_examples_per_epoch=int(self.hparams.num_examples_per_epoch / 10),
             target_track_lufs_db=self.hparams.target_track_lufs_db,
         )
 
@@ -276,13 +273,13 @@ class MultitrackDataModule(pl.LightningDataModule):
     def test_dataloader(self):
         self.test_dataset = MultitrackDataset(
             root_dirs=self.hparams.root_dirs,
-            split=self.hparams.split,
+            metadata_files=self.hparams.split,
             subset="test",
             min_tracks=self.hparams.min_tracks,
             max_tracks=self.max_tracks,
             length=self.hparams.length,
+            num_passes=self.hparams.num_val_passes,
             buffer_size_gb=self.hparams.test_buffer_size_gb,
-            num_examples_per_epoch=int(self.hparams.num_examples_per_epoch / 10),
             target_track_lufs_db=self.hparams.target_track_lufs_db,
         )
 
