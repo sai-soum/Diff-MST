@@ -276,6 +276,7 @@ class MultitrackDataModule(pl.LightningDataModule):
     def test_dataloader(self):
         self.test_dataset = MultitrackDataset(
             root_dirs=self.hparams.root_dirs,
+            split=self.hparams.split,
             subset="test",
             min_tracks=self.hparams.min_tracks,
             max_tracks=self.max_tracks,

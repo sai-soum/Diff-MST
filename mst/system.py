@@ -90,12 +90,12 @@ class System(pl.LightningModule):
         tracks, instrument_id, stereo_info = batch
 
         # disable parts of the mix console based on global step
-        use_track_eq = True if self.global_step >= self.active_eq_step else False
-        use_track_compressor = (
+        self.use_track_eq = True if self.global_step >= self.active_eq_step else False
+        self.use_track_compressor = (
             True if self.global_step >= self.active_compressor_step else False
         )
-        use_fx_bus = True if self.global_step >= self.active_fx_bus_step else False
-        use_master_bus = (
+        self.use_fx_bus = True if self.global_step >= self.active_fx_bus_step else False
+        self.use_master_bus = (
             True if self.global_step >= self.active_master_bus_step else False
         )
 
@@ -111,10 +111,10 @@ class System(pl.LightningModule):
             self.generate_mix_console,
             use_track_gain=True,
             use_track_panner=True,
-            use_track_eq=use_track_eq,
-            use_track_compressor=use_track_compressor,
-            use_fx_bus=use_fx_bus,
-            use_master_bus=use_master_bus,
+            use_track_eq=self.use_track_eq,
+            use_track_compressor=self.use_track_compressor,
+            use_fx_bus=self.use_fx_bus,
+            use_master_bus=self.use_master_bus,
             instrument_id=instrument_id,
             stereo_id=stereo_info,
             instrument_number_file=self.instrument_number_lookup,
@@ -157,10 +157,10 @@ class System(pl.LightningModule):
             ref_mix_a,
             use_track_gain=True,
             use_track_panner=True,
-            use_track_eq=use_track_eq,
-            use_track_compressor=use_track_compressor,
-            use_fx_bus=use_fx_bus,
-            use_master_bus=use_master_bus,
+            use_track_eq=self.use_track_eq,
+            use_track_compressor=self.use_track_compressor,
+            use_fx_bus=self.use_fx_bus,
+            use_master_bus=self.use_master_bus,
         )
 
         # normalize the predicted mix before computing the loss
