@@ -40,7 +40,7 @@ class MultitrackDataset(torch.utils.data.Dataset):
         self.buffer_size_gb = buffer_size_gb
         self.target_track_lufs_db = target_track_lufs_db
         self.meter = pyln.Meter(sample_rate)
-        self.buffer_frames = self.length
+        self.length = self.length
 
         with open(instrument_id_json, "r") as f:
             self.instrument_ids = json.load(f)
@@ -80,7 +80,8 @@ class MultitrackDataset(torch.utils.data.Dataset):
 
             num_frames = torchaudio.info(track_filepaths[0]).num_frames
 
-            if num_frames < self.length:
+            # ensure the song is long enough if we start from 25% in
+            if (0.75 * num_frames) < self.length:
                 continue
 
             # load tracks
@@ -88,17 +89,18 @@ class MultitrackDataset(torch.utils.data.Dataset):
             track_idx = 0
             track_metadata = []
             stereo_info = []
-            offset = np.random.randint(
-                0.25 * num_frames, num_frames - self.buffer_frames - 1
-            )
+            # find a starting offset 25% into the song or more
+            offset = np.random.randint(0.25 * num_frames, num_frames - self.length - 1)
 
             for track_filepath in track_filepaths:
                 stereo = False
                 track, _ = torchaudio.load(
-                    track_filepath, frame_offset=offset, num_frames=self.buffer_frames
+                    track_filepath,
+                    frame_offset=offset,
+                    num_frames=self.length,
                 )
 
-                if track.shape[-1] != self.buffer_frames:
+                if track.shape[-1] != self.length:
                     continue
                 if track.size()[0] > 2:
                     continue
@@ -151,7 +153,7 @@ class MultitrackDataset(torch.utils.data.Dataset):
 
             # convert to tensor
             tracks = torch.cat(tracks)
-            # tracks = tracks.reshape(self.max_tracks, self.buffer_frames)
+            # tracks = tracks.reshape(self.max_tracks, self.length)
             track_metadata = torch.tensor(track_metadata)
             stereo_info = torch.tensor(stereo_info).reshape(track_metadata.shape)
 
