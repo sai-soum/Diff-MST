@@ -14,7 +14,7 @@ class System(pl.LightningModule):
     def __init__(
         self,
         model: torch.nn.Module,
-        generate_mix_console: torch.nn.Module,
+        mix_console: torch.nn.Module,
         mix_fn: Callable,
         loss: torch.nn.Module,
         use_track_loss: bool = False,
@@ -29,7 +29,7 @@ class System(pl.LightningModule):
     ) -> None:
         super().__init__()
         self.model = model
-        self.generate_mix_console = generate_mix_console
+        self.mix_console = mix_console
         self.mix_fn = mix_fn
         self.loss = loss
         self.use_track_loss = use_track_loss
@@ -90,6 +90,8 @@ class System(pl.LightningModule):
         tracks, instrument_id, stereo_info = batch
 
         # disable parts of the mix console based on global step
+        self.use_track_gain = True
+        self.use_track_panner = True
         self.use_track_eq = True if self.global_step >= self.active_eq_step else False
         self.use_track_compressor = (
             True if self.global_step >= self.active_compressor_step else False
@@ -108,9 +110,9 @@ class System(pl.LightningModule):
             ref_master_bus_param_dict,
         ) = self.mix_fn(
             tracks,
-            self.generate_mix_console,
-            use_track_gain=True,
-            use_track_panner=True,
+            self.mix_console,
+            use_track_gain=self.use_track_gain,
+            use_track_panner=self.use_track_panner,
             use_track_eq=self.use_track_eq,
             use_track_compressor=self.use_track_compressor,
             use_fx_bus=self.use_fx_bus,
@@ -147,16 +149,25 @@ class System(pl.LightningModule):
 
         #  ---- run model with tracks from section A using reference mix from section B ----
         (
-            pred_mix_tracks_b,
+            pred_track_params,
+            pred_fx_bus_params,
+            pred_master_bus_params,
+        ) = self.model(tracks_b, ref_mix_a)
+
+        # ------- generate a mix using the predicted mix console parameters -------
+        (
+            pred_mixed_tracks_b,
             pred_mix_b,
             pred_track_param_dict,
             pred_fx_bus_param_dict,
             pred_master_bus_param_dict,
-        ) = self.model(
+        ) = self.mix_console(
             tracks_b,
-            ref_mix_a,
-            use_track_gain=True,
-            use_track_panner=True,
+            pred_track_params,
+            pred_fx_bus_params,
+            pred_master_bus_params,
+            use_track_gain=self.use_track_gain,
+            use_track_panner=self.use_track_panner,
             use_track_eq=self.use_track_eq,
             use_track_compressor=self.use_track_compressor,
             use_fx_bus=self.use_fx_bus,
@@ -166,7 +177,8 @@ class System(pl.LightningModule):
         # normalize the predicted mix before computing the loss
         pred_mix_b = batch_stereo_peak_normalize(pred_mix_b)
 
-        # compute loss on the predicted section B mix vs the ground truth reference mix B
+        # ---------------------------- compute and log loss ------------------------------
+
         loss = 0
         if self.use_mix_loss:
             mix_loss = self.loss(pred_mix_b, ref_mix_b)

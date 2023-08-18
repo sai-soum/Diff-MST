@@ -19,13 +19,11 @@ class MixStyleTransferModel(torch.nn.Module):
         track_encoder: torch.nn.Module,
         mix_encoder: torch.nn.Module,
         controller: torch.nn.Module,
-        mix_console: torch.nn.Module,
     ) -> None:
         super().__init__()
         self.track_encoder = track_encoder
         self.mix_encoder = mix_encoder
         self.controller = controller
-        self.mix_console = mix_console
 
     def forward(
         self,
@@ -58,32 +56,10 @@ class MixStyleTransferModel(torch.nn.Module):
             track_embeds, mix_embeds
         )
 
-        # create a mix using the predicted parameters
-        (
-            mixed_tracks,
-            mix,
-            track_param_dict,
-            fx_bus_param_dict,
-            master_bus_param_dict,
-        ) = self.mix_console(
-            tracks,
+        return (
             track_params,
             fx_bus_params,
             master_bus_params,
-            use_track_gain=use_track_gain,
-            use_track_panner=use_track_panner,
-            use_track_eq=use_track_eq,
-            use_track_compressor=use_track_compressor,
-            use_fx_bus=use_fx_bus,
-            use_master_bus=use_master_bus,
-        )
-
-        return (
-            mixed_tracks,
-            mix,
-            track_param_dict,
-            fx_bus_param_dict,
-            master_bus_param_dict,
         )
 
 
