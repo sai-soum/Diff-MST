@@ -4,43 +4,40 @@ import yaml
 import torch
 import auraloss
 import pytorch_lightning as pl
-from argparse import ArgumentParser
 
 from typing import Callable
 from mst.mixing import knowledge_engineering_mix
-from mst.modules import causal_crop
+from mst.utils import batch_stereo_peak_normalize
 
 
 class System(pl.LightningModule):
     def __init__(
         self,
         model: torch.nn.Module,
-        generate_mix_console: torch.nn.Module,
+        mix_console: torch.nn.Module,
         mix_fn: Callable,
         loss: torch.nn.Module,
         use_track_loss: bool = False,
         use_mix_loss: bool = True,
         instrument_id_json: str = "data/instrument_name2id.json",
         knowledge_engineering_yaml: str = "data/knowledge_engineering.yaml",
-        active_eq_step: int = 0,
-        active_compressor_step: int = 0,
-        active_fx_bus_step: int = 0,
-        active_master_bus_step: int = 0,
-        warmup: int = 4096,
+        active_eq_epoch: int = 0,
+        active_compressor_epoch: int = 0,
+        active_fx_bus_epoch: int = 0,
+        active_master_bus_epoch: int = 0,
         **kwargs,
     ) -> None:
         super().__init__()
         self.model = model
-        self.generate_mix_console = generate_mix_console
+        self.mix_console = mix_console
         self.mix_fn = mix_fn
         self.loss = loss
         self.use_track_loss = use_track_loss
         self.use_mix_loss = use_mix_loss
-        self.active_eq_step = active_eq_step
-        self.active_compressor_step = active_compressor_step
-        self.active_fx_bus_step = active_fx_bus_step
-        self.active_master_bus_step = active_master_bus_step
-        self.warmup = warmup
+        self.active_eq_epoch = active_eq_epoch
+        self.active_compressor_epoch = active_compressor_epoch
+        self.active_fx_bus_epoch = active_fx_bus_epoch
+        self.active_master_bus_epoch = active_master_bus_epoch
 
         # losses for evaluation
         self.sisdr = auraloss.time.SISDRLoss()
@@ -64,6 +61,14 @@ class System(pl.LightningModule):
         else:
             self.instrument_number_lookup = None
             self.knowledge_engineering_dict = None
+
+        # default
+        self.use_track_gain = True
+        self.use_track_panner = True
+        self.use_track_eq = False
+        self.use_track_compressor = False
+        self.use_fx_bus = False
+        self.use_master_bus = False
 
     def forward(self, tracks: torch.Tensor, ref_mix: torch.Tensor) -> torch.Tensor:
         """Apply model to audio waveform tracks.
@@ -93,14 +98,17 @@ class System(pl.LightningModule):
         tracks, instrument_id, stereo_info = batch
 
         # disable parts of the mix console based on global step
-        use_track_eq = True if self.global_step >= self.active_eq_step else False
-        use_track_compressor = (
-            True if self.global_step >= self.active_compressor_step else False
-        )
-        use_fx_bus = True if self.global_step >= self.active_fx_bus_step else False
-        use_master_bus = (
-            True if self.global_step >= self.active_master_bus_step else False
-        )
+        if self.current_epoch >= self.active_eq_epoch:
+            self.use_track_eq = True
+
+        if self.current_epoch >= self.active_compressor_epoch:
+            self.use_track_compressor = True
+
+        if self.current_epoch >= self.active_fx_bus_epoch:
+            self.use_fx_bus = True
+
+        if self.current_epoch >= self.active_master_bus_epoch:
+            self.use_master_bus = True
 
         # --------- create a random mix (on GPU, if applicable) ---------
         (
@@ -111,18 +119,17 @@ class System(pl.LightningModule):
             ref_master_bus_param_dict,
         ) = self.mix_fn(
             tracks,
-            self.generate_mix_console,
-            use_track_gain=True,
-            use_track_panner=True,
-            use_track_eq=use_track_eq,
-            use_track_compressor=use_track_compressor,
-            use_fx_bus=use_fx_bus,
-            use_master_bus=use_master_bus,
+            self.mix_console,
+            use_track_gain=self.use_track_gain,
+            use_track_panner=self.use_track_panner,
+            use_track_eq=self.use_track_eq,
+            use_track_compressor=self.use_track_compressor,
+            use_fx_bus=self.use_fx_bus,
+            use_master_bus=self.use_master_bus,
             instrument_id=instrument_id,
             stereo_id=stereo_info,
             instrument_number_file=self.instrument_number_lookup,
             ke_dict=self.knowledge_engineering_dict,
-            warmup=self.warmup,
         )
 
         if torch.isnan(ref_mix).any():
@@ -130,63 +137,61 @@ class System(pl.LightningModule):
             raise ValueError("Found nan in ref_mix")
 
         # now split into A and B sections (accounting for warmup)
-        ref_middle_idx = (tracks.shape[-1] // 2) - self.warmup
-        input_middle_idx = tracks.shape[-1] // 2
+        middle_idx = tracks.shape[-1] // 2
 
-        ref_mix_a = ref_mix[..., :ref_middle_idx]
-        ref_mix_tracks_a = ref_mix_tracks[..., :ref_middle_idx]
+        ref_mix_a = ref_mix[..., :middle_idx]  # this is passed to the model
+        ref_mix_b = ref_mix[..., middle_idx:]  # this is used for loss computation
 
-        ref_mix_b = ref_mix[..., ref_middle_idx:]
-        ref_mix_tracks_b = ref_mix_tracks[..., ref_middle_idx:]
+        # normalize the mixes
+        ref_mix_a = batch_stereo_peak_normalize(ref_mix_a)
+        ref_mix_b = batch_stereo_peak_normalize(ref_mix_b)
 
-        tracks_a = tracks[..., :input_middle_idx]
-        tracks_b = tracks[..., input_middle_idx:]  # not used currently
+        # tracks_a = tracks[..., :input_middle_idx] # not used currently
+        tracks_b = tracks[..., middle_idx:]  # this is passed to the model
 
-        bs, num_tracks, seq_len = tracks_a.shape
+        bs, num_tracks, seq_len = tracks_b.shape
+
+        # apply random gain to input tracks
+        tracks_b *= 10 ** (
+            (torch.rand(bs, num_tracks, 1).type_as(tracks_b) * -12.0) / 20.0
+        )
 
         #  ---- run model with tracks from section A using reference mix from section B ----
         (
-            pred_mix_tracks_b,
+            pred_track_params,
+            pred_fx_bus_params,
+            pred_master_bus_params,
+        ) = self.model(tracks_b, ref_mix_a)
+
+        # ------- generate a mix using the predicted mix console parameters -------
+        (
+            pred_mixed_tracks_b,
             pred_mix_b,
             pred_track_param_dict,
             pred_fx_bus_param_dict,
             pred_master_bus_param_dict,
-        ) = self.model(
+        ) = self.mix_console(
             tracks_b,
-            ref_mix_a,
-            use_track_gain=True,
-            use_track_panner=True,
-            use_track_eq=use_track_eq,
-            use_track_compressor=use_track_compressor,
-            use_fx_bus=use_fx_bus,
-            use_master_bus=use_master_bus,
+            pred_track_params,
+            pred_fx_bus_params,
+            pred_master_bus_params,
+            use_track_gain=self.use_track_gain,
+            use_track_panner=self.use_track_panner,
+            use_track_eq=self.use_track_eq,
+            use_track_compressor=self.use_track_compressor,
+            use_fx_bus=self.use_fx_bus,
+            use_master_bus=self.use_master_bus,
         )
 
-        # don't compute error on start of the audio (warmup)
-        ref_mix_b = ref_mix_b[..., self.warmup :]
-        pred_mix_b = pred_mix_b[..., self.warmup :]
+        # normalize the predicted mix before computing the loss
+        pred_mix_b = batch_stereo_peak_normalize(pred_mix_b)
 
-        # peak normalize mixes
-        gain_lin = ref_mix_b.abs().max(dim=-1, keepdim=True)[0]
-        gain_lin = gain_lin.max(dim=-2, keepdim=True)[0]
-        ref_mix_b_norm = ref_mix_b / gain_lin.clamp(min=1e-8)
+        # ---------------------------- compute and log loss ------------------------------
 
-        gain_lin = pred_mix_b.abs().max(dim=-1, keepdim=True)[0]
-        gain_lin = gain_lin.max(dim=-2, keepdim=True)[0]
-        pred_mix_b_norm = pred_mix_b / gain_lin.clamp(min=1e-8)
-
-        # compute loss on the predicted section A mix vs the ground truth reference mix
         loss = 0
         if self.use_mix_loss:
-            mix_loss = self.loss(pred_mix_b_norm, ref_mix_b_norm)
+            mix_loss = self.loss(pred_mix_b, ref_mix_b)
             loss += mix_loss
-
-        if self.use_track_loss:
-            track_loss = self.loss(
-                pred_mix_tracks_b.view(bs, num_tracks * 2, seq_len),
-                ref_mix_tracks_b.view(bs, num_tracks * 2, seq_len),
-            )
-            loss += track_loss
 
         # log the losses
         self.log(
@@ -199,7 +204,7 @@ class System(pl.LightningModule):
             sync_dist=True,
         )
 
-        sisdr_error = -self.sisdr(pred_mix_b_norm, ref_mix_b_norm)
+        sisdr_error = -self.sisdr(pred_mix_b, ref_mix_b)
         # log the SI-SDR error
         self.log(
             ("train" if train else "val") + "/si-sdr",
@@ -211,7 +216,7 @@ class System(pl.LightningModule):
             sync_dist=True,
         )
 
-        mrstft_error = self.mrstft(pred_mix_b_norm, ref_mix_b_norm)
+        mrstft_error = self.mrstft(pred_mix_b, ref_mix_b)
         # log the MR-STFT error
         self.log(
             ("train" if train else "val") + "/mrstft",
@@ -224,11 +229,13 @@ class System(pl.LightningModule):
         )
 
         # for plotting down the line
+        sum_mix_b = tracks_b.sum(dim=1, keepdim=True).detach().float().cpu()
+        sum_mix_b = batch_stereo_peak_normalize(sum_mix_b)
         data_dict = {
             "ref_mix_a": ref_mix_a.detach().float().cpu(),
-            "ref_mix_b_norm": ref_mix_b_norm.detach().float().cpu(),
-            "pred_mix_b_norm": pred_mix_b_norm.detach().float().cpu(),
-            "sum_mix_a": tracks_a.sum(dim=1, keepdim=True).detach().float().cpu(),
+            "ref_mix_b_norm": ref_mix_b.detach().float().cpu(),
+            "pred_mix_b_norm": pred_mix_b.detach().float().cpu(),
+            "sum_mix_b": sum_mix_b,
             "ref_track_param_dict": ref_track_param_dict,
             "pred_track_param_dict": pred_track_param_dict,
             "ref_fx_bus_param_dict": ref_fx_bus_param_dict,

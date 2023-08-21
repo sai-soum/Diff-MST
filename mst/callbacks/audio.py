@@ -38,7 +38,7 @@ class LogAudioCallback(pl.callbacks.Callback):
                     self.log_audio(
                         outputs,
                         n,
-                        pl_module.model.mix_console.sample_rate,
+                        pl_module.mix_console.sample_rate,
                         trainer.global_step,
                         trainer.logger,
                         f"Epoch {trainer.current_epoch}",

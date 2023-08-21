@@ -7,6 +7,24 @@ from importlib import import_module
 from mst.modules import MixStyleTransferModel
 
 
+def batch_stereo_peak_normalize(x: torch.Tensor):
+    """Normalize a batch of stereo mixes by their peak value.
+
+    Args:
+        x (Tensor): 1-d tensor with shape (bs, 2, seq_len).
+
+    Returns:
+        x (Tensor): Normalized signal withs shape (vs, 2, seq_len).
+    """
+    # first find the peaks in each channel
+    gain_lin = x.abs().max(dim=-1, keepdim=True)[0]
+    # then find the maximum peak across left and right per batch item
+    gain_lin = gain_lin.max(dim=-2, keepdim=True)[0]
+    # normalize by the maximum peak
+    x_norm = x / gain_lin.clamp(1e-8)  # avoid division by zero
+    return x_norm
+
+
 def load_model(config_path: str, ckpt_path: str, map_location: str = "cpu"):
     with open(config_path) as f:
         config = yaml.safe_load(f)

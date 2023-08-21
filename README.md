@@ -47,7 +47,11 @@ git pull
 ## Inference
 
 ```
-CUDA_VISIBLE_DEVICES=5 python scripts/run.py checkpoints/20230719/config.yaml checkpoints/20230719/epoch=132-step=83125.ckpt "/import/c4dm-02/acw639/DiffMST/song 2/Kat Wright_By My Side/" output/ref_mix.wav 
+CUDA_VISIBLE_DEVICES=5 python scripts/run.py \
+checkpoints/20230719/config.yaml \
+checkpoints/20230719/epoch=132-step=83125.ckpt \
+"/import/c4dm-02/acw639/DiffMST/song 2/Kat Wright_By My Side/" \
+output/ref_mix.wav \
 ```
 
 ## Train
@@ -55,12 +59,13 @@ CUDA_VISIBLE_DEVICES=5 python scripts/run.py checkpoints/20230719/config.yaml ch
 First update the paths in the configuration file for both the logger and the dataset root directory.
 Then call the `main.py` script passing in the configuration file. 
 ```
-CUDA_VISIBLE_DEVICES=7 python main.py fit -c configs/config_cjs.yaml -c configs/optimizer.yaml -c configs/data/medleydb_c4dm.yaml -c configs/models/naive_dmc_adv.yaml
-CUDA_VISIBLE_DEVICES=7 python main.py fit -c configs/config_cjs.yaml -c configs/optimizer.yaml -c configs/data/medleydb_c4dm.yaml -c configs/models/naive_tcn_adv.yaml
+
+CUDA_VISIBLE_DEVICES=1 python main.py fit \
+-c configs/config_cjs.yaml \
+-c configs/optimizer.yaml \
+-c configs/data/medley+cambridge.yaml \
+-c configs/models/naive_dmc_adv.yaml \
 ```
-
-
-
 
 
 # Stability (ignore)
