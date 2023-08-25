@@ -63,12 +63,13 @@ class System(pl.LightningModule):
             self.knowledge_engineering_dict = None
 
         # default
-        self.use_track_gain = True
+        self.use_track_input_fader = False
         self.use_track_panner = True
         self.use_track_eq = False
         self.use_track_compressor = False
         self.use_fx_bus = False
         self.use_master_bus = False
+        self.use_output_fader = True
 
     def forward(self, tracks: torch.Tensor, ref_mix: torch.Tensor) -> torch.Tensor:
         """Apply model to audio waveform tracks.
@@ -110,6 +111,11 @@ class System(pl.LightningModule):
         if self.current_epoch >= self.active_master_bus_epoch:
             self.use_master_bus = True
 
+        bs, num_tracks, seq_len = tracks.shape
+
+        # apply random gain to input tracks
+        # tracks *= 10 ** ((torch.rand(bs, num_tracks, 1).type_as(tracks) * -12.0) / 20.0)
+
         # --------- create a random mix (on GPU, if applicable) ---------
         (
             ref_mix_tracks,
@@ -120,17 +126,21 @@ class System(pl.LightningModule):
         ) = self.mix_fn(
             tracks,
             self.mix_console,
-            use_track_gain=self.use_track_gain,
+            use_track_input_fader=self.use_track_input_fader,
             use_track_panner=self.use_track_panner,
             use_track_eq=self.use_track_eq,
             use_track_compressor=self.use_track_compressor,
             use_fx_bus=self.use_fx_bus,
             use_master_bus=self.use_master_bus,
+            use_output_fader=False,  # not used because we normalize output mixes
             instrument_id=instrument_id,
             stereo_id=stereo_info,
             instrument_number_file=self.instrument_number_lookup,
             ke_dict=self.knowledge_engineering_dict,
         )
+
+        # normalize the reference mix
+        ref_mix = batch_stereo_peak_normalize(ref_mix)
 
         if torch.isnan(ref_mix).any():
             print(ref_track_param_dict)
@@ -142,19 +152,8 @@ class System(pl.LightningModule):
         ref_mix_a = ref_mix[..., :middle_idx]  # this is passed to the model
         ref_mix_b = ref_mix[..., middle_idx:]  # this is used for loss computation
 
-        # normalize the mixes
-        ref_mix_a = batch_stereo_peak_normalize(ref_mix_a)
-        ref_mix_b = batch_stereo_peak_normalize(ref_mix_b)
-
         # tracks_a = tracks[..., :input_middle_idx] # not used currently
         tracks_b = tracks[..., middle_idx:]  # this is passed to the model
-
-        bs, num_tracks, seq_len = tracks_b.shape
-
-        # apply random gain to input tracks
-        tracks_b *= 10 ** (
-            (torch.rand(bs, num_tracks, 1).type_as(tracks_b) * -12.0) / 20.0
-        )
 
         #  ---- run model with tracks from section A using reference mix from section B ----
         (
@@ -175,16 +174,17 @@ class System(pl.LightningModule):
             pred_track_params,
             pred_fx_bus_params,
             pred_master_bus_params,
-            use_track_gain=self.use_track_gain,
+            use_track_input_fader=self.use_track_input_fader,
             use_track_panner=self.use_track_panner,
             use_track_eq=self.use_track_eq,
             use_track_compressor=self.use_track_compressor,
             use_fx_bus=self.use_fx_bus,
             use_master_bus=self.use_master_bus,
+            use_output_fader=self.use_output_fader,
         )
 
         # normalize the predicted mix before computing the loss
-        pred_mix_b = batch_stereo_peak_normalize(pred_mix_b)
+        # pred_mix_b = batch_stereo_peak_normalize(pred_mix_b)
 
         # ---------------------------- compute and log loss ------------------------------
 

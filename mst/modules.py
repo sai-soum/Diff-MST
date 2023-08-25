@@ -96,8 +96,10 @@ class AdvancedMixConsole(torch.nn.Module):
     def __init__(
         self,
         sample_rate: float,
-        min_gain_db: float = -12.0,
-        max_gain_db: float = 12.0,
+        input_min_gain_db: float = -12.0,
+        input_max_gain_db: float = 12.0,
+        output_min_gain_db: float = -48.0,
+        output_max_gain_db: float = 48.0,
         min_send_db: float = -80.0,
         max_send_db: float = +12.0,
         eq_min_gain_db: float = -12.0,
@@ -112,7 +114,8 @@ class AdvancedMixConsole(torch.nn.Module):
         super().__init__()
         self.sample_rate = sample_rate
         self.param_ranges = {
-            "fader": {"gain_db": (min_gain_db, max_gain_db)},
+            "input_fader": {"gain_db": (input_min_gain_db, input_max_gain_db)},
+            "output_fader": {"gain_db": (output_min_gain_db, output_max_gain_db)},
             "parametric_eq": {
                 "low_shelf_gain_db": (eq_min_gain_db, eq_max_gain_db),
                 "low_shelf_cutoff_freq": (20, 2000),
@@ -181,12 +184,13 @@ class AdvancedMixConsole(torch.nn.Module):
         track_param_dict: dict,
         fx_bus_param_dict: dict,
         master_bus_param_dict: dict,
-        use_track_gain: bool = True,
+        use_track_input_fader: bool = True,
         use_track_eq: bool = True,
         use_track_compressor: bool = True,
         use_track_panner: bool = True,
         use_fx_bus: bool = True,
         use_master_bus: bool = True,
+        use_output_fader: bool = True,
     ):
         """
 
@@ -195,12 +199,13 @@ class AdvancedMixConsole(torch.nn.Module):
             track_param_dict (dict): Denormalized parameter values for the gain, eq, compressor, and panner
             fx_bus_param_dict (dict): Denormalized parameter values for the fx bus
             master_bus_param_dict (dict): Denormalized parameter values for the master bus
-            use_track_gain (bool): Whether to apply gain to the tracks
+            use_track_input_fader (bool): Whether to apply gain to the tracks
             use_track_eq (bool): Whether to apply eq to the tracks
             use_track_compressor (bool): Whether to apply compressor to the tracks
             use_track_panner (bool): Whether to apply panner to the tracks
             use_fx_bus (bool): Whether to apply fx bus to the tracks
-            use_master_bus (bool): Whether to apply master bus to the tracks
+            use_master_bus (bool): Whether to apply master bus to the tracks.
+            use_output_fader (bool): Whether to apply gain to the tracks.
 
         Returns:
             mixed_tracks (torch.Tensor): Mixed tracks with shape (bs, num_tracks, seq_len)
@@ -209,8 +214,8 @@ class AdvancedMixConsole(torch.nn.Module):
         """
         bs, num_tracks, seq_len = tracks.shape
         # apply effects in series but all tracks at once
-        if use_track_gain:
-            tracks = gain(tracks, **track_param_dict["fader"])
+        if use_track_input_fader:
+            tracks = gain(tracks, **track_param_dict["input_fader"])
         if use_track_eq:
             tracks = parametric_eq(
                 tracks, self.sample_rate, **track_param_dict["parametric_eq"]
@@ -241,8 +246,8 @@ class AdvancedMixConsole(torch.nn.Module):
             master_bus += fx_bus
 
         # split master into left and right for linked processing (same parameters)
-        master_bus_L = master_bus[:, 0:1]
-        master_bus_R = master_bus[:, 1:2]
+        master_bus_L = master_bus[:, 0:1, :]
+        master_bus_R = master_bus[:, 1:2, :]
 
         # process Left channel
         if use_master_bus:
@@ -252,7 +257,6 @@ class AdvancedMixConsole(torch.nn.Module):
             master_bus_L = compressor(
                 master_bus_L, self.sample_rate, **master_bus_param_dict["compressor"]
             )
-            master_bus_L = gain(master_bus_L, **master_bus_param_dict["fader"])
             # process Right channel
             master_bus_R = parametric_eq(
                 master_bus_R, self.sample_rate, **master_bus_param_dict["parametric_eq"]
@@ -260,7 +264,10 @@ class AdvancedMixConsole(torch.nn.Module):
             master_bus_R = compressor(
                 master_bus_R, self.sample_rate, **master_bus_param_dict["compressor"]
             )
-            master_bus_R = gain(master_bus_R, **master_bus_param_dict["fader"])
+
+        if use_output_fader:
+            master_bus_L = gain(master_bus_L, **master_bus_param_dict["output_fader"])
+            master_bus_R = gain(master_bus_R, **master_bus_param_dict["output_fader"])
 
         # recompose stereo mix
         master_bus = torch.cat((master_bus_L, master_bus_R), dim=1)
@@ -273,12 +280,13 @@ class AdvancedMixConsole(torch.nn.Module):
         track_params: torch.torch.Tensor,
         fx_bus_params: torch.torch.Tensor,
         master_bus_params: torch.torch.Tensor,
-        use_track_gain: bool = True,
+        use_track_input_fader: bool = True,
         use_track_eq: bool = True,
         use_track_compressor: bool = True,
         use_track_panner: bool = True,
         use_master_bus: bool = True,
         use_fx_bus: bool = True,
+        use_output_fader: bool = True,
     ):
         """Create a mix given a set of tracks and corresponding mixing parameters (0,1)
 
@@ -293,7 +301,7 @@ class AdvancedMixConsole(torch.nn.Module):
         """
         # extract and denormalize the parameters
         track_param_dict = {
-            "fader": {
+            "input_fader": {
                 "gain_db": track_params[..., 0],
             },
             "parametric_eq": {
@@ -393,7 +401,7 @@ class AdvancedMixConsole(torch.nn.Module):
                 "knee_db": master_bus_params[..., 22],
                 "makeup_gain_db": master_bus_params[..., 23],
             },
-            "fader": {
+            "output_fader": {
                 "gain_db": master_bus_params[..., 24],
             },
         }
@@ -409,12 +417,13 @@ class AdvancedMixConsole(torch.nn.Module):
             track_param_dict,
             fx_bus_param_dict,
             master_bus_param_dict,
-            use_track_gain=use_track_gain,
+            use_track_input_fader=use_track_input_fader,
             use_track_eq=use_track_eq,
             use_track_compressor=use_track_compressor,
             use_track_panner=use_track_panner,
             use_fx_bus=use_fx_bus,
             use_master_bus=use_master_bus,
+            use_output_fader=use_output_fader,
         )
         return (
             mixed_tracks,

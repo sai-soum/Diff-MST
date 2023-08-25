@@ -126,12 +126,13 @@ class LogReferenceMix(pl.callbacks.Callback):
                     pred_track_params,
                     pred_fx_bus_params,
                     pred_master_bus_params,
-                    use_track_gain=pl_module.use_track_gain,
+                    use_track_input_fader=pl_module.use_track_input_fader,
                     use_track_panner=pl_module.use_track_panner,
                     use_track_eq=pl_module.use_track_eq,
                     use_track_compressor=pl_module.use_track_compressor,
                     use_fx_bus=pl_module.use_fx_bus,
                     use_master_bus=pl_module.use_master_bus,
+                    use_output_fader=pl_module.use_output_fader,
                 )
 
             # normalize predicted mix

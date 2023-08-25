@@ -35,12 +35,13 @@ def instrument_metadata(
 def naive_random_mix(
     tracks: torch.Tensor,
     mix_console: torch.nn.Module,
-    use_track_gain: bool = True,
+    use_track_input_fader: bool = True,
     use_track_eq: bool = True,
     use_track_compressor: bool = True,
     use_track_panner: bool = True,
     use_fx_bus: bool = True,
     use_master_bus: bool = True,
+    use_ouput_fader: bool = True,
     **kwargs,
 ):
     """Generate a random mix by sampling parameters uniformly on the parameter ranges.
@@ -55,8 +56,6 @@ def naive_random_mix(
         param_dict (dict):
     """
     bs, num_tracks, seq_len = tracks.size()
-
-    # torch.manual_seed(46)
 
     # generate random parameter tensors
     mix_params = torch.rand(bs, num_tracks, mix_console.num_track_control_params)
@@ -82,12 +81,13 @@ def naive_random_mix(
             mix_params,
             fx_bus_params,
             master_bus_params,
-            use_track_gain=use_track_gain,
+            use_track_input_fader=use_track_input_fader,
             use_track_eq=use_track_eq,
             use_track_compressor=use_track_compressor,
             use_track_panner=use_track_panner,
             use_master_bus=use_master_bus,
             use_fx_bus=use_fx_bus,
+            use_output_fader=use_ouput_fader,
         )
 
     return mixed_tracks, mix, track_param_dict, fx_bus_param_dict, master_bus_param_dict
