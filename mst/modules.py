@@ -19,11 +19,13 @@ class MixStyleTransferModel(torch.nn.Module):
         track_encoder: torch.nn.Module,
         mix_encoder: torch.nn.Module,
         controller: torch.nn.Module,
+        sum_and_diff: bool = False,
     ) -> None:
         super().__init__()
         self.track_encoder = track_encoder
         self.mix_encoder = mix_encoder
         self.controller = controller
+        self.sum_and_diff = sum_and_diff
 
     def forward(
         self,
@@ -43,13 +45,17 @@ class MixStyleTransferModel(torch.nn.Module):
         track_embeds = track_embeds.view(bs, num_tracks, -1)  # restore
 
         # compute mid/side from the reference mix
-        ref_mix_mid = ref_mix.sum(dim=1)
-        ref_mix_side = ref_mix[..., 0, :] - ref_mix[..., 1, :]
+        if self.sum_and_diff:
+            ref_mix_mid = ref_mix.sum(dim=1)
+            ref_mix_side = ref_mix[..., 0, :] - ref_mix[..., 1, :]
 
-        # process the reference mix
-        mid_embeds = self.mix_encoder(ref_mix_mid)
-        side_embeds = self.mix_encoder(ref_mix_side)
-        mix_embeds = torch.stack((mid_embeds, side_embeds), dim=1)
+            # process the reference mix
+            mid_embeds = self.mix_encoder(ref_mix_mid)
+            side_embeds = self.mix_encoder(ref_mix_side)
+            mix_embeds = torch.stack((mid_embeds, side_embeds), dim=1)
+        else:
+            mix_embeds = self.mix_encoder(ref_mix.view(bs * 2, -1))
+            mix_embeds = mix_embeds.view(bs, 2, -1)  # restore
 
         # controller will predict mix parameters for each stem based on embeds
         track_params, fx_bus_params, master_bus_params = self.controller(

@@ -2,7 +2,7 @@ data:
   class_path: mst.dataloader.MultitrackDataModule
   init_args:
     root_dirs: 
-      - /import/c4dm-multitrack-private/C4DM Multitrack Collection/mixing-secrets/
+      - /import/c4dm-datasets-ext/mixing-secrets/
       - /import/c4dm-datasets/
     metadata_files: 
       - ./data/cambridge.yaml 

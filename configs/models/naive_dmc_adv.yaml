@@ -46,7 +46,7 @@ model:
             nhead: 8
        
     loss: 
-      class_path: auraloss.freq.SumAndDifferenceSTFTLoss
+      class_path: auraloss.freq.MultiResolutionSTFTLoss
       init_args:
         fft_sizes: 
         - 512
