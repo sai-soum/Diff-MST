@@ -6,9 +6,11 @@ import torchaudio
 import numpy as np
 import pyloudnorm as pyln
 import pytorch_lightning as pl
+from tqdm import tqdm
 from typing import List
 
 from mst.utils import batch_stereo_peak_normalize
+from mst.mixing import naive_random_mix
 
 
 class LogReferenceMix(pl.callbacks.Callback):
@@ -28,8 +30,11 @@ class LogReferenceMix(pl.callbacks.Callback):
         self.target_track_lufs_db = target_track_lufs_db
         self.meter = pyln.Meter(self.sample_rate)
 
+        print(f"Initalizing reference mix logger with {len(root_dirs)} mixes.")
+
         self.songs = []
         for root_dir, ref_mix in zip(root_dirs, ref_mixes):
+            print(f"Loading {root_dir}...")
             song = {}
             song["name"] = os.path.basename(root_dir)
 
@@ -45,7 +50,8 @@ class LogReferenceMix(pl.callbacks.Callback):
             # load tracks
             track_filepaths = glob.glob(os.path.join(root_dir, "*.wav"))
             tracks = []
-            for track_filepath in track_filepaths:
+            print("Loading tracks...")
+            for track_filepath in tqdm(track_filepaths):
                 x, sr = torchaudio.load(track_filepath)
 
                 # convert sample rate if needed
@@ -142,15 +148,43 @@ class LogReferenceMix(pl.callbacks.Callback):
             pred_mix_chunk = pred_mix_chunk.squeeze(0).cpu()
             ref_mix_chunk = ref_mix_chunk.squeeze(0).cpu()
 
-            total_samples = int(
-                pred_mix_chunk.shape[-1]
-                + ref_mix_chunk.shape[-1]
-                + pl_module.mix_console.sample_rate
+            # generate sum mix
+            sum_mix = tracks_chunk.unsqueeze(0).sum(dim=1, keepdim=True).cpu()
+            sum_mix = batch_stereo_peak_normalize(sum_mix)
+            sum_mix = sum_mix.squeeze(0)
+
+            # generate random mix
+            results = naive_random_mix(
+                tracks_chunk.unsqueeze(0),
+                pl_module.mix_console,
+                use_track_input_fader=pl_module.use_track_input_fader,
+                use_track_panner=pl_module.use_track_panner,
+                use_track_eq=pl_module.use_track_eq,
+                use_track_compressor=pl_module.use_track_compressor,
+                use_fx_bus=pl_module.use_fx_bus,
+                use_master_bus=pl_module.use_master_bus,
+                use_output_fader=pl_module.use_output_fader,
             )
+            rand_mix = results[1]
+            rand_mix = batch_stereo_peak_normalize(rand_mix).cpu()
+            rand_mix = rand_mix.squeeze(0)
+
+            audios = {
+                "ref_mix": ref_mix_chunk,
+                "pred_mix": pred_mix_chunk,
+                "sum_mix": sum_mix,
+                "rand_mix": rand_mix,
+            }
+
+            total_samples = 0
+            for x in audios.values():
+                total_samples += x.shape[-1] + int(pl_module.mix_console.sample_rate)
+
             y = torch.zeros(total_samples, 2)
             name = f"{idx}_{name}"
             start = 0
-            for x, key in zip([ref_mix_chunk, pred_mix_chunk], ["ref_mix", "pred_mix"]):
+            for key, x in audios.items():
+                print(key, x.shape)
                 end = start + x.shape[-1]
                 y[start:end, :] = x.T
                 start = end + int(pl_module.mix_console.sample_rate)
