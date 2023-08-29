@@ -184,7 +184,6 @@ class LogReferenceMix(pl.callbacks.Callback):
             name = f"{idx}_{name}"
             start = 0
             for key, x in audios.items():
-                print(key, x.shape)
                 end = start + x.shape[-1]
                 y[start:end, :] = x.T
                 start = end + int(pl_module.mix_console.sample_rate)

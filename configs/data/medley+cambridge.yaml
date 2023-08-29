@@ -8,8 +8,8 @@ data:
       - ./data/cambridge.yaml 
       - ./data/medley.yaml
     length: 262144
-    min_tracks: 4
-    max_tracks: 4
+    min_tracks: 1
+    max_tracks: 8
     batch_size: 4
     num_workers: 4
     num_train_passes: 10
