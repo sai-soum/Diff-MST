@@ -102,8 +102,8 @@ class AdvancedMixConsole(torch.nn.Module):
     def __init__(
         self,
         sample_rate: float,
-        input_min_gain_db: float = -12.0,
-        input_max_gain_db: float = 12.0,
+        input_min_gain_db: float = -48.0,
+        input_max_gain_db: float = 48.0,
         output_min_gain_db: float = -48.0,
         output_max_gain_db: float = 48.0,
         min_send_db: float = -80.0,
@@ -145,10 +145,10 @@ class AdvancedMixConsole(torch.nn.Module):
             "compressor": {
                 "threshold_db": (-60.0, 0.0),
                 "ratio": (1.0, 10.0),
-                "attack_ms": (1.0, 1000.0),
-                "release_ms": (1.0, 1000.0),
-                "knee_db": (3.0, 24.0),
-                "makeup_gain_db": (0.0, 24.0),
+                "attack_ms": (5.0, 20.0),
+                "release_ms": (20.0, 250.0),
+                "knee_db": (3.0, 12.0),
+                "makeup_gain_db": (0.0, 6.0),
             },
             "reverberation": {
                 "band0_gain": (reverb_min_band_gain, reverb_max_band_gain),
@@ -182,7 +182,7 @@ class AdvancedMixConsole(torch.nn.Module):
         }
         self.num_track_control_params = 27
         self.num_fx_bus_control_params = 25
-        self.num_master_bus_control_params = 25
+        self.num_master_bus_control_params = 26
 
     def forward_mix_console(
         self,
@@ -219,17 +219,28 @@ class AdvancedMixConsole(torch.nn.Module):
 
         """
         bs, num_tracks, seq_len = tracks.shape
+
+        # move all tracks to batch dim for parallel processing
+        tracks = tracks.view(-1, 1, seq_len)
+
         # apply effects in series but all tracks at once
         if use_track_input_fader:
             tracks = gain(tracks, **track_param_dict["input_fader"])
         if use_track_eq:
             tracks = parametric_eq(
-                tracks, self.sample_rate, **track_param_dict["parametric_eq"]
+                tracks,
+                self.sample_rate,
+                **track_param_dict["parametric_eq"],
             )
         if use_track_compressor:
             tracks = compressor(
-                tracks, self.sample_rate, **track_param_dict["compressor"]
+                tracks,
+                self.sample_rate,
+                **track_param_dict["compressor"],
             )
+
+        # restore tracks to original shape
+        tracks = tracks.view(bs, num_tracks, seq_len)
 
         if use_track_panner:
             tracks = stereo_panner(tracks, **track_param_dict["stereo_panner"])
@@ -237,7 +248,7 @@ class AdvancedMixConsole(torch.nn.Module):
             tracks = tracks.unsqueeze(1).repeat(1, 2, 1)
 
         # create stereo bus via summing
-        master_bus = tracks.sum(dim=2)
+        master_bus = tracks.sum(dim=2)  # bs, 2, seq_len
 
         # apply stereo reveberation on an fx bus
         if use_fx_bus:
@@ -251,32 +262,25 @@ class AdvancedMixConsole(torch.nn.Module):
             )
             master_bus += fx_bus
 
-        # split master into left and right for linked processing (same parameters)
-        master_bus_L = master_bus[:, 0:1, :]
-        master_bus_R = master_bus[:, 1:2, :]
-
-        # process Left channel
         if use_master_bus:
-            master_bus_L = parametric_eq(
-                master_bus_L, self.sample_rate, **master_bus_param_dict["parametric_eq"]
+            # process Left channel
+            master_bus = gain(master_bus, **master_bus_param_dict["input_fader"])
+            master_bus = parametric_eq(
+                master_bus, self.sample_rate, **master_bus_param_dict["parametric_eq"]
             )
-            master_bus_L = compressor(
-                master_bus_L, self.sample_rate, **master_bus_param_dict["compressor"]
-            )
-            # process Right channel
-            master_bus_R = parametric_eq(
-                master_bus_R, self.sample_rate, **master_bus_param_dict["parametric_eq"]
-            )
-            master_bus_R = compressor(
-                master_bus_R, self.sample_rate, **master_bus_param_dict["compressor"]
+
+            # apply compressor to both channels
+            master_bus = compressor(
+                master_bus,
+                self.sample_rate,
+                **master_bus_param_dict["compressor"],
+                lookahead_samples=1024,
             )
 
         if use_output_fader:
-            master_bus_L = gain(master_bus_L, **master_bus_param_dict["output_fader"])
-            master_bus_R = gain(master_bus_R, **master_bus_param_dict["output_fader"])
+            master_bus = gain(master_bus, **master_bus_param_dict["output_fader"])
 
-        # recompose stereo mix
-        master_bus = torch.cat((master_bus_L, master_bus_R), dim=1)
+        master_bus = torch.tanh(master_bus)
 
         return tracks, master_bus
 
@@ -409,6 +413,9 @@ class AdvancedMixConsole(torch.nn.Module):
             },
             "output_fader": {
                 "gain_db": master_bus_params[..., 24],
+            },
+            "input_fader": {
+                "gain_db": master_bus_params[..., 25],
             },
         }
 
