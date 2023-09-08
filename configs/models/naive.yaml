@@ -1,17 +1,20 @@
 model:
   class_path: mst.system.System
   init_args:
-    active_eq_step: 100000
-    active_compressor_step: 150000
-    active_fx_bus_step: 200000
-    active_master_bus_step: 250000
-    mix_fn: mst.mixing.knowledge_engineering_mix
-    generate_mix_console:
+    active_random: False
+    active_eq_epoch: 0
+    active_compressor_epoch: 0
+    active_fx_bus_epoch: 0
+    active_master_bus_epoch: 0
+    mix_fn: mst.mixing.naive_random_mix
+    mix_console:
       class_path: mst.modules.AdvancedMixConsole
       init_args:
         sample_rate: 44100
-        min_gain_db: -80.0
-        max_gain_db: 24.0
+        input_min_gain_db: -48.0
+        input_max_gain_db: 48.0
+        output_min_gain_db: -48.0
+        output_max_gain_db: 48.0
         eq_min_gain_db: -12.0
         eq_max_gain_db: 12.0
         min_pan: 0.0
@@ -39,21 +42,12 @@ model:
             embed_dim: 128
             num_track_control_params: 27
             num_fx_bus_control_params: 25
-            num_master_bus_control_params: 25
+            num_master_bus_control_params: 26
             num_layers: 6
             nhead: 8
-        mix_console:
-          class_path: mst.modules.AdvancedMixConsole
-          init_args:
-            sample_rate: 44100
-            min_gain_db: -80.0
-            max_gain_db: 24.0
-            eq_min_gain_db: -24.0
-            eq_max_gain_db: 24.0
-            min_pan: 0.0
-            max_pan: 1.0
+       
     loss: 
-      class_path: auraloss.freq.SumAndDifferenceSTFTLoss
+      class_path: auraloss.freq.MultiResolutionSTFTLoss
       init_args:
         fft_sizes: 
         - 512
@@ -67,8 +61,6 @@ model:
         - 512
         - 2048
         - 8192
-        # w_sc: 0.0
-        # w_phs: 0.0
-        # w_lin_mag: 1.0
-        # w_log_mag: 1.0
-       
+
+
+    
