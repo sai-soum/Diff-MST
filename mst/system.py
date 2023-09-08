@@ -21,6 +21,7 @@ class System(pl.LightningModule):
         use_mix_loss: bool = True,
         instrument_id_json: str = "data/instrument_name2id.json",
         knowledge_engineering_yaml: str = "data/knowledge_engineering.yaml",
+        active_random: bool = False,
         active_eq_epoch: int = 0,
         active_compressor_epoch: int = 0,
         active_fx_bus_epoch: int = 0,
@@ -34,10 +35,13 @@ class System(pl.LightningModule):
         self.loss = loss
         self.use_track_loss = use_track_loss
         self.use_mix_loss = use_mix_loss
+        self.active_random = active_random
         self.active_eq_epoch = active_eq_epoch
         self.active_compressor_epoch = active_compressor_epoch
         self.active_fx_bus_epoch = active_fx_bus_epoch
         self.active_master_bus_epoch = active_master_bus_epoch
+
+        self.save_hyperparameters(ignore=["model", "mix_console", "mix_fn", "loss"])
 
         # losses for evaluation
         self.sisdr = auraloss.time.SISDRLoss()
@@ -100,16 +104,28 @@ class System(pl.LightningModule):
 
         # disable parts of the mix console based on global step
         if self.current_epoch >= self.active_eq_epoch:
-            self.use_track_eq = True
+            if self.active_random:
+                self.use_track_eq = torch.rand(1) > 0.5
+            else:
+                self.use_track_eq = True
 
         if self.current_epoch >= self.active_compressor_epoch:
-            self.use_track_compressor = True
+            if self.active_random:
+                self.use_track_compressor = torch.rand(1) > 0.5
+            else:
+                self.use_track_compressor = True
 
         if self.current_epoch >= self.active_fx_bus_epoch:
-            self.use_fx_bus = True
+            if self.active_random:
+                self.use_fx_bus = torch.rand(1) > 0.5
+            else:
+                self.use_fx_bus = True
 
         if self.current_epoch >= self.active_master_bus_epoch:
-            self.use_master_bus = True
+            if self.active_random:
+                self.use_master_bus = torch.rand(1) > 0.5
+            else:
+                self.use_master_bus = True
 
         bs, num_tracks, seq_len = tracks.shape
 
@@ -126,7 +142,7 @@ class System(pl.LightningModule):
         ) = self.mix_fn(
             tracks,
             self.mix_console,
-            use_track_input_fader=self.use_track_input_fader,
+            use_track_input_fader=False,  # do not use track input fader for training
             use_track_panner=self.use_track_panner,
             use_track_eq=self.use_track_eq,
             use_track_compressor=self.use_track_compressor,
