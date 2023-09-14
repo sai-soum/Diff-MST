@@ -145,8 +145,8 @@ class AdvancedMixConsole(torch.nn.Module):
             "compressor": {
                 "threshold_db": (-60.0, 0.0),
                 "ratio": (1.0, 10.0),
-                "attack_ms": (5.0, 20.0),
-                "release_ms": (20.0, 250.0),
+                "attack_ms": (5.0, 250.0),
+                "release_ms": (10.0, 250.0),
                 "knee_db": (3.0, 12.0),
                 "makeup_gain_db": (0.0, 6.0),
             },
@@ -237,6 +237,7 @@ class AdvancedMixConsole(torch.nn.Module):
                 tracks,
                 self.sample_rate,
                 **track_param_dict["compressor"],
+                lookahead_samples=2048,
             )
 
         # restore tracks to original shape
@@ -274,13 +275,11 @@ class AdvancedMixConsole(torch.nn.Module):
                 master_bus,
                 self.sample_rate,
                 **master_bus_param_dict["compressor"],
-                lookahead_samples=1024,
+                lookahead_samples=2048,
             )
 
         if use_output_fader:
             master_bus = gain(master_bus, **master_bus_param_dict["output_fader"])
-
-        master_bus = torch.tanh(master_bus)
 
         return tracks, master_bus
 
