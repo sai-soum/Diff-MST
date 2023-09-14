@@ -21,7 +21,7 @@ class LogReferenceMix(pl.callbacks.Callback):
         peak_normalize: bool = True,
         sample_rate: int = 44100,
         length: int = 524288,
-        target_track_lufs_db: float = -32.0,
+        target_track_lufs_db: float = -48.0,
     ):
         super().__init__()
         self.peak_normalize = peak_normalize
@@ -60,27 +60,12 @@ class LogReferenceMix(pl.callbacks.Callback):
 
                 # separate channels
                 for ch_idx in range(x.shape[0]):
-                    x_ch = x[ch_idx : ch_idx + 1, : self.length]
-
-                    # loudness normalize
-                    track_lufs_db = self.meter.integrated_loudness(
-                        x_ch.permute(1, 0).numpy()
-                    )
-
-                    if track_lufs_db < -48.0 or track_lufs_db == float("-inf"):
-                        continue
-
-                    delta_lufs_db = torch.tensor(
-                        [self.target_track_lufs_db - track_lufs_db]
-                    ).float()
-
-                    gain_lin = 10.0 ** (delta_lufs_db.clamp(-120, 40.0) / 20.0)
-                    x_ch = gain_lin * x_ch
+                    x_ch = x[ch_idx : ch_idx + 1, :]
 
                     # save
                     tracks.append(x_ch)
 
-            song["tracks"] = torch.cat(tracks)
+            song["tracks"] = tracks
             self.songs.append(song)
 
     def on_validation_epoch_end(
@@ -94,11 +79,7 @@ class LogReferenceMix(pl.callbacks.Callback):
             tracks = song["tracks"]
             name = song["name"]
 
-            # take a chunk from the centre of the tracks and reference mix
-            start_idx = (tracks.shape[-1] // 2) - (262144 // 2)
-            stop_idx = start_idx + 262144
-            tracks_chunk = tracks[..., start_idx:stop_idx]
-
+            # take a chunk from the middle of the mix
             start_idx = (ref_mix.shape[-1] // 2) - (262144 // 2)
             stop_idx = start_idx + 262144
             ref_mix_chunk = ref_mix[..., start_idx:stop_idx]
@@ -107,31 +88,89 @@ class LogReferenceMix(pl.callbacks.Callback):
             ref_mix_chunk = batch_stereo_peak_normalize(ref_mix_chunk)
 
             # move to gpu
-            tracks_chunk = tracks_chunk.cuda()
             ref_mix_chunk = ref_mix_chunk.cuda()
 
-            with torch.no_grad():
-                # predict parameters using the chunks
-                (
-                    pred_track_params,
-                    pred_fx_bus_params,
-                    pred_master_bus_params,
-                ) = pl_module.model(
-                    tracks_chunk.unsqueeze(0), ref_mix_chunk.unsqueeze(0)
-                )
+            # make a mix of multiple sections of the tracks
+            for n, start_idx in enumerate([0, 524288, 2 * 524288, 3 * 524288]):
+                stop_idx = start_idx + 262144
 
-                # generate a mix with full tracks using the predicted mix console parameters
-                (
-                    pred_mixed_tracks,
-                    pred_mix_chunk,
-                    pred_track_param_dict,
-                    pred_fx_bus_param_dict,
-                    pred_master_bus_param_dict,
-                ) = pl_module.mix_console(
+                # loudness normalize tracks
+                normalized_tracks = []
+                for track in tracks:
+                    track = track[..., start_idx:stop_idx]
+
+                    if track.shape[-1] < 262144:
+                        continue
+
+                    track_lufs_db = self.meter.integrated_loudness(
+                        track.permute(1, 0).numpy()
+                    )
+
+                    if track_lufs_db < -48.0 or track_lufs_db == float("-inf"):
+                        continue
+
+                    delta_lufs_db = torch.tensor(
+                        [self.target_track_lufs_db - track_lufs_db]
+                    ).float()
+
+                    gain_lin = 10.0 ** (delta_lufs_db.clamp(-120, 40.0) / 20.0)
+                    track = gain_lin * track
+                    normalized_tracks.append(track)
+
+                if len(normalized_tracks) == 0:
+                    continue
+
+                # cat tracks
+                tracks_chunk = torch.cat(normalized_tracks, dim=0)
+                tracks_chunk = tracks_chunk.cuda()
+
+                with torch.no_grad():
+                    # predict parameters using the chunks
+                    (
+                        pred_track_params,
+                        pred_fx_bus_params,
+                        pred_master_bus_params,
+                    ) = pl_module.model(
+                        tracks_chunk.unsqueeze(0), ref_mix_chunk.unsqueeze(0)
+                    )
+
+                    # generate a mix with full tracks using the predicted mix console parameters
+                    (
+                        pred_mixed_tracks,
+                        pred_mix_chunk,
+                        pred_track_param_dict,
+                        pred_fx_bus_param_dict,
+                        pred_master_bus_param_dict,
+                    ) = pl_module.mix_console(
+                        tracks_chunk.unsqueeze(0),
+                        pred_track_params,
+                        pred_fx_bus_params,
+                        pred_master_bus_params,
+                        use_track_input_fader=pl_module.use_track_input_fader,
+                        use_track_panner=pl_module.use_track_panner,
+                        use_track_eq=pl_module.use_track_eq,
+                        use_track_compressor=pl_module.use_track_compressor,
+                        use_fx_bus=pl_module.use_fx_bus,
+                        use_master_bus=pl_module.use_master_bus,
+                        use_output_fader=pl_module.use_output_fader,
+                    )
+
+                # normalize predicted mix
+                pred_mix_chunk = batch_stereo_peak_normalize(pred_mix_chunk)
+
+                # move back to cpu
+                pred_mix_chunk = pred_mix_chunk.squeeze(0).cpu()
+                ref_mix_chunk_out = ref_mix_chunk.squeeze(0).cpu()
+
+                # generate sum mix
+                sum_mix = tracks_chunk.unsqueeze(0).sum(dim=1, keepdim=True).cpu()
+                sum_mix = batch_stereo_peak_normalize(sum_mix)
+                sum_mix = sum_mix.squeeze(0)
+
+                # generate random mix
+                results = naive_random_mix(
                     tracks_chunk.unsqueeze(0),
-                    pred_track_params,
-                    pred_fx_bus_params,
-                    pred_master_bus_params,
+                    pl_module.mix_console,
                     use_track_input_fader=pl_module.use_track_input_fader,
                     use_track_panner=pl_module.use_track_panner,
                     use_track_eq=pl_module.use_track_eq,
@@ -140,60 +179,37 @@ class LogReferenceMix(pl.callbacks.Callback):
                     use_master_bus=pl_module.use_master_bus,
                     use_output_fader=pl_module.use_output_fader,
                 )
+                rand_mix = results[1]
+                rand_mix = batch_stereo_peak_normalize(rand_mix).cpu()
+                rand_mix = rand_mix.squeeze(0)
 
-            # normalize predicted mix
-            pred_mix_chunk = batch_stereo_peak_normalize(pred_mix_chunk)
-
-            # move back to cpu
-            pred_mix_chunk = pred_mix_chunk.squeeze(0).cpu()
-            ref_mix_chunk = ref_mix_chunk.squeeze(0).cpu()
-
-            # generate sum mix
-            sum_mix = tracks_chunk.unsqueeze(0).sum(dim=1, keepdim=True).cpu()
-            sum_mix = batch_stereo_peak_normalize(sum_mix)
-            sum_mix = sum_mix.squeeze(0)
-
-            # generate random mix
-            results = naive_random_mix(
-                tracks_chunk.unsqueeze(0),
-                pl_module.mix_console,
-                use_track_input_fader=pl_module.use_track_input_fader,
-                use_track_panner=pl_module.use_track_panner,
-                use_track_eq=pl_module.use_track_eq,
-                use_track_compressor=pl_module.use_track_compressor,
-                use_fx_bus=pl_module.use_fx_bus,
-                use_master_bus=pl_module.use_master_bus,
-                use_output_fader=pl_module.use_output_fader,
-            )
-            rand_mix = results[1]
-            rand_mix = batch_stereo_peak_normalize(rand_mix).cpu()
-            rand_mix = rand_mix.squeeze(0)
-
-            audios = {
-                "ref_mix": ref_mix_chunk,
-                "pred_mix": pred_mix_chunk,
-                "sum_mix": sum_mix,
-                "rand_mix": rand_mix,
-            }
-
-            total_samples = 0
-            for x in audios.values():
-                total_samples += x.shape[-1] + int(pl_module.mix_console.sample_rate)
-
-            y = torch.zeros(total_samples, 2)
-            name = f"{idx}_{name}"
-            start = 0
-            for key, x in audios.items():
-                end = start + x.shape[-1]
-                y[start:end, :] = x.T
-                start = end + int(pl_module.mix_console.sample_rate)
-                name += key + "-"
-
-            trainer.logger.experiment.log(
-                {
-                    f"{name}": wandb.Audio(
-                        y.numpy(),
-                        sample_rate=int(pl_module.mix_console.sample_rate),
-                    )
+                audios = {
+                    "ref_mix": ref_mix_chunk_out,
+                    "pred_mix": pred_mix_chunk,
+                    "sum_mix": sum_mix,
+                    "rand_mix": rand_mix,
                 }
-            )
+
+                total_samples = 0
+                for x in audios.values():
+                    total_samples += x.shape[-1] + int(
+                        pl_module.mix_console.sample_rate
+                    )
+
+                y = torch.zeros(total_samples, 2)
+                log_name = f"{idx}_{n}{name}"
+                start = 0
+                for key, x in audios.items():
+                    end = start + x.shape[-1]
+                    y[start:end, :] = x.T
+                    start = end + int(pl_module.mix_console.sample_rate)
+                    log_name += key + "-"
+
+                trainer.logger.experiment.log(
+                    {
+                        f"{log_name}": wandb.Audio(
+                            y.numpy(),
+                            sample_rate=int(pl_module.mix_console.sample_rate),
+                        )
+                    }
+                )
