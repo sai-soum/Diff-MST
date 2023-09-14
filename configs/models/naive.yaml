@@ -1,10 +1,10 @@
 model:
   class_path: mst.system.System
   init_args:
-    active_random: False
+    active_random: True
     active_eq_epoch: 0
     active_compressor_epoch: 0
-    active_fx_bus_epoch: 0
+    active_fx_bus_epoch: 1000
     active_master_bus_epoch: 0
     mix_fn: mst.mixing.naive_random_mix
     mix_console:
