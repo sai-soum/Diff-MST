@@ -201,6 +201,7 @@ class MultitrackDataModule(pl.LightningDataModule):
         self.save_hyperparameters()
         self.current_epoch = -1
         self.max_tracks = self.hparams.min_tracks
+        torchaudio.set_audio_backend("soundfile")
 
     def setup(self, stage=None):
         pass

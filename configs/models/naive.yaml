@@ -1,17 +1,20 @@
 model:
   class_path: mst.system.System
   init_args:
-    active_eq_epoch: 10
-    active_compressor_epoch: 20
+    active_random: True
+    active_eq_epoch: 0
+    active_compressor_epoch: 0
     active_fx_bus_epoch: 1000
-    active_master_bus_epoch: 50
+    active_master_bus_epoch: 0
     mix_fn: mst.mixing.naive_random_mix
     mix_console:
       class_path: mst.modules.AdvancedMixConsole
       init_args:
         sample_rate: 44100
-        min_gain_db: -12.0
-        max_gain_db: 12.0
+        input_min_gain_db: -48.0
+        input_max_gain_db: 48.0
+        output_min_gain_db: -48.0
+        output_max_gain_db: 48.0
         eq_min_gain_db: -12.0
         eq_max_gain_db: 12.0
         min_pan: 0.0
@@ -39,12 +42,12 @@ model:
             embed_dim: 128
             num_track_control_params: 27
             num_fx_bus_control_params: 25
-            num_master_bus_control_params: 25
+            num_master_bus_control_params: 26
             num_layers: 6
             nhead: 8
        
     loss: 
-      class_path: auraloss.freq.SumAndDifferenceSTFTLoss
+      class_path: auraloss.freq.MultiResolutionSTFTLoss
       init_args:
         fft_sizes: 
         - 512
