@@ -60,11 +60,25 @@ First update the paths in the configuration file for both the logger and the dat
 Then call the `main.py` script passing in the configuration file. 
 ```
 
-CUDA_VISIBLE_DEVICES=1 python main.py fit \
+CUDA_VISIBLE_DEVICES=4 python main.py fit \
 -c configs/config_cjs.yaml \
 -c configs/optimizer.yaml \
--c configs/data/medley+cambridge.yaml \
--c configs/models/naive_dmc_adv.yaml \
+-c configs/data/medley+cambridge-4.yaml \
+-c configs/models/naive.yaml \
+--ckpt_path /import/c4dm-datasets-ext/Diff-MST/DiffMST/iig5qusc/checkpoints/epoch=58-step=140715.ckpt
+
+CUDA_VISIBLE_DEVICES=5 python main.py fit \
+-c configs/config_cjs.yaml \
+-c configs/optimizer.yaml \
+-c configs/data/medley+cambridge-8.yaml \
+-c configs/models/naive.yaml \
+--ckpt_path /import/c4dm-datasets-ext/Diff-MST/DiffMST/d4z39un8/checkpoints/epoch=36-step=88245.ckpt
+
+CUDA_VISIBLE_DEVICES=6 python main.py fit \
+-c configs/config_cjs.yaml \
+-c configs/optimizer.yaml \
+-c configs/data/medley+cambridge-4.yaml \
+-c configs/models/naive+verb.yaml
 ```
 
 

@@ -104,28 +104,28 @@ class System(pl.LightningModule):
 
         # disable parts of the mix console based on global step
         if self.current_epoch >= self.active_eq_epoch:
-            if self.active_random:
-                self.use_track_eq = torch.rand(1) > 0.5
-            else:
-                self.use_track_eq = True
+            self.use_track_eq = True
 
         if self.current_epoch >= self.active_compressor_epoch:
-            if self.active_random:
-                self.use_track_compressor = torch.rand(1) > 0.5
-            else:
-                self.use_track_compressor = True
+            self.use_track_compressor = True
 
         if self.current_epoch >= self.active_fx_bus_epoch:
-            if self.active_random:
-                self.use_fx_bus = torch.rand(1) > 0.5
-            else:
-                self.use_fx_bus = True
+            self.use_fx_bus = True
 
         if self.current_epoch >= self.active_master_bus_epoch:
-            if self.active_random:
-                self.use_master_bus = torch.rand(1) > 0.5
-            else:
-                self.use_master_bus = True
+            self.use_master_bus = True
+
+        # randomly disable parts of the mix console for data generation only
+        if self.active_random:
+            use_track_eq = torch.rand(1) > 0.5 and self.use_track_eq
+            use_track_compressor = torch.rand(1) > 0.5 and self.use_track_compressor
+            use_fx_bus = torch.rand(1) > 0.5 and self.use_fx_bus
+            use_master_bus = torch.rand(1) > 0.5 and self.use_master_bus
+        else:
+            use_track_eq = self.use_track_eq
+            use_track_compressor = self.use_track_compressor
+            use_fx_bus = self.use_fx_bus
+            use_master_bus = self.use_master_bus
 
         bs, num_tracks, seq_len = tracks.shape
 
@@ -144,10 +144,10 @@ class System(pl.LightningModule):
             self.mix_console,
             use_track_input_fader=False,  # do not use track input fader for training
             use_track_panner=self.use_track_panner,
-            use_track_eq=self.use_track_eq,
-            use_track_compressor=self.use_track_compressor,
-            use_fx_bus=self.use_fx_bus,
-            use_master_bus=self.use_master_bus,
+            use_track_eq=use_track_eq,
+            use_track_compressor=use_track_compressor,
+            use_fx_bus=use_fx_bus,
+            use_master_bus=use_master_bus,
             use_output_fader=False,  # not used because we normalize output mixes
             instrument_id=instrument_id,
             stereo_id=stereo_info,

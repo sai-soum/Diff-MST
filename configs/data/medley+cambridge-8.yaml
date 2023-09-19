@@ -10,7 +10,7 @@ data:
     length: 262144
     min_tracks: 8
     max_tracks: 8
-    batch_size: 2
+    batch_size: 4
     num_workers: 4
     num_train_passes: 20
     num_val_passes: 1
