@@ -1,7 +1,6 @@
 model:
   class_path: mst.system.System
   init_args:
-    active_random: True
     active_eq_epoch: 0
     active_compressor_epoch: 0
     active_fx_bus_epoch: 1000
@@ -23,27 +22,27 @@ model:
       class_path: mst.modules.MixStyleTransferModel
       init_args:
         track_encoder: 
-          class_path: mst.modules.SpectrogramResNetEncoder
+          class_path: mst.modules.SpectrogramEncoder
           init_args:
-            embed_dim: 128
+            embed_dim: 512
             n_fft: 2048
             hop_length: 512
             input_batchnorm: false
         mix_encoder: 
-          class_path: mst.modules.SpectrogramResNetEncoder
+          class_path: mst.modules.SpectrogramEncoder
           init_args:
-            embed_dim: 128
+            embed_dim: 512
             n_fft: 2048
             hop_length: 512
             input_batchnorm: false
         controller:
           class_path: mst.modules.TransformerController
           init_args:
-            embed_dim: 128
+            embed_dim: 512
             num_track_control_params: 27
             num_fx_bus_control_params: 25
             num_master_bus_control_params: 26
-            num_layers: 6
+            num_layers: 12
             nhead: 8
        
     loss: 

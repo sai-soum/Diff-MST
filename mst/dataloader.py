@@ -88,6 +88,7 @@ class MultitrackDataset(torch.utils.data.Dataset):
             track_idx = 0
             track_metadata = []
             stereo_info = []
+            track_padding = []
             # find a starting offset 25% into the song or more
             offset = np.random.randint(0.25 * num_frames, num_frames - self.length - 1)
 
@@ -130,6 +131,7 @@ class MultitrackDataset(torch.utils.data.Dataset):
                     else:
                         tracks.append(track[ch_idx : ch_idx + 1, :])
                         track_metadata.append(instrument)
+                        track_padding.append(False)
                         if stereo:
                             stereo_info.append(1)
                             stereo = False
@@ -147,6 +149,7 @@ class MultitrackDataset(torch.utils.data.Dataset):
             while track_idx < self.max_tracks:
                 tracks.append(torch.zeros_like(tracks[0]))
                 track_metadata.append(0)
+                track_padding.append(True)
                 stereo_info.append(0)
                 track_idx += 1
 
@@ -155,9 +158,10 @@ class MultitrackDataset(torch.utils.data.Dataset):
             # tracks = tracks.reshape(self.max_tracks, self.length)
             track_metadata = torch.tensor(track_metadata)
             stereo_info = torch.tensor(stereo_info).reshape(track_metadata.shape)
+            track_padding = torch.tensor(track_padding)
 
             # add to buffer
-            self.examples.append((tracks, stereo_info, track_metadata))
+            self.examples.append((tracks, stereo_info, track_metadata, track_padding))
 
             nbytes_loaded += tracks.element_size() * tracks.nelement()
             pbar.set_description(
@@ -176,8 +180,9 @@ class MultitrackDataset(torch.utils.data.Dataset):
         tracks = example[0]
         stereo_info = example[1]
         track_metadata = example[2]
+        track_padding = example[3]
 
-        return tracks, stereo_info, track_metadata
+        return tracks, stereo_info, track_metadata, track_padding
 
 
 class MultitrackDataModule(pl.LightningDataModule):
@@ -194,55 +199,30 @@ class MultitrackDataModule(pl.LightningDataModule):
         num_val_passes: int = 1,
         train_buffer_size_gb: float = 0.01,
         val_buffer_size_gb: float = 0.1,
-        num_examples_per_epoch: int = 10000,
         target_track_lufs_db: float = -32.0,
     ):
         super().__init__()
         self.save_hyperparameters()
-        self.current_epoch = -1
-        self.max_tracks = self.hparams.min_tracks
         torchaudio.set_audio_backend("soundfile")
 
     def setup(self, stage=None):
         pass
 
     def train_dataloader(self):
-        # count number of times setup is called
-        self.current_epoch += 1
-
-        # set the max number of tracks (increase every 10 epochs)
-        self.max_tracks = (self.current_epoch // 10) + self.max_tracks
-
-        # cap max tracks at max_tracks
-        if self.max_tracks > self.hparams.max_tracks:
-            self.max_tracks = self.hparams.max_tracks
-
-        # if self.global_step == self.hparams.active_eq_step:
-        #    print("EQ is now active")
-        #    self.max_tracks = self.hparams.min_tracks
-        # if self.global_step == self.hparams.active_compressor_step:
-        #    print("Compressor is now active")
-        #    self.max_tracks = self.hparams.min_tracks
-        # if self.global_step == self.hparams.active_fx_bus_step:
-        #    print("FX bus is now active")
-        #    self.max_tracks = self.hparams.min_tracks
-        # if self.global_step == self.hparams.active_master_bus_step:
-        #    print("Master bus is now active")
-        #    self.max_tracks = self.hparams.min_tracks
-
-        print(f"Current epoch: {self.current_epoch} with max_tracks: {self.max_tracks}")
-
-        self.train_dataset = MultitrackDataset(
-            root_dirs=self.hparams.root_dirs,
-            metadata_files=self.hparams.metadata_files,
-            subset="train",
-            min_tracks=self.hparams.min_tracks,
-            max_tracks=self.max_tracks,
-            length=self.hparams.length,
-            num_passes=self.hparams.num_train_passes,
-            buffer_size_gb=self.hparams.train_buffer_size_gb,
-            target_track_lufs_db=self.hparams.target_track_lufs_db,
-        )
+        if False:
+            self.train_dataset = MultitrackDataset(
+                root_dirs=self.hparams.root_dirs,
+                metadata_files=self.hparams.metadata_files,
+                subset="train",
+                min_tracks=self.hparams.min_tracks,
+                max_tracks=self.hparams.max_tracks,
+                length=self.hparams.length,
+                num_passes=self.hparams.num_train_passes,
+                buffer_size_gb=self.hparams.train_buffer_size_gb,
+                target_track_lufs_db=self.hparams.target_track_lufs_db,
+            )
+        else:
+            self.train_dataset = self.val_dataset
 
         return torch.utils.data.DataLoader(
             self.train_dataset,
@@ -258,7 +238,7 @@ class MultitrackDataModule(pl.LightningDataModule):
             metadata_files=self.hparams.metadata_files,
             subset="val",
             min_tracks=self.hparams.min_tracks,
-            max_tracks=self.max_tracks,
+            max_tracks=self.hparams.max_tracks,
             length=self.hparams.length,
             num_passes=self.hparams.num_val_passes,
             buffer_size_gb=self.hparams.val_buffer_size_gb,

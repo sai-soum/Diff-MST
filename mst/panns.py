@@ -149,16 +149,16 @@ class Cnn14(nn.Module):
         )
         self.conv_block5 = ConvBlock(
             in_channels=512,
-            out_channels=512,
+            out_channels=1024,
             use_batchnorm=use_batchnorm,
         )
         self.conv_block6 = ConvBlock(
-            in_channels=512,
-            out_channels=512,
+            in_channels=1024,
+            out_channels=2048,
             use_batchnorm=use_batchnorm,
         )
 
-        self.fc = nn.Linear(512, num_classes, bias=True)
+        self.fc = nn.Linear(2048, num_classes, bias=True)
         self.init_weight()
 
     def init_weight(self):
@@ -198,6 +198,7 @@ class Cnn14(nn.Module):
         x2 = torch.mean(x, dim=2)
         x = x1 + x2
         # x = F.dropout(x, p=0.5, training=self.training)
-        clipwise_output = self.fc(x)
+        x_out = self.fc(x)
+        clipwise_output = x_out
 
         return clipwise_output

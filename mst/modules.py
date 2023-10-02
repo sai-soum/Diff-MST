@@ -31,12 +31,7 @@ class MixStyleTransferModel(torch.nn.Module):
         self,
         tracks: torch.torch.Tensor,
         ref_mix: torch.torch.Tensor,
-        use_track_gain: bool = True,
-        use_track_panner: bool = True,
-        use_track_eq: bool = True,
-        use_track_compressor: bool = True,
-        use_fx_bus: bool = True,
-        use_master_bus: bool = True,
+        track_padding_mask: Optional[torch.Tensor] = None,
     ):
         bs, num_tracks, seq_len = tracks.size()
 
@@ -59,7 +54,9 @@ class MixStyleTransferModel(torch.nn.Module):
 
         # controller will predict mix parameters for each stem based on embeds
         track_params, fx_bus_params, master_bus_params = self.controller(
-            track_embeds, mix_embeds
+            track_embeds,
+            mix_embeds,
+            track_padding_mask,
         )
 
         return (
@@ -446,7 +443,7 @@ class AdvancedMixConsole(torch.nn.Module):
         )
 
 
-class SpectrogramResNetEncoder(torch.nn.Module):
+class SpectrogramEncoder(torch.nn.Module):
     def __init__(
         self,
         embed_dim=128,
@@ -551,7 +548,24 @@ class TransformerController(torch.nn.Module):
             embed_dim, num_master_bus_control_params
         )
 
-    def forward(self, track_embeds: torch.torch.Tensor, mix_embeds: torch.torch.Tensor):
+    def forward(
+        self,
+        track_embeds: torch.torch.Tensor,
+        mix_embeds: torch.torch.Tensor,
+        track_padding_mask: Optional[torch.Tensor] = None,
+    ):
+        """Predict mix parameters given track and reference mix embeddings.
+
+        Args:
+            track_embeds (torch.torch.Tensor): Embeddings for each track with shape (bs, num_tracks, embed_dim)
+            mix_embeds (torch.torch.Tensor): Embeddings for the reference mix with shape (bs, 2, embed_dim)
+            track_padding_mask (Optional[torch.Tensor]): Mask for the track embeddings with shape (bs, num_tracks)
+
+        Returns:
+            pred_track_params (torch.torch.Tensor): Predicted track parameters with shape (bs, num_tracks, num_control_params)
+            pred_fx_bus_params (torch.torch.Tensor): Predicted fx bus parameters with shape (bs, num_fx_bus_control_params)
+            pred_master_bus_params (torch.torch.Tensor): Predicted master bus parameters with shape (bs, num_master_bus_control_params)
+        """
         bs, num_tracks, embed_dim = track_embeds.size()
 
         # apply learned embeddings to both input embeddings
@@ -563,11 +577,24 @@ class TransformerController(torch.nn.Module):
         embeds = torch.cat((embeds, self.fx_bus_embedding.repeat(bs, 1, 1)), dim=1)
         embeds = torch.cat((embeds, self.master_bus_embedding.repeat(bs, 1, 1)), dim=1)
 
+        # add to padding mask for mix_embeds, fx and master bus so they are attended to
+        if track_padding_mask is not None:
+            track_padding_mask = torch.cat(
+                (
+                    track_padding_mask,
+                    torch.zeros(bs, 4).bool().type_as(track_padding_mask),
+                ),
+                dim=1,
+            )
+
         # generate output embeds with transformer, project and bound 0 - 1
-        pred_params = self.transformer_encoder(embeds)
+        pred_params = self.transformer_encoder(
+            embeds, src_key_padding_mask=track_padding_mask
+        )
         pred_track_params = torch.sigmoid(
             self.track_projection(pred_params[:, :num_tracks, :])
         )
+        # print(pred_track_params)
         pred_fx_bus_params = torch.sigmoid(
             self.fx_bus_projection(pred_params[:, -2, :])
         )

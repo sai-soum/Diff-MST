@@ -8,12 +8,12 @@ data:
       - ./data/cambridge.yaml 
       - ./data/medley.yaml
     length: 262144
-    min_tracks: 4
-    max_tracks: 4
-    batch_size: 4
+    min_tracks: 2
+    max_tracks: 16
+    batch_size: 1
     num_workers: 4
-    num_train_passes: 10
+    num_train_passes: 20
     num_val_passes: 10
-    train_buffer_size_gb: 2.0
-    val_buffer_size_gb: 0.05
+    train_buffer_size_gb: 4.0
+    val_buffer_size_gb: 0.2
     target_track_lufs_db: -48.0
