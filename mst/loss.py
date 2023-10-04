@@ -113,8 +113,14 @@ class AudioFeatureLoss(torch.nn.Module):
         self,
         weights: List[float],
         sample_rate: int,
+        stem_separation: bool = False,
     ) -> None:
         """Compute loss using a set of differentiable audio features.
+
+        Args:
+            weights: weights for each feature
+            sample_rate: sample rate of audio
+            stem_separation: whether to compute loss on stems or mix
 
         Based on features proposed in:
 
@@ -133,18 +139,54 @@ class AudioFeatureLoss(torch.nn.Module):
         ]
         self.weights = weights
         self.sample_rate = sample_rate
+        self.stem_separation = stem_separation
+        self.sources_list = ["mix"]
+
         assert len(self.transforms) == len(weights)
+
+        if stem_separation:  # load pretrained stem separation model
+            from torchaudio.pipelines import HDEMUCS_HIGH_MUSDB_PLUS
+
+            bundle = HDEMUCS_HIGH_MUSDB_PLUS
+            self.stem_separator = bundle.get_model()
+
+            # get sources list
+            self.sources_list += list(self.stem_separator.sources)
+
+            # freeze all parameters in model
+            for param in self.stem_separator.parameters():
+                param.requires_grad = False
 
     def forward(self, input: torch.Tensor, target: torch.Tensor):
         losses = {}
-        for transform, weight in zip(self.transforms, self.weights):
-            input_transform = transform(
-                input,
-                sample_rate=self.sample_rate,
-            )
-            target_transform = transform(target)
-            val = torch.nn.functional.mse_loss(input_transform, target_transform)
-            losses[transform.__name__] = weight * val
+
+        # first separate stems if necessary
+        if self.stem_separation:
+            input_stems = self.stem_separator(input)
+            target_stems = self.stem_separator(target)
+            # bs, n_stems, chs, seq_len
+
+            # add original mix to tensor of stems
+            input_stems = torch.cat([input.unsqueeze(1), input_stems], dim=1)
+            target_stems = torch.cat([target.unsqueeze(1), target_stems], dim=1)
+        else:
+            # reshape for example stem dim
+            input_stems = input.unsqueeze(1)
+            target_stems = target.unsqueeze(1)
+
+        n_stems = input_stems.shape[1]
+
+        # iterate over each stem compute loss for each transform
+        for stem_idx in range(n_stems):
+            input_stem = input_stems[:, stem_idx, ...]
+            target_stem = target_stems[:, stem_idx, ...]
+            for transform, weight in zip(self.transforms, self.weights):
+                transform_name = "_".join(transform.__name__.split("_")[1:])
+                key = f"{self.sources_list[stem_idx]}-{transform_name}"
+                input_transform = transform(input_stem, sample_rate=self.sample_rate)
+                target_transform = transform(target_stem, sample_rate=self.sample_rate)
+                val = torch.nn.functional.mse_loss(input_transform, target_transform)
+                losses[key] = weight * val
 
         return losses
 

@@ -21,7 +21,7 @@ weights = [10.0, 0.1, 10.0, 100.0, 0.1]
 
 sample_rate = 44100
 
-loss = AudioFeatureLoss(weights, sample_rate)
+loss = AudioFeatureLoss(weights, sample_rate, stem_separation=True)
 
 # test with audio examples
 input, _ = torchaudio.load("output/sum_mix.wav")

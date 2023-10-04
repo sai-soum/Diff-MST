@@ -50,7 +50,7 @@ model:
       class_path: mst.loss.AudioFeatureLoss
       init_args:
         sample_rate: 44100
-        stem_separation: false
+        stem_separation: true
         weights: 
           - 10.0 # rms
           - 0.1 # crest factor
