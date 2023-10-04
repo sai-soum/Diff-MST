@@ -22,12 +22,14 @@ class LogReferenceMix(pl.callbacks.Callback):
         sample_rate: int = 44100,
         length: int = 524288,
         target_track_lufs_db: float = -48.0,
+        target_mix_lufs_db: float = -16.0,
     ):
         super().__init__()
         self.peak_normalize = peak_normalize
         self.sample_rate = sample_rate
         self.length = length
         self.target_track_lufs_db = target_track_lufs_db
+        self.target_mix_lufs_db = target_mix_lufs_db
         self.meter = pyln.Meter(self.sample_rate)
 
         print(f"Initalizing reference mix logger with {len(root_dirs)} mixes.")
@@ -51,7 +53,7 @@ class LogReferenceMix(pl.callbacks.Callback):
             track_filepaths = glob.glob(os.path.join(root_dir, "*.wav"))
             tracks = []
             print("Loading tracks...")
-            for track_filepath in tqdm(track_filepaths):
+            for track_idx, track_filepath in enumerate(tqdm(track_filepaths)):
                 x, sr = torchaudio.load(track_filepath)
 
                 # convert sample rate if needed
@@ -84,8 +86,15 @@ class LogReferenceMix(pl.callbacks.Callback):
             stop_idx = start_idx + 262144
             ref_mix_chunk = ref_mix[..., start_idx:stop_idx]
 
-            # normalize the mix
-            ref_mix_chunk = batch_stereo_peak_normalize(ref_mix_chunk)
+            # loudness normalize the mix
+            mix_lufs_db = self.meter.integrated_loudness(
+                ref_mix_chunk.permute(1, 0).numpy()
+            )
+            delta_lufs_db = torch.tensor(
+                [self.target_mix_lufs_db - mix_lufs_db]
+            ).float()
+            gain_lin = 10.0 ** (delta_lufs_db.clamp(-120, 40.0) / 20.0)
+            ref_mix_chunk = gain_lin * ref_mix_chunk
 
             # move to gpu
             ref_mix_chunk = ref_mix_chunk.cuda()
@@ -98,6 +107,9 @@ class LogReferenceMix(pl.callbacks.Callback):
                 normalized_tracks = []
                 for track in tracks:
                     track = track[..., start_idx:stop_idx]
+
+                    if len(normalized_tracks) > 16:
+                        break
 
                     if track.shape[-1] < 262144:
                         continue

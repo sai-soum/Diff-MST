@@ -20,8 +20,6 @@ trainer:
           - /import/c4dm-datasets-ext/diffmst-examples/song1/BenFlowers_Ecstasy_Full
           - /import/c4dm-datasets-ext/diffmst-examples/song3/Titanium_HauntedAge_Full/
           - /import/c4dm-datasets-ext/diffmst_validation/validation set/song1/Soren_ALittleLate_Full
-          - /import/c4dm-datasets-ext/diffmst_validation/validation set/song1/Soren_ALittleLate_Full
-          - /import/c4dm-datasets-ext/diffmst_validation/validation set/song2/MR0903_Moosmusic_Full
           - /import/c4dm-datasets-ext/diffmst_validation/validation set/song2/MR0903_Moosmusic_Full
           - /import/c4dm-datasets-ext/diffmst_validation/validation set/song3/SaturnSyndicate_CatchTheWave_Full
         ref_mixes: 
@@ -29,14 +27,12 @@ trainer:
           - /import/c4dm-datasets-ext/diffmst-examples_wavref/Feel it all Around by Washed Out (Portlandia Theme).wav
           - /import/c4dm-datasets-ext/diffmst-examples_wavref/Architects - Doomsday.wav
           - /import/c4dm-datasets-ext/diffmst_validation/validation set/song1/ref/Harry Styles - Late Night Talking (Official Video).wav
-          - /import/c4dm-datasets-ext/diffmst_validation/validation set/song1/ref/Poom - Les Voiles (Official Audio).wav
           - /import/c4dm-datasets-ext/diffmst_validation/validation set/song2/ref/Justin Timberlake - Can't Stop The Feeling! [Lyrics].wav
           - /import/c4dm-datasets-ext/diffmst_validation/validation set/song2/ref/Taylor Swift - Shake It Off.wav
-          - /import/c4dm-datasets-ext/diffmst_validation/validation set/song3/ref/Miley Cyrus - Wrecking Ball (Lyrics).wav
   default_root_dir: null
   gradient_clip_val: 10.0
-  devices: 2
-  check_val_every_n_epoch: 10
+  devices: 3
+  check_val_every_n_epoch: 1
   max_epochs: 500
   log_every_n_steps: 50
   accelerator: gpu

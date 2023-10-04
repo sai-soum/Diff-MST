@@ -1,6 +1,7 @@
 model:
   class_path: mst.system.System
   init_args:
+    generate_mix: true
     active_eq_epoch: 0
     active_compressor_epoch: 0
     active_fx_bus_epoch: 1000

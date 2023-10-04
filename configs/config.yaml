@@ -24,7 +24,7 @@ trainer:
           - /import/c4dm-datasets-ext/diffmst-examples/song3/ref/Architects - _Doomsday_.mp3
   default_root_dir: null
   gradient_clip_val: 10.0
-  devices: 1
+  devices: 3
   check_val_every_n_epoch: 1
   max_steps: 1000000
   log_every_n_steps: 50
