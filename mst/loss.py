@@ -244,21 +244,28 @@ class AudioFeatureLoss(torch.nn.Module):
 
             # WIP: mask stems with very low energy
             # check energy of the stems before computing loss
-            # input_energy = torch.mean(input_stem**2, dim=(-2, -1))
-            # target_energy = torch.mean(target_stem**2, dim=(-2, -1))
+            input_energy = torch.mean(input_stem**2, dim=(-2, -1))
+            target_energy = torch.mean(target_stem**2, dim=(-2, -1))
 
             # create mask for stems if input or target are very low energy
-            # mask = (input_energy > 1e-8) & (target_energy > 1e-8)
+            mask = (input_energy > 1e-8) & (target_energy > 1e-8)
 
-            # apply mask
-            # input_stem = input_stem[mask]
-            # target_stem = target_stem[mask]
+            # apply mask to remove batch items with low energy
+            masked_input_stem = input_stem[mask]
+            masked_target_stem = target_stem[mask]
+
+            if masked_input_stem.size(0) == 0:
+                continue  # skip if all items in batch have low energy
 
             for transform, weight in zip(self.transforms, self.weights):
                 transform_name = "_".join(transform.__name__.split("_")[1:])
                 key = f"{self.sources_list[stem_idx]}-{transform_name}"
-                input_transform = transform(input_stem, sample_rate=self.sample_rate)
-                target_transform = transform(target_stem, sample_rate=self.sample_rate)
+                input_transform = transform(
+                    masked_input_stem, sample_rate=self.sample_rate
+                )
+                target_transform = transform(
+                    masked_target_stem, sample_rate=self.sample_rate
+                )
                 val = torch.nn.functional.mse_loss(input_transform, target_transform)
                 losses[key] = weight * val
 
