@@ -3,6 +3,8 @@ import librosa
 import laion_clap
 from typing import Callable, List
 
+from mst.filter import barkscale_fbanks
+
 
 def compute_melspectrum(
     x: torch.Tensor,
@@ -33,6 +35,65 @@ def compute_melspectrum(
     X = X.permute(0, 2, 1)  # swap time and freq dims
     X = torch.matmul(fb, X)
     X = torch.log(X + 1e-8)
+
+    return X
+
+
+def compute_barkspectrum(
+    x: torch.Tensor,
+    fft_size: int = 32768,
+    n_bands: int = 24,
+    sample_rate: int = 44100,
+    f_min: float = 20.0,
+    f_max: float = 20000.0,
+    mode: str = "mid-side",
+    **kwargs,
+):
+    """Compute bark-spectrogram.
+
+    Args:
+        x: (bs, 2, seq_len)
+        fft_size: size of fft
+        n_bands: number of bark bins
+        sample_rate: sample rate of audio
+        f_min: minimum frequency
+        f_max: maximum frequency
+        mode: "mono", "stereo", or "mid-side"
+
+    Returns:
+        X: (bs, 24)
+
+    """
+    # compute filterbank
+    fb = barkscale_fbanks((fft_size // 2) + 1, f_min, f_max, n_bands, sample_rate)
+    fb = fb.unsqueeze(0).type_as(x)
+    fb = fb.permute(0, 2, 1)
+
+    if mode == "mono":
+        x = x.mean(dim=1, keepdim=True)  # average over channels
+        signals = [x]
+    elif mode == "stereo":
+        signals = [x[:, 0:1, :], x[:, 1:2, :]]
+    elif mode == "mid-side":
+        x_mid = x[:, 0:1, :] + x[:, 1:2, :]
+        x_side = x[:, 0:1, :] - x[:, 1:2, :]
+        signals = [x_mid, x_side]
+    else:
+        raise ValueError(f"Invalid mode {mode}")
+
+    outputs = []
+    for signal in signals:
+        X = torch.fft.rfft(signal, n=fft_size, dim=-1)  # compute fft
+        X = torch.abs(X)  # take magnitude
+        X = torch.mean(X, dim=1, keepdim=True)  # take mean over time
+        X = X.permute(0, 2, 1)  # swap time and freq dims
+        X = torch.matmul(fb, X)  # apply filterbank
+        X = torch.log(X + 1e-8)
+        # X = torch.cat([X, X_log], dim=-1)
+        outputs.append(X)
+
+    # stack into tensor
+    X = torch.cat(outputs, dim=-1)
 
     return X
 
@@ -135,7 +196,7 @@ class AudioFeatureLoss(torch.nn.Module):
             compute_crest_factor,
             compute_stereo_width,
             compute_stereo_imbalance,
-            compute_melspectrum,
+            compute_barkspectrum,
         ]
         self.weights = weights
         self.sample_rate = sample_rate
@@ -180,6 +241,19 @@ class AudioFeatureLoss(torch.nn.Module):
         for stem_idx in range(n_stems):
             input_stem = input_stems[:, stem_idx, ...]
             target_stem = target_stems[:, stem_idx, ...]
+
+            # WIP: mask stems with very low energy
+            # check energy of the stems before computing loss
+            # input_energy = torch.mean(input_stem**2, dim=(-2, -1))
+            # target_energy = torch.mean(target_stem**2, dim=(-2, -1))
+
+            # create mask for stems if input or target are very low energy
+            # mask = (input_energy > 1e-8) & (target_energy > 1e-8)
+
+            # apply mask
+            # input_stem = input_stem[mask]
+            # target_stem = target_stem[mask]
+
             for transform, weight in zip(self.transforms, self.weights):
                 transform_name = "_".join(transform.__name__.split("_")[1:])
                 key = f"{self.sources_list[stem_idx]}-{transform_name}"
