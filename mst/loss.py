@@ -70,23 +70,28 @@ def compute_barkspectrum(
     fb = fb.permute(0, 2, 1)
 
     if mode == "mono":
-        x = x.mean(dim=1, keepdim=True)  # average over channels
+        x = x.mean(dim=1)  # average over channels
         signals = [x]
     elif mode == "stereo":
-        signals = [x[:, 0:1, :], x[:, 1:2, :]]
+        signals = [x[:, 0, :], x[:, 1, :]]
     elif mode == "mid-side":
-        x_mid = x[:, 0:1, :] + x[:, 1:2, :]
-        x_side = x[:, 0:1, :] - x[:, 1:2, :]
+        x_mid = x[:, 0, :] + x[:, 1, :]
+        x_side = x[:, 0, :] - x[:, 1, :]
         signals = [x_mid, x_side]
     else:
         raise ValueError(f"Invalid mode {mode}")
 
     outputs = []
     for signal in signals:
-        X = torch.fft.rfft(signal, n=fft_size, dim=-1)  # compute fft
+        X = torch.stft(
+            signal,
+            n_fft=fft_size,
+            hop_length=fft_size // 4,
+            return_complex=True,
+        )  # compute stft
         X = torch.abs(X)  # take magnitude
-        X = torch.mean(X, dim=1, keepdim=True)  # take mean over time
-        X = X.permute(0, 2, 1)  # swap time and freq dims
+        X = torch.mean(X, dim=-1, keepdim=True)  # take mean over time
+        # X = X.permute(0, 2, 1)  # swap time and freq dims
         X = torch.matmul(fb, X)  # apply filterbank
         X = torch.log(X + 1e-8)
         # X = torch.cat([X, X_log], dim=-1)
@@ -202,6 +207,7 @@ class AudioFeatureLoss(torch.nn.Module):
         self.sample_rate = sample_rate
         self.stem_separation = stem_separation
         self.sources_list = ["mix"]
+        self.source_weights = [1.0]
 
         assert len(self.transforms) == len(weights)
 
@@ -210,13 +216,15 @@ class AudioFeatureLoss(torch.nn.Module):
 
             bundle = HDEMUCS_HIGH_MUSDB_PLUS
             self.stem_separator = bundle.get_model()
+            self.stem_separator.train()
 
             # get sources list
             self.sources_list += list(self.stem_separator.sources)
+            self.source_weights += [0.1, 0.1, 0.1, 0.1]
 
             # freeze all parameters in model
-            for param in self.stem_separator.parameters():
-                param.requires_grad = False
+            # for param in self.stem_separator.parameters():
+            #    param.requires_grad = False
 
     def forward(self, input: torch.Tensor, target: torch.Tensor):
         losses = {}
@@ -244,30 +252,26 @@ class AudioFeatureLoss(torch.nn.Module):
 
             # WIP: mask stems with very low energy
             # check energy of the stems before computing loss
-            input_energy = torch.mean(input_stem**2, dim=(-2, -1))
-            target_energy = torch.mean(target_stem**2, dim=(-2, -1))
+            # input_energy = torch.mean(input_stem**2, dim=(-2, -1))
+            # target_energy = torch.mean(target_stem**2, dim=(-2, -1))
 
             # create mask for stems if input or target are very low energy
-            mask = (input_energy > 1e-8) & (target_energy > 1e-8)
+            # mask = (input_energy > 1e-8) & (target_energy > 1e-8)
 
             # apply mask to remove batch items with low energy
-            masked_input_stem = input_stem[mask]
-            masked_target_stem = target_stem[mask]
+            # masked_input_stem = input_stem[mask]
+            # masked_target_stem = target_stem[mask]
 
-            if masked_input_stem.size(0) == 0:
-                continue  # skip if all items in batch have low energy
+            # if masked_input_stem.size(0) == 0:
+            #    continue  # skip if all items in batch have low energy
 
             for transform, weight in zip(self.transforms, self.weights):
                 transform_name = "_".join(transform.__name__.split("_")[1:])
                 key = f"{self.sources_list[stem_idx]}-{transform_name}"
-                input_transform = transform(
-                    masked_input_stem, sample_rate=self.sample_rate
-                )
-                target_transform = transform(
-                    masked_target_stem, sample_rate=self.sample_rate
-                )
+                input_transform = transform(input_stem, sample_rate=self.sample_rate)
+                target_transform = transform(target_stem, sample_rate=self.sample_rate)
                 val = torch.nn.functional.mse_loss(input_transform, target_transform)
-                losses[key] = weight * val
+                losses[key] = weight * val * self.source_weights[stem_idx]
 
         return losses
 
