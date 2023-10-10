@@ -298,12 +298,23 @@ class AdvancedMixConsole(torch.nn.Module):
 
         Args:
             tracks (torch.torch.Tensor): Audio tracks with shape (bs, num_tracks, seq_len)
-            mix_params (torch.torch.Tensor): Parameter torch.Tensor with shape (bs, num_tracks, num_control_params)
+            track_params (torch.torch.Tensor): Parameter torch.Tensor with shape (bs, num_tracks, num_track_control_params)
+            fx_bus_params (torch.torch.Tensor): Parameter torch.Tensor with shape (bs, num_fx_bus_control_params)
+            master_bus_params (torch.torch.Tensor): Parameter torch.Tensor with shape (bs, num_master_bus_control_params)
+            use_track_input_fader (bool): Whether to apply gain to the tracks
+            use_track_eq (bool): Whether to apply eq to the tracks
+            use_track_compressor (bool): Whether to apply compressor to the tracks
+            use_track_panner (bool): Whether to apply panner to the tracks
+            use_fx_bus (bool): Whether to apply fx bus to the tracks
+            use_master_bus (bool): Whether to apply master bus to the tracks.
+            use_output_fader (bool): Whether to apply gain to the tracks.
 
         Returns:
             mixed_tracks (torch.torch.Tensor): Mixed tracks with shape (bs, num_tracks, seq_len)
             mix (torch.torch.Tensor): Final stereo mix of the input tracks with shape (bs, 2, seq_len)
-            param_dict (dict): Denormalized parameter values.
+            track_param_dict (dict): Denormalized track parameter values.
+            fx_bus_param_dict (dict): Denormalized fx bus parameter values.
+            master_bus_param_dict (dict): Denormalized master bus parameter values.
         """
         # extract and denormalize the parameters
         track_param_dict = {
