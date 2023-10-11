@@ -22,11 +22,11 @@ weights = [10.0, 0.1, 10.0, 100.0, 0.1]
 
 sample_rate = 44100
 
-loss = AudioFeatureLoss(weights, sample_rate, stem_separation=True)
+loss = AudioFeatureLoss(weights, sample_rate, stem_separation=False)
 
 # test with audio examples
-input, _ = torchaudio.load("output/pred_mix.wav")
-target, _ = torchaudio.load("output/ref_mix.wav")
+input, _ = torchaudio.load("outputs/output/pred_mix.wav")
+target, _ = torchaudio.load("outputs/output/ref_mix.wav")
 
 
 input = input.unsqueeze(0)

@@ -6,6 +6,12 @@ from typing import Callable, List
 from mst.filter import barkscale_fbanks
 
 
+def compute_mid_side(x: torch.Tensor):
+    x_mid = x[:, 0, :] + x[:, 1, :]
+    x_side = x[:, 0, :] - x[:, 1, :]
+    return x_mid, x_side
+
+
 def compute_melspectrum(
     x: torch.Tensor,
     sample_rate: int = 44100,
@@ -180,6 +186,7 @@ class AudioFeatureLoss(torch.nn.Module):
         weights: List[float],
         sample_rate: int,
         stem_separation: bool = False,
+        use_clap: bool = True,
     ) -> None:
         """Compute loss using a set of differentiable audio features.
 
@@ -196,6 +203,13 @@ class AudioFeatureLoss(torch.nn.Module):
 
         """
         super().__init__()
+        self.weights = weights
+        self.sample_rate = sample_rate
+        self.stem_separation = stem_separation
+        self.sources_list = ["mix"]
+        self.source_weights = [1.0]
+        self.use_clap = use_clap
+
         self.transforms = [
             compute_rms,
             compute_crest_factor,
@@ -203,11 +217,24 @@ class AudioFeatureLoss(torch.nn.Module):
             compute_stereo_imbalance,
             compute_barkspectrum,
         ]
-        self.weights = weights
-        self.sample_rate = sample_rate
-        self.stem_separation = stem_separation
-        self.sources_list = ["mix"]
-        self.source_weights = [1.0]
+
+        if self.use_clap:
+            # instatiate pretrained CLAP model
+            self.clap_model = laion_clap.CLAP_Module(enable_fusion=False)
+            self.clap_model.load_ckpt()  # download the default pretrained checkpoint.
+
+            # freeze all parameters in model
+            for param in self.clap_model.parameters():
+                param.requires_grad = False
+
+            def compute_clap_embeds(x: torch.Tensor, **kwargs):
+                x = x.mean(dim=1)  # average over channels
+                embed = self.clap_model.get_audio_embedding_from_data(
+                    x=x, use_tensor=True
+                )
+                return embed
+
+            self.transforms.append(compute_clap_embeds)
 
         assert len(self.transforms) == len(weights)
 
@@ -277,9 +304,8 @@ class AudioFeatureLoss(torch.nn.Module):
 
 
 class StereoCLAPLoss(torch.nn.Module):
-    def __init__(self, sum_and_diff: bool = False, distance: str = "l2"):
+    def __init__(self, distance: Callable = torch.nn.functional.mse_loss):
         super().__init__()
-        self.sum_and_diff = sum_and_diff
         self.distance = distance
 
         # instatiate pretrained CLAP model
@@ -304,67 +330,28 @@ class StereoCLAPLoss(torch.nn.Module):
 
         assert chs == 2, "Input must be stereo"
 
-        if self.sum_and_diff:
-            # compute sum and diff of stereo channels
-            input_sum = input[:, 0, :] + input[:, 1, :]
-            input_diff = input[:, 0, :] - input[:, 1, :]
-            target_sum = target[:, 0, :] + target[:, 1, :]
-            target_diff = target[:, 0, :] - target[:, 1, :]
+        losses = {}
 
+        input_mid, input_side = compute_mid_side(input)
+        target_mid, target_side = compute_mid_side(target)
+
+        signals = {
+            "mid": [input_mid, target_mid],
+            "side": [input_side, target_side],
+        }
+
+        for key, (input_signal, target_signal) in signals.items():
             # compute embeddings
-            input_sum_embeddings = self.model.get_audio_embedding_from_data(
-                x=input_sum, use_tensor=True
+            input_embed = self.model.get_audio_embedding_from_data(
+                x=input_signal, use_tensor=True
             )
-            target_sum_embeddings = self.model.get_audio_embedding_from_data(
-                x=target_sum, use_tensor=True
-            )
-            input_diff_embeddings = self.model.get_audio_embedding_from_data(
-                x=input_diff, use_tensor=True
-            )
-            target_diff_embeddings = self.model.get_audio_embedding_from_data(
-                x=target_diff, use_tensor=True
+            target_embed = self.model.get_audio_embedding_from_data(
+                x=target_signal, use_tensor=True
             )
 
             # compute losses
-            if self.distance == "l2":
-                sum_loss = torch.nn.functional.mse_loss(
-                    input_sum_embeddings, target_sum_embeddings
-                )
-                diff_loss = torch.nn.functional.mse_loss(
-                    input_diff_embeddings, target_diff_embeddings
-                )
-            elif self.distance == "l1":
-                sum_loss = torch.nn.functional.l1_loss(
-                    input_sum_embeddings, target_sum_embeddings
-                )
-                diff_loss = torch.nn.functional.l1_loss(
-                    input_diff_embeddings, target_diff_embeddings
-                )
-            else:
-                raise ValueError(f"Invalid distance {self.distance}")
+            loss = self.distance(input_embed, target_embed)
 
-            # compute total loss
-            loss = (sum_loss + diff_loss) / 2
+            losses[key] = loss
 
-        else:
-            # move channel dim to batch dim
-            input = input.view(bs * 2, -1)
-            target = target.view(bs * 2, -1)
-
-            # compute embeddings
-            input_embeddings = self.model.get_audio_embedding_from_data(
-                x=input, use_tensor=True
-            )
-            target_embeddings = self.model.get_audio_embedding_from_data(
-                x=target, use_tensor=True
-            )
-
-            # compute losses
-            if self.distance == "l2":
-                loss = torch.nn.functional.mse_loss(input_embeddings, target_embeddings)
-            elif self.distance == "l1":
-                loss = torch.nn.functional.l1_loss(input_embeddings, target_embeddings)
-            else:
-                raise ValueError(f"Invalid distance {self.distance}")
-
-        return loss
+        return losses

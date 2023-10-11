@@ -8,7 +8,7 @@ import pyloudnorm as pyln
 import matplotlib.pyplot as plt
 from tqdm import tqdm
 
-from mst.loss import AudioFeatureLoss, compute_barkspectrum
+from mst.loss import AudioFeatureLoss, StereoCLAPLoss, compute_barkspectrum
 from mst.modules import AdvancedMixConsole
 
 
@@ -17,6 +17,7 @@ def optimize(
     ref_mix: torch.Tensor,
     mix_console: torch.nn.Module,
     loss_function: torch.nn.Module,
+    init_scale: float = 0.001,
     lr: float = 1e-3,
     n_iters: int = 100,
 ):
@@ -35,9 +36,13 @@ def optimize(
     loss_history = {"loss": []}  # lists to store loss values
 
     # initialize the mix console parameters to optimize
-    track_params = torch.randn(tracks.shape[0], mix_console.num_track_control_params)
-    fx_bus_params = torch.randn(1, mix_console.num_fx_bus_control_params)
-    master_bus_params = torch.randn(1, mix_console.num_master_bus_control_params)
+    track_params = init_scale * torch.randn(
+        tracks.shape[0], mix_console.num_track_control_params
+    )
+    fx_bus_params = init_scale * torch.randn(1, mix_console.num_fx_bus_control_params)
+    master_bus_params = init_scale * torch.randn(
+        1, mix_console.num_master_bus_control_params
+    )
 
     # move parameters to same device as tracks
     track_params = track_params.type_as(tracks)
@@ -141,6 +146,13 @@ if __name__ == "__main__":
         type=float,
         help="Learning rate.",
         default=1e-3,
+    )
+    parser.add_argument(
+        "--loss",
+        type=str,
+        help="Loss function.",
+        choices=["feat", "clap"],
+        default="feat",
     )
     parser.add_argument(
         "--output_dir",
@@ -265,13 +277,20 @@ if __name__ == "__main__":
         0.001,  # crest factor
         1.0,  # stereo width
         1.0,  # stereo imbalance
-        1.0,  # bark spectrum
+        1.00,  # bark spectrum
+        100.0,  # clap
     ]
-    loss_function = AudioFeatureLoss(
-        weights,
-        args.sample_rate,
-        stem_separation=args.stem_separation,
-    )
+
+    if args.loss == "feat":
+        loss_function = AudioFeatureLoss(
+            weights,
+            args.sample_rate,
+            stem_separation=args.stem_separation,
+        )
+    elif args.loss == "clap":
+        loss_function = StereoCLAPLoss()
+    else:
+        raise ValueError(f"Unknown loss: {args.loss}")
 
     if args.use_gpu:
         loss_function.cuda()
