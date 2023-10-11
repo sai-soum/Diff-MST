@@ -123,12 +123,13 @@ class Cnn14(nn.Module):
     def __init__(
         self,
         num_classes: int,
+        n_inputs: int = 1,
         use_batchnorm: bool = True,
     ):
         super(Cnn14, self).__init__()
 
         self.conv_block1 = ConvBlock(
-            in_channels=1,
+            in_channels=n_inputs,
             out_channels=64,
             use_batchnorm=use_batchnorm,
         )

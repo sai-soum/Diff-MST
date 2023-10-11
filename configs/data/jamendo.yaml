@@ -1,0 +1,7 @@
+data:
+  class_path: mst.dataloader.MixDataModule
+  init_args:
+    root_dir: /import/c4dm-datasets-ext/mtg-jamendo
+    length: 262144
+    batch_size: 8
+    num_workers: 8

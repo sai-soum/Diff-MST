@@ -12,6 +12,98 @@ import pytorch_lightning as pl
 from tqdm import tqdm
 from typing import List
 
+from torch.utils.data import random_split
+
+
+class MixDataset(torch.utils.data.Dataset):
+    def __init__(self, root_dir: str, length: int = 524288):
+        super().__init__()
+        self.root_dir = root_dir
+        self.length = length
+
+        self.mix_filepaths = glob.glob(
+            os.path.join(root_dir, "**", "*.mp3"), recursive=True
+        )
+        print(f"Located {len(self.mix_filepaths)} mixes.")
+
+        self.meter = pyln.Meter(44100)
+
+    def __len__(self):
+        return len(self.mix_filepaths)
+
+    def __getitem__(self, _):
+        valid = False
+        while not valid:
+            # get random file
+            idx = np.random.randint(0, len(self.mix_filepaths))
+            mix_filepath = self.mix_filepaths[idx]
+            num_frames = torchaudio.info(mix_filepath).num_frames
+
+            # find random non-silent region of the mix
+            offset = np.random.randint(0, num_frames - self.length - 1)
+
+            mix, _ = torchaudio.load(
+                mix_filepath,
+                frame_offset=offset,
+                num_frames=self.length,
+            )
+
+            mix_lufs_db = self.meter.integrated_loudness(mix.permute(1, 0).numpy())
+
+            if mix.shape[0] == 1:
+                mix = mix.repeat(2, 1)
+            elif mix.shape[0] > 2:
+                mix = mix[:2, :]
+
+            if mix_lufs_db > -48.0 and mix.shape[-1] == self.length:
+                valid = True
+
+        return mix
+
+
+class MixDataModule(pl.LightningDataModule):
+    def __init__(
+        self,
+        root_dir: str,
+        length: int = 524288,
+        num_workers: int = 4,
+        batch_size: int = 16,
+    ):
+        super().__init__()
+        self.save_hyperparameters()
+        torchaudio.set_audio_backend("soundfile")
+
+    def setup(self, stage=None):
+        # create dataset
+        dataset = MixDataset(self.hparams.root_dir, self.hparams.length)
+        # create random splits
+        self.train_dataset, self.val_dataset, self.test_dataset = random_split(
+            dataset, [0.8, 0.1, 0.1]
+        )
+
+    def train_dataloader(self):
+        return torch.utils.data.DataLoader(
+            self.train_dataset,
+            batch_size=self.hparams.batch_size,
+            num_workers=self.hparams.num_workers,
+            shuffle=True,
+            drop_last=True,
+        )
+
+    def val_dataloader(self):
+        return torch.utils.data.DataLoader(
+            self.val_dataset,
+            batch_size=self.hparams.batch_size,
+            num_workers=1,
+        )
+
+    def test_dataloader(self):
+        return torch.utils.data.DataLoader(
+            self.test_dataset,
+            batch_size=1,
+            num_workers=1,
+        )
+
 
 class MultitrackDataset(torch.utils.data.Dataset):
     def __init__(
