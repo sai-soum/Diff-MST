@@ -48,14 +48,17 @@ class MixDataset(torch.utils.data.Dataset):
                 num_frames=self.length,
             )
 
-            mix_lufs_db = self.meter.integrated_loudness(mix.permute(1, 0).numpy())
-
             if mix.shape[0] == 1:
                 mix = mix.repeat(2, 1)
             elif mix.shape[0] > 2:
                 mix = mix[:2, :]
 
-            if mix_lufs_db > -48.0 and mix.shape[-1] == self.length:
+            if mix.shape[-1] != self.length:
+                continue
+
+            mix_lufs_db = self.meter.integrated_loudness(mix.permute(1, 0).numpy())
+
+            if mix_lufs_db > -48.0:
                 valid = True
 
         return mix
