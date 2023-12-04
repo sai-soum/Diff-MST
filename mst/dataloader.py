@@ -36,11 +36,13 @@ class MixDataset(torch.utils.data.Dataset):
         while not valid:
             # get random file
             idx = np.random.randint(0, len(self.mix_filepaths))
+            # idx = 42  # always use the same mix for debug
             mix_filepath = self.mix_filepaths[idx]
             num_frames = torchaudio.info(mix_filepath).num_frames
 
             # find random non-silent region of the mix
             offset = np.random.randint(0, num_frames - self.length - 1)
+            offset = 0  # always use the same offset
 
             mix, _ = torchaudio.load(
                 mix_filepath,
@@ -60,6 +62,12 @@ class MixDataset(torch.utils.data.Dataset):
 
             if mix_lufs_db > -48.0:
                 valid = True
+
+            # random gain of the target mixes
+            target_lufs_db = np.random.randint(-48, 0)
+            target_lufs_db = -14.0  # always use same target
+            delta_lufs_db = torch.tensor([target_lufs_db - mix_lufs_db]).float()
+            mix = 10.0 ** (delta_lufs_db / 20.0) * mix
 
         return mix
 
