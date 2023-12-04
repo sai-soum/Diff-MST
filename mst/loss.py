@@ -119,7 +119,7 @@ def compute_rms(x: torch.Tensor, **kwargs):
     Returns:
         rms: (bs, )
     """
-    rms = torch.sqrt(torch.mean(x**2, dim=-1))
+    rms = torch.sqrt(torch.mean(x**2, dim=-1).clamp(min=1e-8))
     return rms
 
 
@@ -130,9 +130,9 @@ def compute_crest_factor(x: torch.Tensor, **kwargs):
         x: (bs, 2, seq_len)
 
     """
-    cf = 20 * torch.log10(
-        torch.max(torch.abs(x), dim=-1)[0] / compute_rms(x).clamp(min=1e-8)
-    )
+    num = torch.max(torch.abs(x), dim=-1)[0]
+    den = compute_rms(x).clamp(min=1e-8)
+    cf = 20 * torch.log10((num / den).clamp(min=1e-8))
     return cf
 
 
@@ -187,7 +187,7 @@ class AudioFeatureLoss(torch.nn.Module):
         weights: List[float],
         sample_rate: int,
         stem_separation: bool = False,
-        use_clap: bool = True,
+        use_clap: bool = False,
     ) -> None:
         """Compute loss using a set of differentiable audio features.
 
@@ -403,8 +403,7 @@ class StereoCLAPLoss(torch.nn.Module):
             )
 
             # compute losses
-            loss = self.distance(input_embed, target_embed)
-
-            losses[key] = loss
+            sub_loss = self.distance(input_embed, target_embed)
+            losses[key] = sub_loss
 
         return losses
