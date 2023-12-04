@@ -47,15 +47,8 @@ model:
             nhead: 8
        
     loss: 
-      class_path: mst.loss.AudioFeatureLoss
+      class_path: mst.loss.StereoCLAPLoss
       init_args:
-        sample_rate: 44100
-        stem_separation: true
-        weights: 
-          - 0.1 # rms
-          - 0.001 # crest factor
-          - 1.0  # stereo width
-          - 1.0 # stereo imbalance
-          - 0.1 # bark spectrum
+        distance: torch.nn.functional.cosine_similarity
 
   

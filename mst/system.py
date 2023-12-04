@@ -212,7 +212,8 @@ class System(pl.LightningModule):
         if self.use_mix_loss:
             mix_loss = self.loss(pred_mix_b, ref_mix_b)
             if type(mix_loss) == dict:
-                loss += sum(mix_loss.values())
+                for key, val in mix_loss.items():
+                    loss += val.mean()
             else:
                 loss += mix_loss
 
@@ -231,7 +232,7 @@ class System(pl.LightningModule):
             for key, value in mix_loss.items():
                 self.log(
                     ("train" if train else "val") + "/" + key,
-                    value,
+                    value.mean(),
                     on_step=True,
                     on_epoch=True,
                     prog_bar=False,
