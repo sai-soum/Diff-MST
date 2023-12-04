@@ -12,12 +12,116 @@ import pytorch_lightning as pl
 from tqdm import tqdm
 from typing import List
 
+from torch.utils.data import random_split
+
+
+class MixDataset(torch.utils.data.Dataset):
+    def __init__(self, root_dir: str, length: int = 524288):
+        super().__init__()
+        self.root_dir = root_dir
+        self.length = length
+
+        self.mix_filepaths = glob.glob(
+            os.path.join(root_dir, "**", "*.mp3"), recursive=True
+        )
+        print(f"Located {len(self.mix_filepaths)} mixes.")
+
+        self.meter = pyln.Meter(44100)
+
+    def __len__(self):
+        return len(self.mix_filepaths)
+
+    def __getitem__(self, _):
+        valid = False
+        while not valid:
+            # get random file
+            idx = np.random.randint(0, len(self.mix_filepaths))
+            # idx = 42  # always use the same mix for debug
+            mix_filepath = self.mix_filepaths[idx]
+            num_frames = torchaudio.info(mix_filepath).num_frames
+
+            # find random non-silent region of the mix
+            offset = np.random.randint(0, num_frames - self.length - 1)
+            offset = 0  # always use the same offset
+
+            mix, _ = torchaudio.load(
+                mix_filepath,
+                frame_offset=offset,
+                num_frames=self.length,
+            )
+
+            if mix.shape[0] == 1:
+                mix = mix.repeat(2, 1)
+            elif mix.shape[0] > 2:
+                mix = mix[:2, :]
+
+            if mix.shape[-1] != self.length:
+                continue
+
+            mix_lufs_db = self.meter.integrated_loudness(mix.permute(1, 0).numpy())
+
+            if mix_lufs_db > -48.0:
+                valid = True
+
+            # random gain of the target mixes
+            target_lufs_db = np.random.randint(-48, 0)
+            target_lufs_db = -14.0  # always use same target
+            delta_lufs_db = torch.tensor([target_lufs_db - mix_lufs_db]).float()
+            mix = 10.0 ** (delta_lufs_db / 20.0) * mix
+
+        return mix
+
+
+class MixDataModule(pl.LightningDataModule):
+    def __init__(
+        self,
+        root_dir: str,
+        length: int = 524288,
+        num_workers: int = 4,
+        batch_size: int = 16,
+    ):
+        super().__init__()
+        self.save_hyperparameters()
+        torchaudio.set_audio_backend("soundfile")
+
+    def setup(self, stage=None):
+        # create dataset
+        dataset = MixDataset(self.hparams.root_dir, self.hparams.length)
+        # create random splits
+        self.train_dataset, self.val_dataset, self.test_dataset = random_split(
+            dataset, [0.8, 0.1, 0.1]
+        )
+
+    def train_dataloader(self):
+        return torch.utils.data.DataLoader(
+            self.train_dataset,
+            batch_size=self.hparams.batch_size,
+            num_workers=self.hparams.num_workers,
+            shuffle=True,
+            drop_last=True,
+        )
+
+    def val_dataloader(self):
+        return torch.utils.data.DataLoader(
+            self.val_dataset,
+            batch_size=self.hparams.batch_size,
+            num_workers=1,
+        )
+
+    def test_dataloader(self):
+        return torch.utils.data.DataLoader(
+            self.test_dataset,
+            batch_size=1,
+            num_workers=1,
+        )
+
 
 class MultitrackDataset(torch.utils.data.Dataset):
     def __init__(
         self,
-        root_dirs: List[str],
+        track_root_dirs: List[str],
         metadata_files: List[str],
+        mix_root_dirs: List[str] = [],
         instrument_id_json: str = "./data/instrument_name2id.json",
         sample_rate: int = 44100,
         length: int = 524288,
@@ -26,6 +130,8 @@ class MultitrackDataset(torch.utils.data.Dataset):
         subset: str = "train",
         buffer_size_gb: float = 0.01,
         target_track_lufs_db: float = -32.0,
+        target_mix_lufs_db: float = -16.0,
+        randomize_ref_mix_gain: bool = False,
         num_passes: int = 1,
     ) -> None:
         super().__init__()
@@ -36,6 +142,8 @@ class MultitrackDataset(torch.utils.data.Dataset):
         self.subset = subset
         self.buffer_size_gb = buffer_size_gb
         self.target_track_lufs_db = target_track_lufs_db
+        self.target_mix_lufs_db = target_mix_lufs_db
+        self.randomize_ref_mix_gain = randomize_ref_mix_gain
         self.meter = pyln.Meter(sample_rate)
         self.length = self.length
         self.num_passes = num_passes
@@ -46,7 +154,8 @@ class MultitrackDataset(torch.utils.data.Dataset):
         self.song_dirs = {}
         self.dirs = []
 
-        for directory, split in zip(root_dirs, metadata_files):
+        # load metadata for tracks
+        for directory, split in zip(track_root_dirs, metadata_files):
             with open(split, "r") as f:
                 data = yaml.safe_load(f)
                 for songs, track_info in data[self.subset].items():
@@ -54,20 +163,85 @@ class MultitrackDataset(torch.utils.data.Dataset):
                     self.song_dirs[full_song_dir] = track_info
                     self.dirs.append(full_song_dir)
 
-        print(f"Located {len(self.dirs)} song directories.")
+        print(f"Located {len(self.dirs)} track directories.")
+
+        # load metadata for mixes
+        self.mix_dirs = {}
+        self.mixes = []
+
+        for mix_dir in mix_root_dirs:
+            # find all mixes in directory recursively
+            mix_files = glob.glob(os.path.join(mix_dir, "**", "*.mp3"), recursive=True)
+
+            self.mixes.extend(mix_files)
+
+        print(f"Located {len(self.mixes)} mixes.")
 
         # call reload buffer to load initial buffer
-        self.reload_buffer()
+        self.reload_track_buffer()
+        self.reload_mix_buffer()
 
     def __len__(self):
-        return len(self.examples) * self.num_passes
+        return len(self.track_examples) * self.num_passes
 
-    def reload_buffer(self):
-        self.examples = []  # clear buffer
-        self.items_since_load = 0  # reset iteration counter
+    def reload_mix_buffer(self):
+        self.mix_examples = []  # clear buffer
+        nbytes_loaded = 0  # counter for data in RAM
+
+        random.shuffle(self.mix_dirs)  # shuffle dataset
+
+        pbar = tqdm(itertools.cycle(self.mixes))
+
+        for filepath in pbar:
+            num_frames = torchaudio.info(filepath).num_frames
+            offset = np.random.randint(0.25 * num_frames, num_frames - self.length - 1)
+
+            # ensure the song is long enough if we start from 25% in
+            if (0.75 * num_frames) < self.length:
+                continue
+
+            mix, _ = torchaudio.load(
+                filepath,
+                frame_offset=offset,
+                num_frames=self.length,
+            )
+
+            if mix.shape[0] == 1:
+                continue
+            if mix.shape[-1] != self.length:
+                continue
+            if mix.size()[0] > 2:
+                continue
+
+            mix_lufs_db = self.meter.integrated_loudness(mix.permute(1, 0).numpy())
+
+            if mix_lufs_db < -48.0 or mix_lufs_db == float("-inf"):
+                continue
+
+            delta_lufs_db = torch.tensor(
+                [self.target_mix_lufs_db - mix_lufs_db]
+            ).float()
+
+            gain_lin = 10.0 ** (delta_lufs_db.clamp(-120, 40.0) / 20.0)
+            mix = gain_lin * mix
+
+            self.mix_examples.append(mix)
+
+            nbytes_loaded += mix.element_size() * mix.nelement()
+            pbar.set_description(
+                f"Loaded {nbytes_loaded/1e9:0.3f}/{self.buffer_size_gb} gb ({(nbytes_loaded/1e9/self.buffer_size_gb)*100:0.3f}%)"
+            )
+
+            # check if buffer is full
+            if nbytes_loaded > self.buffer_size_gb * 1e9:
+                break
+
+    def reload_track_buffer(self):
+        self.track_examples = []  # clear buffer
         nbytes_loaded = 0  # counter for data in RAM
 
         random.shuffle(self.dirs)  # shuffle dataset
+
         # load files into RAM
         pbar = tqdm(itertools.cycle(self.dirs))
 
@@ -88,6 +262,7 @@ class MultitrackDataset(torch.utils.data.Dataset):
             track_idx = 0
             track_metadata = []
             stereo_info = []
+            track_padding = []
             # find a starting offset 25% into the song or more
             offset = np.random.randint(0.25 * num_frames, num_frames - self.length - 1)
 
@@ -130,6 +305,7 @@ class MultitrackDataset(torch.utils.data.Dataset):
                     else:
                         tracks.append(track[ch_idx : ch_idx + 1, :])
                         track_metadata.append(instrument)
+                        track_padding.append(False)
                         if stereo:
                             stereo_info.append(1)
                             stereo = False
@@ -147,6 +323,7 @@ class MultitrackDataset(torch.utils.data.Dataset):
             while track_idx < self.max_tracks:
                 tracks.append(torch.zeros_like(tracks[0]))
                 track_metadata.append(0)
+                track_padding.append(True)
                 stereo_info.append(0)
                 track_idx += 1
 
@@ -155,9 +332,12 @@ class MultitrackDataset(torch.utils.data.Dataset):
             # tracks = tracks.reshape(self.max_tracks, self.length)
             track_metadata = torch.tensor(track_metadata)
             stereo_info = torch.tensor(stereo_info).reshape(track_metadata.shape)
+            track_padding = torch.tensor(track_padding)
 
             # add to buffer
-            self.examples.append((tracks, stereo_info, track_metadata))
+            self.track_examples.append(
+                (tracks, stereo_info, track_metadata, track_padding)
+            )
 
             nbytes_loaded += tracks.element_size() * tracks.nelement()
             pbar.set_description(
@@ -169,23 +349,38 @@ class MultitrackDataset(torch.utils.data.Dataset):
                 break
 
     def __getitem__(self, idx):
-        example_idx = idx % len(self.examples)
+        # ------------ get example from track buffer ------------
+        track_example_idx = idx % len(self.track_examples)
+        track_example = self.track_examples[track_example_idx]
 
-        example = self.examples[example_idx]
+        tracks = track_example[0]
+        stereo_info = track_example[1]
+        track_metadata = track_example[2]
+        track_padding = track_example[3]
 
-        tracks = example[0]
-        stereo_info = example[1]
-        track_metadata = example[2]
+        # ------------ get example from mix buffer ------------
+        # optional
+        if len(self.mix_examples) > 0:
+            mix_example_idx = np.random.randint(0, len(self.mix_examples))
+            mix = self.mix_examples[mix_example_idx]
 
-        return tracks, stereo_info, track_metadata
+            if self.randomize_ref_mix_gain:
+                gain_db = np.random.uniform(-16.0, 12.0)
+                gain_lin = 10.0 ** (gain_db / 20.0)
+                mix = gain_lin * mix
+        else:
+            mix = torch.empty(1)
+
+        return tracks, stereo_info, track_metadata, track_padding, mix
 
 
 class MultitrackDataModule(pl.LightningDataModule):
     def __init__(
         self,
-        root_dirs: List[str],
+        track_root_dirs: List[str],
         metadata_files: List[str],
         length: int,
+        mix_root_dirs: List[str] = [],
         min_tracks: int = 4,
         max_tracks: int = 20,
         num_workers: int = 4,
@@ -194,54 +389,31 @@ class MultitrackDataModule(pl.LightningDataModule):
         num_val_passes: int = 1,
         train_buffer_size_gb: float = 0.01,
         val_buffer_size_gb: float = 0.1,
-        num_examples_per_epoch: int = 10000,
-        target_track_lufs_db: float = -32.0,
+        target_track_lufs_db: float = -48.0,
+        target_mix_lufs_db: float = -16.0,
+        randomize_ref_mix_gain: bool = False,
     ):
         super().__init__()
         self.save_hyperparameters()
-        self.current_epoch = -1
-        self.max_tracks = self.hparams.min_tracks
         torchaudio.set_audio_backend("soundfile")
 
     def setup(self, stage=None):
         pass
 
     def train_dataloader(self):
-        # count number of times setup is called
-        self.current_epoch += 1
-
-        # set the max number of tracks (increase every 10 epochs)
-        self.max_tracks = (self.current_epoch // 10) + self.max_tracks
-
-        # cap max tracks at max_tracks
-        if self.max_tracks > self.hparams.max_tracks:
-            self.max_tracks = self.hparams.max_tracks
-
-        # if self.global_step == self.hparams.active_eq_step:
-        #    print("EQ is now active")
-        #    self.max_tracks = self.hparams.min_tracks
-        # if self.global_step == self.hparams.active_compressor_step:
-        #    print("Compressor is now active")
-        #    self.max_tracks = self.hparams.min_tracks
-        # if self.global_step == self.hparams.active_fx_bus_step:
-        #    print("FX bus is now active")
-        #    self.max_tracks = self.hparams.min_tracks
-        # if self.global_step == self.hparams.active_master_bus_step:
-        #    print("Master bus is now active")
-        #    self.max_tracks = self.hparams.min_tracks
-
-        print(f"Current epoch: {self.current_epoch} with max_tracks: {self.max_tracks}")
-
         self.train_dataset = MultitrackDataset(
-            root_dirs=self.hparams.root_dirs,
+            track_root_dirs=self.hparams.track_root_dirs,
             metadata_files=self.hparams.metadata_files,
+            mix_root_dirs=self.hparams.mix_root_dirs,
             subset="train",
             min_tracks=self.hparams.min_tracks,
-            max_tracks=self.max_tracks,
+            max_tracks=self.hparams.max_tracks,
             length=self.hparams.length,
             num_passes=self.hparams.num_train_passes,
             buffer_size_gb=self.hparams.train_buffer_size_gb,
             target_track_lufs_db=self.hparams.target_track_lufs_db,
+            target_mix_lufs_db=self.hparams.target_mix_lufs_db,
+            randomize_ref_mix_gain=self.hparams.randomize_ref_mix_gain,
         )
 
         return torch.utils.data.DataLoader(
@@ -254,15 +426,18 @@ class MultitrackDataModule(pl.LightningDataModule):
 
     def val_dataloader(self):
         self.val_dataset = MultitrackDataset(
-            root_dirs=self.hparams.root_dirs,
+            track_root_dirs=self.hparams.track_root_dirs,
             metadata_files=self.hparams.metadata_files,
+            mix_root_dirs=self.hparams.mix_root_dirs,
             subset="val",
             min_tracks=self.hparams.min_tracks,
-            max_tracks=self.max_tracks,
+            max_tracks=self.hparams.max_tracks,
             length=self.hparams.length,
             num_passes=self.hparams.num_val_passes,
             buffer_size_gb=self.hparams.val_buffer_size_gb,
             target_track_lufs_db=self.hparams.target_track_lufs_db,
+            target_mix_lufs_db=self.hparams.target_mix_lufs_db,
+            randomize_ref_mix_gain=self.hparams.randomize_ref_mix_gain,
         )
 
         return torch.utils.data.DataLoader(
@@ -273,8 +448,9 @@ class MultitrackDataModule(pl.LightningDataModule):
 
     def test_dataloader(self):
         self.test_dataset = MultitrackDataset(
-            root_dirs=self.hparams.root_dirs,
+            track_root_dirs=self.hparams.track_root_dirs,
             metadata_files=self.hparams.split,
+            mix_root_dirs=self.hparams.mix_root_dirs,
             subset="test",
             min_tracks=self.hparams.min_tracks,
             max_tracks=self.max_tracks,
@@ -282,6 +458,8 @@ class MultitrackDataModule(pl.LightningDataModule):
             num_passes=self.hparams.num_val_passes,
             buffer_size_gb=self.hparams.test_buffer_size_gb,
             target_track_lufs_db=self.hparams.target_track_lufs_db,
+            target_mix_lufs_db=self.hparams.target_mix_lufs_db,
+            randomize_ref_mix_gain=self.hparams.randomize_ref_mix_gain,
         )
 
         return torch.utils.data.DataLoader(

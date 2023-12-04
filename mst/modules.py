@@ -1,6 +1,7 @@
+import math
 import torch
 from typing import Callable, Optional, List
-
+from torchaudio.pipelines import HDEMUCS_HIGH_MUSDB_PLUS
 from mst.panns import Cnn14
 
 from dasp_pytorch.functional import (
@@ -31,35 +32,32 @@ class MixStyleTransferModel(torch.nn.Module):
         self,
         tracks: torch.torch.Tensor,
         ref_mix: torch.torch.Tensor,
-        use_track_gain: bool = True,
-        use_track_panner: bool = True,
-        use_track_eq: bool = True,
-        use_track_compressor: bool = True,
-        use_fx_bus: bool = True,
-        use_master_bus: bool = True,
+        track_padding_mask: Optional[torch.Tensor] = None,
     ):
         bs, num_tracks, seq_len = tracks.size()
 
         # first process the tracks
-        track_embeds = self.track_encoder(tracks.view(bs * num_tracks, -1))
+        track_embeds = self.track_encoder(tracks.view(bs * num_tracks, 1, -1))
         track_embeds = track_embeds.view(bs, num_tracks, -1)  # restore
 
         # compute mid/side from the reference mix
         if self.sum_and_diff:
             ref_mix_mid = ref_mix.sum(dim=1)
-            ref_mix_side = ref_mix[..., 0, :] - ref_mix[..., 1, :]
+            ref_mix_side = ref_mix[..., 0:1, :] - ref_mix[..., 1:2, :]
 
             # process the reference mix
             mid_embeds = self.mix_encoder(ref_mix_mid)
             side_embeds = self.mix_encoder(ref_mix_side)
             mix_embeds = torch.stack((mid_embeds, side_embeds), dim=1)
         else:
-            mix_embeds = self.mix_encoder(ref_mix.view(bs * 2, -1))
+            mix_embeds = self.mix_encoder(ref_mix.view(bs * 2, 1, -1))
             mix_embeds = mix_embeds.view(bs, 2, -1)  # restore
 
         # controller will predict mix parameters for each stem based on embeds
         track_params, fx_bus_params, master_bus_params = self.controller(
-            track_embeds, mix_embeds
+            track_embeds,
+            mix_embeds,
+            track_padding_mask,
         )
 
         return (
@@ -78,7 +76,7 @@ def normalize(val, min_val, max_val):
 
 
 def denormalize_parameters(param_dict: dict, param_ranges: dict):
-    """Given parameters on (0,1) restore them to the ranges expected by the denoiser."""
+    """Given parameters on (0,1) restore them to the ranges expected by the effect."""
     denorm_param_dict = {}
     for effect_name, effect_param_dict in param_dict.items():
         denorm_param_dict[effect_name] = {}
@@ -225,7 +223,7 @@ class AdvancedMixConsole(torch.nn.Module):
 
         # apply effects in series but all tracks at once
         if use_track_input_fader:
-            tracks = gain(tracks, **track_param_dict["input_fader"])
+            tracks = gain(tracks, self.sample_rate, **track_param_dict["input_fader"])
         if use_track_eq:
             tracks = parametric_eq(
                 tracks,
@@ -244,7 +242,9 @@ class AdvancedMixConsole(torch.nn.Module):
         tracks = tracks.view(bs, num_tracks, seq_len)
 
         if use_track_panner:
-            tracks = stereo_panner(tracks, **track_param_dict["stereo_panner"])
+            tracks = stereo_panner(
+                tracks, self.sample_rate, **track_param_dict["stereo_panner"]
+            )
         else:
             tracks = tracks.unsqueeze(1).repeat(1, 2, 1)
 
@@ -253,7 +253,7 @@ class AdvancedMixConsole(torch.nn.Module):
 
         # apply stereo reveberation on an fx bus
         if use_fx_bus:
-            fx_bus = stereo_bus(tracks, **track_param_dict["fx_bus"])
+            fx_bus = stereo_bus(tracks, self.sample_rate, **track_param_dict["fx_bus"])
             fx_bus = noise_shaped_reverberation(
                 fx_bus,
                 self.sample_rate,
@@ -265,7 +265,9 @@ class AdvancedMixConsole(torch.nn.Module):
 
         if use_master_bus:
             # process Left channel
-            master_bus = gain(master_bus, **master_bus_param_dict["input_fader"])
+            master_bus = gain(
+                master_bus, self.sample_rate, **master_bus_param_dict["input_fader"]
+            )
             master_bus = parametric_eq(
                 master_bus, self.sample_rate, **master_bus_param_dict["parametric_eq"]
             )
@@ -279,7 +281,9 @@ class AdvancedMixConsole(torch.nn.Module):
             )
 
         if use_output_fader:
-            master_bus = gain(master_bus, **master_bus_param_dict["output_fader"])
+            master_bus = gain(
+                master_bus, self.sample_rate, **master_bus_param_dict["output_fader"]
+            )
 
         return tracks, master_bus
 
@@ -301,12 +305,23 @@ class AdvancedMixConsole(torch.nn.Module):
 
         Args:
             tracks (torch.torch.Tensor): Audio tracks with shape (bs, num_tracks, seq_len)
-            mix_params (torch.torch.Tensor): Parameter torch.Tensor with shape (bs, num_tracks, num_control_params)
+            track_params (torch.torch.Tensor): Parameter torch.Tensor with shape (bs, num_tracks, num_track_control_params)
+            fx_bus_params (torch.torch.Tensor): Parameter torch.Tensor with shape (bs, num_fx_bus_control_params)
+            master_bus_params (torch.torch.Tensor): Parameter torch.Tensor with shape (bs, num_master_bus_control_params)
+            use_track_input_fader (bool): Whether to apply gain to the tracks
+            use_track_eq (bool): Whether to apply eq to the tracks
+            use_track_compressor (bool): Whether to apply compressor to the tracks
+            use_track_panner (bool): Whether to apply panner to the tracks
+            use_fx_bus (bool): Whether to apply fx bus to the tracks
+            use_master_bus (bool): Whether to apply master bus to the tracks.
+            use_output_fader (bool): Whether to apply gain to the tracks.
 
         Returns:
             mixed_tracks (torch.torch.Tensor): Mixed tracks with shape (bs, num_tracks, seq_len)
             mix (torch.torch.Tensor): Final stereo mix of the input tracks with shape (bs, 2, seq_len)
-            param_dict (dict): Denormalized parameter values.
+            track_param_dict (dict): Denormalized track parameter values.
+            fx_bus_param_dict (dict): Denormalized fx bus parameter values.
+            master_bus_param_dict (dict): Denormalized master bus parameter values.
         """
         # extract and denormalize the parameters
         track_param_dict = {
@@ -446,10 +461,196 @@ class AdvancedMixConsole(torch.nn.Module):
         )
 
 
-class SpectrogramResNetEncoder(torch.nn.Module):
+class Remixer(torch.nn.Module):
+    def __init__(self, sample_rate: int) -> None:
+        super().__init__()
+        self.sample_rate = sample_rate
+
+        # load source separation model
+        bundle = HDEMUCS_HIGH_MUSDB_PLUS
+        self.stem_separator = bundle.get_model()
+        self.stem_separator.eval()
+        # get sources list
+        self.sources_list = list(self.stem_separator.sources)
+
+    def forward(self, x: torch.Tensor, mix_console: torch.nn.Module):
+        """Take a tensor of mixes, separate, and then remix.
+
+        Args:
+            x (torch.Tensor): Tensor of mixes with shape (batch, 2, samples)
+            mix_console (torch.nn.Module): MixConsole module
+
+        Returns:
+            remix (torch.Tensor): Tensor of remixes with shape (batch, 2, samples)
+            track_params (torch.Tensor): Tensor of track params with shape (batch, 8, num_track_control_params)
+            fx_bus_params (torch.Tensor): Tensor of fx bus params with shape (batch, num_fx_bus_control_params)
+            master_bus_params (torch.Tensor): Tensor of master bus params with shape (batch, num_master_bus_control_params)
+        """
+        bs, chs, seq_len = x.size()
+
+        # separate
+        with torch.no_grad():
+            sources = self.stem_separator(x)  # bs, 4, 2, seq_len
+        sum_mix = sources.sum(dim=1)  # bs, 2, seq_len
+
+        # convert sources to mono tracks
+        tracks = sources.view(bs, 8, -1)
+
+        # provide some headroom before mixing
+        tracks *= 10 ** (-48.0 / 20.0)
+
+        # generate random mix parameters
+        track_params = torch.rand(bs, 8, mix_console.num_track_control_params).type_as(
+            x
+        )
+        fx_bus_params = torch.rand(bs, mix_console.num_fx_bus_control_params).type_as(x)
+        master_bus_params = torch.rand(
+            bs, mix_console.num_master_bus_control_params
+        ).type_as(x)
+
+        # the forward expects params in range of (0,1)
+        with torch.no_grad():
+            result = mix_console(
+                tracks,
+                track_params,
+                fx_bus_params,
+                master_bus_params,
+                use_output_fader=False,
+            )
+
+        # get the remix
+        remix = result[1]
+
+        # clip via tanh if above 4.0
+        remix = torch.tanh((1 / 4.0) * remix)
+        remix *= 4.0
+
+        return remix, track_params, fx_bus_params, master_bus_params
+
+
+class ParameterProjector(torch.nn.Module):
     def __init__(
         self,
-        embed_dim=128,
+        embed_dim: int,
+        num_tracks: int,
+        num_track_control_params: int,
+        num_fx_bus_control_params: int,
+        num_master_bus_control_params: int,
+    ):
+        super().__init__()
+        self.embed_dim = embed_dim
+        self.num_tracks = num_tracks
+
+        self.track_projector = torch.nn.Linear(
+            embed_dim,
+            num_tracks * num_track_control_params,
+        )
+        self.fx_bus_projector = torch.nn.Linear(
+            embed_dim,
+            num_fx_bus_control_params,
+        )
+        self.master_bus_projector = torch.nn.Linear(
+            embed_dim,
+            num_master_bus_control_params,
+        )
+
+    def forward(self, z: torch.Tensor):
+        bs, embed_dim = z.size()
+
+        track_params = torch.sigmoid(self.track_projector(z))
+        track_params = track_params.view(bs, self.num_tracks, -1)
+        fx_bus_params = torch.sigmoid(self.fx_bus_projector(z))
+        master_bus_params = torch.sigmoid(self.master_bus_projector(z))
+
+        return track_params, fx_bus_params, master_bus_params
+
+
+class WaveformEncoder(torch.nn.Module):
+    def __init__(
+        self,
+        n_inputs=1,
+        embed_dim: int = 1024,
+        encoder_batchnorm: bool = True,
+    ):
+        super().__init__()
+        self.n_inputs = n_inputs
+        self.embed_dim = embed_dim
+        self.encoder_batchnorm = encoder_batchnorm
+        self.model = TCN(n_inputs, embed_dim)
+
+    def forward(self, x: torch.Tensor):
+        return self.model(x)
+
+
+class PositionalEncoding(torch.nn.Module):
+    def __init__(self, d_model: int, dropout: float = 0.1, max_len: int = 1024):
+        super().__init__()
+        self.dropout = torch.nn.Dropout(p=dropout)
+        position = torch.arange(max_len).unsqueeze(1)
+        div_term = torch.exp(
+            torch.arange(0, d_model, 2) * (-math.log(10000.0) / d_model)
+        )
+        pe = torch.zeros(max_len, 1, d_model)
+        pe[:, 0, 0::2] = torch.sin(position * div_term)
+        pe[:, 0, 1::2] = torch.cos(position * div_term)
+        self.register_buffer("pe", pe)
+
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        """
+        Arguments:
+            x: Tensor, shape ``[seq_len, batch_size, embedding_dim]``
+        """
+        x = x + self.pe[: x.size(0)]
+        return self.dropout(x)
+
+
+class WaveformTransformerEncoder(torch.nn.Module):
+    def __init__(
+        self,
+        n_inputs: int = 1,
+        block_size: int = 1024,
+        embed_dim: int = 512,
+        nhead: int = 8,
+        num_layers: int = 12,
+    ) -> None:
+        super().__init__()
+        self.block_size = block_size
+
+        self.cls = torch.nn.Parameter(torch.randn(1, 1, block_size))
+        self.pos_encoding = PositionalEncoding(embed_dim)
+
+        encoder_layer = torch.nn.TransformerEncoderLayer(
+            d_model=block_size,
+            nhead=nhead,
+            batch_first=True,
+        )
+        self.model = torch.nn.TransformerEncoder(
+            encoder_layer,
+            num_layers=num_layers,
+        )
+
+    def forward(self, x: torch.Tensor):
+        bs, chs, seq_len = x.size()
+        # chunk the input waveform into non-overlapping blocks
+        x = x.unfold(-1, self.block_size, self.block_size)
+
+        # move channels to sequence dim
+        x = x.view(bs, chs * x.shape[-2], x.shape[-1])
+
+        # add cls token
+        cls_token = self.cls.repeat(bs, 1, 1)
+        x = torch.cat([cls_token, x], dim=1)
+
+        z = self.model(x)
+
+        return z[:, 0, :]
+
+
+class SpectrogramEncoder(torch.nn.Module):
+    def __init__(
+        self,
+        embed_dim: int = 128,
+        n_inputs: int = 1,
         n_fft: int = 2048,
         hop_length: int = 512,
         input_batchnorm: bool = False,
@@ -457,6 +658,7 @@ class SpectrogramResNetEncoder(torch.nn.Module):
     ) -> None:
         super().__init__()
         self.embed_dim = embed_dim
+        self.n_inputs = n_inputs
         self.n_fft = n_fft
         self.hop_length = hop_length
         self.input_batchnorm = input_batchnorm
@@ -464,7 +666,11 @@ class SpectrogramResNetEncoder(torch.nn.Module):
         self.register_buffer("window", torch.hann_window(window_length=window_length))
 
         # self.model = torchvision.models.resnet.resnet18(num_classes=embed_dim)
-        self.model = Cnn14(num_classes=embed_dim, use_batchnorm=encoder_batchnorm)
+        self.model = Cnn14(
+            n_inputs=n_inputs,
+            num_classes=embed_dim,
+            use_batchnorm=encoder_batchnorm,
+        )
 
         if self.input_batchnorm:
             self.bn = torch.nn.BatchNorm2d(3)
@@ -473,12 +679,15 @@ class SpectrogramResNetEncoder(torch.nn.Module):
         """Process waveform as a spectrogram and return single embedding.
 
         Args:
-            x (torch.torch.Tensor): Monophonic waveform torch.Tensor of shape (bs, seq_len).
+            x (torch.torch.Tensor): Monophonic waveform torch.Tensor of shape (bs, chs, seq_len).
 
         Returns:
             embed (torch.Tenesor): Embedding torch.Tensor of shape (bs, embed_dim)
         """
-        bs, seq_len = x.size()
+        bs, chs, seq_len = x.size()
+
+        # move channels to batch dim
+        x = x.view(-1, seq_len)
 
         X = torch.stft(
             x,
@@ -487,7 +696,7 @@ class SpectrogramResNetEncoder(torch.nn.Module):
             window=self.window,
             return_complex=True,
         )
-        X = X.view(bs, 1, X.shape[-2], X.shape[-1])
+        X = X.view(bs, chs, X.shape[-2], X.shape[-1])
         X = torch.pow(X.abs() + 1e-8, 0.3)
         # X = X.repeat(1, 3, 1, 1)  # add dummy channels (3)
 
@@ -551,7 +760,24 @@ class TransformerController(torch.nn.Module):
             embed_dim, num_master_bus_control_params
         )
 
-    def forward(self, track_embeds: torch.torch.Tensor, mix_embeds: torch.torch.Tensor):
+    def forward(
+        self,
+        track_embeds: torch.torch.Tensor,
+        mix_embeds: torch.torch.Tensor,
+        track_padding_mask: Optional[torch.Tensor] = None,
+    ):
+        """Predict mix parameters given track and reference mix embeddings.
+
+        Args:
+            track_embeds (torch.torch.Tensor): Embeddings for each track with shape (bs, num_tracks, embed_dim)
+            mix_embeds (torch.torch.Tensor): Embeddings for the reference mix with shape (bs, 2, embed_dim)
+            track_padding_mask (Optional[torch.Tensor]): Mask for the track embeddings with shape (bs, num_tracks)
+
+        Returns:
+            pred_track_params (torch.torch.Tensor): Predicted track parameters with shape (bs, num_tracks, num_control_params)
+            pred_fx_bus_params (torch.torch.Tensor): Predicted fx bus parameters with shape (bs, num_fx_bus_control_params)
+            pred_master_bus_params (torch.torch.Tensor): Predicted master bus parameters with shape (bs, num_master_bus_control_params)
+        """
         bs, num_tracks, embed_dim = track_embeds.size()
 
         # apply learned embeddings to both input embeddings
@@ -563,11 +789,24 @@ class TransformerController(torch.nn.Module):
         embeds = torch.cat((embeds, self.fx_bus_embedding.repeat(bs, 1, 1)), dim=1)
         embeds = torch.cat((embeds, self.master_bus_embedding.repeat(bs, 1, 1)), dim=1)
 
+        # add to padding mask for mix_embeds, fx and master bus so they are attended to
+        if track_padding_mask is not None:
+            track_padding_mask = torch.cat(
+                (
+                    track_padding_mask,
+                    torch.zeros(bs, 4).bool().type_as(track_padding_mask),
+                ),
+                dim=1,
+            )
+
         # generate output embeds with transformer, project and bound 0 - 1
-        pred_params = self.transformer_encoder(embeds)
+        pred_params = self.transformer_encoder(
+            embeds, src_key_padding_mask=track_padding_mask
+        )
         pred_track_params = torch.sigmoid(
             self.track_projection(pred_params[:, :num_tracks, :])
         )
+        # print(pred_track_params)
         pred_fx_bus_params = torch.sigmoid(
             self.fx_bus_projection(pred_params[:, -2, :])
         )

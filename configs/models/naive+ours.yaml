@@ -1,10 +1,10 @@
 model:
   class_path: mst.system.System
   init_args:
-    active_random: True
+    generate_mix: false
     active_eq_epoch: 0
     active_compressor_epoch: 0
-    active_fx_bus_epoch: 0
+    active_fx_bus_epoch: 1000
     active_master_bus_epoch: 0
     mix_fn: mst.mixing.naive_random_mix
     mix_console:
@@ -23,44 +23,33 @@ model:
       class_path: mst.modules.MixStyleTransferModel
       init_args:
         track_encoder: 
-          class_path: mst.modules.SpectrogramResNetEncoder
+          class_path: mst.modules.SpectrogramEncoder
           init_args:
-            embed_dim: 128
+            embed_dim: 512
             n_fft: 2048
             hop_length: 512
             input_batchnorm: false
         mix_encoder: 
-          class_path: mst.modules.SpectrogramResNetEncoder
+          class_path: mst.modules.SpectrogramEncoder
           init_args:
-            embed_dim: 128
+            embed_dim: 512
             n_fft: 2048
             hop_length: 512
             input_batchnorm: false
         controller:
           class_path: mst.modules.TransformerController
           init_args:
-            embed_dim: 128
+            embed_dim: 512
             num_track_control_params: 27
             num_fx_bus_control_params: 25
             num_master_bus_control_params: 26
-            num_layers: 6
+            num_layers: 12
             nhead: 8
        
     loss: 
-      class_path: auraloss.freq.MultiResolutionSTFTLoss
+      class_path: mst.loss.ParameterEstimatorLoss
       init_args:
-        fft_sizes: 
-        - 512
-        - 2048
-        - 8192
-        hop_sizes: 
-        - 256 
-        - 1024
-        - 4096
-        win_lengths:
-        - 512
-        - 2048
-        - 8192
+        ckpt_path: /import/c4dm-datasets-ext/Diff-MST/DiffMST-Param/0ymfi1pp/checkpoints/epoch=20-step=37947.ckpt
 
 
     

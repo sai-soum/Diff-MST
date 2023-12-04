@@ -10,12 +10,12 @@ from mst.callbacks.plotting import plot_spectrograms
 class LogAudioCallback(pl.callbacks.Callback):
     def __init__(
         self,
-        num_examples: int = 8,
+        num_batches: int = 8,
         peak_normalize: bool = True,
         sample_rate: int = 44100,
     ):
         super().__init__()
-        self.num_examples = num_examples
+        self.num_batches = num_batches
         self.peak_normalize = peak_normalize
         self.sample_rate = sample_rate
 
@@ -30,14 +30,12 @@ class LogAudioCallback(pl.callbacks.Callback):
         """Called when the validation batch ends."""
         if outputs is not None:
             num_examples = outputs["ref_mix_a"].shape[0]
-            if num_examples > self.num_examples:
-                num_examples = self.num_examples
-
-            if batch_idx == 0:
-                for n in range(num_examples):
+            if batch_idx < self.num_batches:
+                for sample_idx in range(num_examples):
                     self.log_audio(
                         outputs,
-                        n,
+                        batch_idx,
+                        sample_idx,
                         pl_module.mix_console.sample_rate,
                         trainer.global_step,
                         trainer.logger,
@@ -48,6 +46,7 @@ class LogAudioCallback(pl.callbacks.Callback):
         self,
         outputs,
         batch_idx: int,
+        sample_idx: int,
         sample_rate: int,
         global_step: int,
         logger,
@@ -63,7 +62,7 @@ class LogAudioCallback(pl.callbacks.Callback):
             if "dict" in key:  # skip parameters
                 continue
 
-            x = audio[batch_idx, ...].float()
+            x = audio[sample_idx, ...].float()
             x = x.permute(1, 0)
             # x /= x.abs().max()
             audio_files.append(x)
@@ -71,7 +70,7 @@ class LogAudioCallback(pl.callbacks.Callback):
             total_samples += x.shape[0]
 
         y = torch.zeros(total_samples + int(len(audio_keys) * sample_rate), 2)
-        name = f"{batch_idx}_"
+        name = f"{batch_idx}_{sample_idx}"
         start = 0
         for x, key in zip(audio_files, audio_keys):
             end = start + x.shape[0]
@@ -122,12 +121,14 @@ class LogAudioCallback(pl.callbacks.Callback):
                     # column_names.append("master_bus_ref")
 
                 for i in range(pred_param_val.shape[1]):
-                    row.append(pred_param_val[batch_idx, i].item())
-                    row.append(ref_param_val[batch_idx, i].item())
+                    row.append(pred_param_val[sample_idx, i].item())
+                    row.append(ref_param_val[sample_idx, i].item())
 
                 # row.append(pred_master_bus_param_dict[effect_name][batch_idx].item())
 
                 rows.append(row)
 
         wandb_table = wandb.Table(data=rows, columns=column_names)
-        logger.experiment.log({f"batch={batch_idx}_parameters": wandb_table})
+        logger.experiment.log(
+            {f"batch={batch_idx}_sample={sample_idx}_parameters": wandb_table}
+        )

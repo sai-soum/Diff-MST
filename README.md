@@ -59,12 +59,19 @@ output/ref_mix.wav \
 First update the paths in the configuration file for both the logger and the dataset root directory.
 Then call the `main.py` script passing in the configuration file. 
 ```
-
-CUDA_VISIBLE_DEVICES=1 python main.py fit \
+# new model configuration with audio feature loss
+CUDA_VISIBLE_DEVICES=0 python main.py fit \
 -c configs/config_cjs.yaml \
 -c configs/optimizer.yaml \
--c configs/data/medley+cambridge.yaml \
--c configs/models/naive_dmc_adv.yaml \
+-c configs/data/medley+cambridge+jamendo-8.yaml \
+-c configs/models/gain+eq+comp-feat.yaml
+
+# new model configuration with CLAP loss
+CUDA_VISIBLE_DEVICES=0 python main.py fit \
+-c configs/config_cjs.yaml \
+-c configs/optimizer.yaml \
+-c configs/data/medley+cambridge+jamendo-8.yaml \
+-c configs/models/gain+eq+comp-clap.yaml
 ```
 
 

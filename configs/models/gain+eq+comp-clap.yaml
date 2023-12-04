@@ -1,7 +1,7 @@
 model:
   class_path: mst.system.System
   init_args:
-    generate_mix: true
+    generate_mix: false
     active_eq_epoch: 0
     active_compressor_epoch: 0
     active_fx_bus_epoch: 1000
@@ -47,20 +47,8 @@ model:
             nhead: 8
        
     loss: 
-      class_path: auraloss.freq.MultiResolutionSTFTLoss
+      class_path: mst.loss.StereoCLAPLoss
       init_args:
-        fft_sizes: 
-        - 512
-        - 2048
-        - 8192
-        hop_sizes: 
-        - 256 
-        - 1024
-        - 4096
-        win_lengths:
-        - 512
-        - 2048
-        - 8192
+        distance: torch.nn.functional.cosine_similarity
 
-
-    
+  

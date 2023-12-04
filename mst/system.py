@@ -17,15 +17,18 @@ class System(pl.LightningModule):
         mix_console: torch.nn.Module,
         mix_fn: Callable,
         loss: torch.nn.Module,
+        generate_mix: bool = True,
         use_track_loss: bool = False,
         use_mix_loss: bool = True,
         instrument_id_json: str = "data/instrument_name2id.json",
         knowledge_engineering_yaml: str = "data/knowledge_engineering.yaml",
-        active_random: bool = False,
         active_eq_epoch: int = 0,
         active_compressor_epoch: int = 0,
         active_fx_bus_epoch: int = 0,
         active_master_bus_epoch: int = 0,
+        lr: float = 1e-4,
+        max_epochs: int = 500,
+        schedule: str = "step",
         **kwargs,
     ) -> None:
         super().__init__()
@@ -33,9 +36,9 @@ class System(pl.LightningModule):
         self.mix_console = mix_console
         self.mix_fn = mix_fn
         self.loss = loss
+        self.generate_mix = generate_mix
         self.use_track_loss = use_track_loss
         self.use_mix_loss = use_mix_loss
-        self.active_random = active_random
         self.active_eq_epoch = active_eq_epoch
         self.active_compressor_epoch = active_compressor_epoch
         self.active_fx_bus_epoch = active_fx_bus_epoch
@@ -67,7 +70,7 @@ class System(pl.LightningModule):
             self.knowledge_engineering_dict = None
 
         # default
-        self.use_track_input_fader = False
+        self.use_track_input_fader = True
         self.use_track_panner = True
         self.use_track_eq = False
         self.use_track_compressor = False
@@ -100,73 +103,69 @@ class System(pl.LightningModule):
             optimizer_idx (int): Index of the optimizer, this step is called once for each optimizer.
             train (bool): Wether step is called during training (True) or validation (False).
         """
-        tracks, instrument_id, stereo_info = batch
+        tracks, instrument_id, stereo_info, track_padding, ref_mix = batch
+
+        # split into A and B sections
+        middle_idx = tracks.shape[-1] // 2
 
         # disable parts of the mix console based on global step
         if self.current_epoch >= self.active_eq_epoch:
-            if self.active_random:
-                self.use_track_eq = torch.rand(1) > 0.5
-            else:
-                self.use_track_eq = True
+            self.use_track_eq = True
 
         if self.current_epoch >= self.active_compressor_epoch:
-            if self.active_random:
-                self.use_track_compressor = torch.rand(1) > 0.5
-            else:
-                self.use_track_compressor = True
+            self.use_track_compressor = True
 
         if self.current_epoch >= self.active_fx_bus_epoch:
-            if self.active_random:
-                self.use_fx_bus = torch.rand(1) > 0.5
-            else:
-                self.use_fx_bus = True
+            self.use_fx_bus = True
 
         if self.current_epoch >= self.active_master_bus_epoch:
-            if self.active_random:
-                self.use_master_bus = torch.rand(1) > 0.5
-            else:
-                self.use_master_bus = True
+            self.use_master_bus = True
 
         bs, num_tracks, seq_len = tracks.shape
 
         # apply random gain to input tracks
         # tracks *= 10 ** ((torch.rand(bs, num_tracks, 1).type_as(tracks) * -12.0) / 20.0)
+        ref_track_param_dict = None
+        ref_fx_bus_param_dict = None
+        ref_master_bus_param_dict = None
 
         # --------- create a random mix (on GPU, if applicable) ---------
-        (
-            ref_mix_tracks,
-            ref_mix,
-            ref_track_param_dict,
-            ref_fx_bus_param_dict,
-            ref_master_bus_param_dict,
-        ) = self.mix_fn(
-            tracks,
-            self.mix_console,
-            use_track_input_fader=False,  # do not use track input fader for training
-            use_track_panner=self.use_track_panner,
-            use_track_eq=self.use_track_eq,
-            use_track_compressor=self.use_track_compressor,
-            use_fx_bus=self.use_fx_bus,
-            use_master_bus=self.use_master_bus,
-            use_output_fader=False,  # not used because we normalize output mixes
-            instrument_id=instrument_id,
-            stereo_id=stereo_info,
-            instrument_number_file=self.instrument_number_lookup,
-            ke_dict=self.knowledge_engineering_dict,
-        )
+        if self.generate_mix:
+            (
+                ref_mix_tracks,
+                ref_mix,
+                ref_track_param_dict,
+                ref_fx_bus_param_dict,
+                ref_master_bus_param_dict,
+            ) = self.mix_fn(
+                tracks,
+                self.mix_console,
+                use_track_input_fader=False,  # do not use track input fader for training
+                use_track_panner=self.use_track_panner,
+                use_track_eq=self.use_track_eq,
+                use_track_compressor=self.use_track_compressor,
+                use_fx_bus=self.use_fx_bus,
+                use_master_bus=self.use_master_bus,
+                use_output_fader=False,  # not used because we normalize output mixes
+                instrument_id=instrument_id,
+                stereo_id=stereo_info,
+                instrument_number_file=self.instrument_number_lookup,
+                ke_dict=self.knowledge_engineering_dict,
+            )
 
-        # normalize the reference mix
-        ref_mix = batch_stereo_peak_normalize(ref_mix)
+            # normalize the reference mix
+            ref_mix = batch_stereo_peak_normalize(ref_mix)
 
-        if torch.isnan(ref_mix).any():
-            print(ref_track_param_dict)
-            raise ValueError("Found nan in ref_mix")
+            if torch.isnan(ref_mix).any():
+                print(ref_track_param_dict)
+                raise ValueError("Found nan in ref_mix")
 
-        # now split into A and B sections (accounting for warmup)
-        middle_idx = tracks.shape[-1] // 2
-
-        ref_mix_a = ref_mix[..., :middle_idx]  # this is passed to the model
-        ref_mix_b = ref_mix[..., middle_idx:]  # this is used for loss computation
+            ref_mix_a = ref_mix[..., :middle_idx]  # this is passed to the model
+            ref_mix_b = ref_mix[..., middle_idx:]  # this is used for loss computation
+        else:
+            # when using a real mix, pass the same mix to model and loss
+            ref_mix_a = ref_mix
+            ref_mix_b = ref_mix
 
         # tracks_a = tracks[..., :input_middle_idx] # not used currently
         tracks_b = tracks[..., middle_idx:]  # this is passed to the model
@@ -176,7 +175,7 @@ class System(pl.LightningModule):
             pred_track_params,
             pred_fx_bus_params,
             pred_master_bus_params,
-        ) = self.model(tracks_b, ref_mix_a)
+        ) = self.model(tracks_b, ref_mix_a, track_padding_mask=track_padding)
 
         # ------- generate a mix using the predicted mix console parameters -------
         (
@@ -202,12 +201,21 @@ class System(pl.LightningModule):
         # normalize the predicted mix before computing the loss
         # pred_mix_b = batch_stereo_peak_normalize(pred_mix_b)
 
+        if ref_track_param_dict is None:
+            ref_track_param_dict = pred_track_param_dict
+            ref_fx_bus_param_dict = pred_fx_bus_param_dict
+            ref_master_bus_param_dict = pred_master_bus_param_dict
+
         # ---------------------------- compute and log loss ------------------------------
 
         loss = 0
         if self.use_mix_loss:
             mix_loss = self.loss(pred_mix_b, ref_mix_b)
-            loss += mix_loss
+            if type(mix_loss) == dict:
+                for key, val in mix_loss.items():
+                    loss += val.mean()
+            else:
+                loss += mix_loss
 
         # log the losses
         self.log(
@@ -220,29 +228,41 @@ class System(pl.LightningModule):
             sync_dist=True,
         )
 
-        sisdr_error = -self.sisdr(pred_mix_b, ref_mix_b)
-        # log the SI-SDR error
-        self.log(
-            ("train" if train else "val") + "/si-sdr",
-            sisdr_error,
-            on_step=False,
-            on_epoch=True,
-            prog_bar=False,
-            logger=True,
-            sync_dist=True,
-        )
+        if type(mix_loss) == dict:
+            for key, value in mix_loss.items():
+                self.log(
+                    ("train" if train else "val") + "/" + key,
+                    value.mean(),
+                    on_step=True,
+                    on_epoch=True,
+                    prog_bar=False,
+                    logger=True,
+                    sync_dist=True,
+                )
 
-        mrstft_error = self.mrstft(pred_mix_b, ref_mix_b)
-        # log the MR-STFT error
-        self.log(
-            ("train" if train else "val") + "/mrstft",
-            mrstft_error,
-            on_step=False,
-            on_epoch=True,
-            prog_bar=False,
-            logger=True,
-            sync_dist=True,
-        )
+        # sisdr_error = -self.sisdr(pred_mix_b, ref_mix_b)
+        # log the SI-SDR error
+        # self.log(
+        #    ("train" if train else "val") + "/si-sdr",
+        #    sisdr_error,
+        #    on_step=False,
+        #    on_epoch=True,
+        #    prog_bar=False,
+        #    logger=True,
+        #    sync_dist=True,
+        # )
+
+        # mrstft_error = self.mrstft(pred_mix_b, ref_mix_b)
+        ## log the MR-STFT error
+        # self.log(
+        #    ("train" if train else "val") + "/mrstft",
+        #    mrstft_error,
+        #    on_step=False,
+        #    on_epoch=True,
+        #    prog_bar=False,
+        #    logger=True,
+        #    sync_dist=True,
+        # )
 
         # for plotting down the line
         sum_mix_b = tracks_b.sum(dim=1, keepdim=True).detach().float().cpu()
