@@ -1,7 +1,8 @@
+import math
 import torch
 from typing import Callable, Optional, List
 from torchaudio.pipelines import HDEMUCS_HIGH_MUSDB_PLUS
-from mst.panns import Cnn14
+from mst.panns import Cnn14, TCN
 
 from dasp_pytorch.functional import (
     gain,
@@ -36,20 +37,20 @@ class MixStyleTransferModel(torch.nn.Module):
         bs, num_tracks, seq_len = tracks.size()
 
         # first process the tracks
-        track_embeds = self.track_encoder(tracks.view(bs * num_tracks, -1))
+        track_embeds = self.track_encoder(tracks.view(bs * num_tracks, 1, -1))
         track_embeds = track_embeds.view(bs, num_tracks, -1)  # restore
 
         # compute mid/side from the reference mix
         if self.sum_and_diff:
             ref_mix_mid = ref_mix.sum(dim=1)
-            ref_mix_side = ref_mix[..., 0, :] - ref_mix[..., 1, :]
+            ref_mix_side = ref_mix[..., 0:1, :] - ref_mix[..., 1:2, :]
 
             # process the reference mix
             mid_embeds = self.mix_encoder(ref_mix_mid)
             side_embeds = self.mix_encoder(ref_mix_side)
             mix_embeds = torch.stack((mid_embeds, side_embeds), dim=1)
         else:
-            mix_embeds = self.mix_encoder(ref_mix.view(bs * 2, -1))
+            mix_embeds = self.mix_encoder(ref_mix.view(bs * 2, 1, -1))
             mix_embeds = mix_embeds.view(bs, 2, -1)  # restore
 
         # controller will predict mix parameters for each stem based on embeds
@@ -75,7 +76,7 @@ def normalize(val, min_val, max_val):
 
 
 def denormalize_parameters(param_dict: dict, param_ranges: dict):
-    """Given parameters on (0,1) restore them to the ranges expected by the denoiser."""
+    """Given parameters on (0,1) restore them to the ranges expected by the effect."""
     denorm_param_dict = {}
     for effect_name, effect_param_dict in param_dict.items():
         denorm_param_dict[effect_name] = {}
@@ -490,7 +491,7 @@ class Remixer(torch.nn.Module):
         tracks = sources.view(bs, 8, -1)
 
         # provide some headroom before mixing
-        tracks *= 10 ** (-32.0 / 20.0)
+        tracks *= 10 ** (-48.0 / 20.0)
 
         # generate random mix parameters
         track_params = torch.rand(bs, 8, mix_console.num_track_control_params).type_as(
@@ -508,10 +509,15 @@ class Remixer(torch.nn.Module):
                 track_params,
                 fx_bus_params,
                 master_bus_params,
+                use_output_fader=False,
             )
 
         # get the remix
         remix = result[1]
+
+        # clip via tanh if above 4.0
+        remix = torch.tanh((1 / 4.0) * remix)
+        remix *= 4.0
 
         return remix, track_params, fx_bus_params, master_bus_params
 
@@ -551,6 +557,87 @@ class ParameterProjector(torch.nn.Module):
         master_bus_params = torch.sigmoid(self.master_bus_projector(z))
 
         return track_params, fx_bus_params, master_bus_params
+
+
+class WaveformEncoder(torch.nn.Module):
+    def __init__(
+        self,
+        n_inputs=1,
+        embed_dim: int = 1024,
+        encoder_batchnorm: bool = True,
+    ):
+        super().__init__()
+        self.n_inputs = n_inputs
+        self.embed_dim = embed_dim
+        self.encoder_batchnorm = encoder_batchnorm
+        self.model = TCN(n_inputs, embed_dim)
+
+    def forward(self, x: torch.Tensor):
+        return self.model(x)
+
+
+class PositionalEncoding(torch.nn.Module):
+    def __init__(self, d_model: int, dropout: float = 0.1, max_len: int = 1024):
+        super().__init__()
+        self.dropout = torch.nn.Dropout(p=dropout)
+        position = torch.arange(max_len).unsqueeze(1)
+        div_term = torch.exp(
+            torch.arange(0, d_model, 2) * (-math.log(10000.0) / d_model)
+        )
+        pe = torch.zeros(max_len, 1, d_model)
+        pe[:, 0, 0::2] = torch.sin(position * div_term)
+        pe[:, 0, 1::2] = torch.cos(position * div_term)
+        self.register_buffer("pe", pe)
+
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        """
+        Arguments:
+            x: Tensor, shape ``[seq_len, batch_size, embedding_dim]``
+        """
+        x = x + self.pe[: x.size(0)]
+        return self.dropout(x)
+
+
+class WaveformTransformerEncoder(torch.nn.Module):
+    def __init__(
+        self,
+        n_inputs: int = 1,
+        block_size: int = 1024,
+        embed_dim: int = 512,
+        nhead: int = 8,
+        num_layers: int = 12,
+    ) -> None:
+        super().__init__()
+        self.block_size = block_size
+
+        self.cls = torch.nn.Parameter(torch.randn(1, 1, block_size))
+        self.pos_encoding = PositionalEncoding(embed_dim)
+
+        encoder_layer = torch.nn.TransformerEncoderLayer(
+            d_model=block_size,
+            nhead=nhead,
+            batch_first=True,
+        )
+        self.model = torch.nn.TransformerEncoder(
+            encoder_layer,
+            num_layers=num_layers,
+        )
+
+    def forward(self, x: torch.Tensor):
+        bs, chs, seq_len = x.size()
+        # chunk the input waveform into non-overlapping blocks
+        x = x.unfold(-1, self.block_size, self.block_size)
+
+        # move channels to sequence dim
+        x = x.view(bs, chs * x.shape[-2], x.shape[-1])
+
+        # add cls token
+        cls_token = self.cls.repeat(bs, 1, 1)
+        x = torch.cat([cls_token, x], dim=1)
+
+        z = self.model(x)
+
+        return z[:, 0, :]
 
 
 class SpectrogramEncoder(torch.nn.Module):
