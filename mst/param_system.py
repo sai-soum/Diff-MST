@@ -39,11 +39,20 @@ class ParameterEstimationSystem(pl.LightningModule):
         input_mix: torch.Tensor,
         output_mix: torch.Tensor,
     ) -> torch.Tensor:
-        z_in = self.encoder(input_mix)
-        z_out = self.encoder(output_mix)
+        # could consider masking different parts of input and output
+        # so the model cannot rely on perfectly aligned inputs
+
+        z_in_left = self.encoder(input_mix[:, 0:1, :])
+        z_in_right = self.encoder(input_mix[:, 1:2, :])
+
+        z_out_left = self.encoder(output_mix[:, 0:1, :])
+        z_out_right = self.encoder(output_mix[:, 1:2, :])
 
         # take difference between embeddings
-        z_diff = z_out - z_in
+        z_diff_left = z_out_left - z_in_left
+        z_diff_right = z_out_right - z_in_right
+
+        z_diff = torch.cat([z_diff_left, z_diff_right], dim=-1)
 
         # project to parameter space
         track_params, fx_bus_params, master_bus_params = self.projector(z_diff)
@@ -89,6 +98,11 @@ class ParameterEstimationSystem(pl.LightningModule):
             master_bus_params_hat,
             master_bus_params,
         )
+
+        # scale by number of parameters
+        track_params_loss *= track_params.shape[-1] + track_params.shape[-2]
+        fx_bus_params_loss *= fx_bus_params.shape[-1]
+        master_bus_params_loss *= master_bus_params.shape[-1]
 
         loss = track_params_loss + fx_bus_params_loss + master_bus_params_loss
 
