@@ -4,6 +4,7 @@ import laion_clap
 from typing import Callable, List
 
 from mst.filter import barkscale_fbanks
+from mst.modules import SpectrogramEncoder
 
 
 def compute_mid_side(x: torch.Tensor):
@@ -301,6 +302,58 @@ class AudioFeatureLoss(torch.nn.Module):
                 losses[key] = weight * val * self.source_weights[stem_idx]
 
         return losses
+
+
+class ParameterEstimatorLoss(torch.nn.Module):
+    def __init__(self, ckpt_path: str) -> None:
+        super().__init__()
+        # hard-coded model configuration
+        self.encoder = SpectrogramEncoder(
+            embed_dim=512,
+            n_inputs=2,
+            n_fft=2048,
+            hop_length=512,
+            input_batchnorm=False,
+            encoder_batchnorm=True,
+        )
+
+        # read from checkpoint
+        ckpt = torch.load(ckpt_path, map_location="cpu")
+        state_dict = ckpt["state_dict"]
+
+        # extract parts of the state_dict only from the encoder
+        state_dict = {}
+        for key, val in ckpt["state_dict"].items():
+            if key.startswith("encoder."):
+                state_dict[key[8:]] = val
+
+        print(state_dict)
+
+        # load pretrained parameters
+        self.encoder.load_state_dict(state_dict)
+
+        # freeze the parameters in this model
+        # for param in self.encoder.parameters():
+        #    param.requires_grad = False
+
+    def forward(self, input: torch.Tensor, target: torch.Tensor):
+        """Compute loss on stereo mixes using pretrained parameter estimation encoder.
+
+        Args:
+            input: (bs, 2, seq_len)
+            target: (bs, 2, seq_len)
+
+        Returns:
+            loss
+        """
+        # generate embeddings from input and target
+        input_embed = self.encoder(input)  # bs, embed_dim
+        target_embed = self.encoder(target)  # bs, embed_dim
+
+        # compute loss
+        loss = torch.nn.functional.mse_loss(input_embed, target_embed)
+
+        return loss
 
 
 class StereoCLAPLoss(torch.nn.Module):

@@ -2,7 +2,7 @@ import math
 import torch
 from typing import Callable, Optional, List
 from torchaudio.pipelines import HDEMUCS_HIGH_MUSDB_PLUS
-from mst.panns import Cnn14, TCN
+from mst.panns import Cnn14
 
 from dasp_pytorch.functional import (
     gain,
