@@ -13,22 +13,22 @@ trainer:
     - class_path: pytorch_lightning.callbacks.ModelSummary
       init_args: 
         max_depth: 2
-    - class_path: mst.callbacks.mix.LogReferenceMix
-      init_args:
-        root_dirs:
-          - /import/c4dm-datasets-ext/diffmst_validation/validation set/song2/Kat Wright_By My Side/
-          - /import/c4dm-datasets-ext/diffmst_validation/validation set/song1/BenFlowers_Ecstasy_Full
-          - /import/c4dm-datasets-ext/diffmst_validation/validation set/song3/Titanium_HauntedAge_Full/
-          - /import/c4dm-datasets-ext/diffmst_validation/validation set/song1/Soren_ALittleLate_Full
-          - /import/c4dm-datasets-ext/diffmst_validation/validation set/song2/MR0903_Moosmusic_Full
-          - /import/c4dm-datasets-ext/diffmst_validation/validation set/song3/SaturnSyndicate_CatchTheWave_Full
-        ref_mixes: 
-          - /import/c4dm-datasets-ext/diffmst_validation/listening/diffmst-examples_wavref/The Dip - Paddle To The Stars (Lyric Video).wav
-          - /import/c4dm-datasets-ext/diffmst_validation/listening/diffmst-examples_wavref/Feel it all Around by Washed Out (Portlandia Theme).wav
-          - /import/c4dm-datasets-ext/diffmst_validation/listening/diffmst-examples_wavref/Architects - Doomsday.wav
-          - /import/c4dm-datasets-ext/diffmst_validation/validation set/song1/ref/Harry Styles - Late Night Talking (Official Video).wav
-          - /import/c4dm-datasets-ext/diffmst_validation/validation set/song2/ref/Justin Timberlake - Can't Stop The Feeling! [Lyrics].wav
-          - /import/c4dm-datasets-ext/diffmst_validation/validation set/song2/ref/Taylor Swift - Shake It Off.wav
+    #- class_path: mst.callbacks.mix.LogReferenceMix
+    #  init_args:
+    #    root_dirs:
+    #      - /import/c4dm-datasets-ext/diffmst_validation/validation set/song2/Kat Wright_By My Side/
+    #      - /import/c4dm-datasets-ext/diffmst_validation/validation set/song1/BenFlowers_Ecstasy_Full
+    #      - /import/c4dm-datasets-ext/diffmst_validation/validation set/song3/Titanium_HauntedAge_Full/
+    #      - /import/c4dm-datasets-ext/diffmst_validation/validation set/song1/Soren_ALittleLate_Full
+    #      - /import/c4dm-datasets-ext/diffmst_validation/validation set/song2/MR0903_Moosmusic_Full
+    #      - /import/c4dm-datasets-ext/diffmst_validation/validation set/song3/SaturnSyndicate_CatchTheWave_Full
+    #    ref_mixes: 
+    #      - /import/c4dm-datasets-ext/diffmst_validation/listening/diffmst-examples_wavref/The Dip - Paddle To The Stars (Lyric Video).wav
+    #      - /import/c4dm-datasets-ext/diffmst_validation/listening/diffmst-examples_wavref/Feel it all Around by Washed Out (Portlandia Theme).wav
+    #      - /import/c4dm-datasets-ext/diffmst_validation/listening/diffmst-examples_wavref/Architects - Doomsday.wav
+    #      - /import/c4dm-datasets-ext/diffmst_validation/validation set/song1/ref/Harry Styles - Late Night Talking (Official Video).wav
+    #      - /import/c4dm-datasets-ext/diffmst_validation/validation set/song2/ref/Justin Timberlake - Can't Stop The Feeling! [Lyrics].wav
+    #      - /import/c4dm-datasets-ext/diffmst_validation/validation set/song2/ref/Taylor Swift - Shake It Off.wav
   default_root_dir: null
   gradient_clip_val: 10.0
   devices: 3

@@ -20,15 +20,12 @@ model:
     encoder:
       class_path: mst.modules.SpectrogramEncoder
       init_args:
-        embed_dim: 512
-        n_inputs: 2
-        n_fft: 2048
-        hop_length: 512
-        input_batchnorm: false
+        embed_dim: 1024
+        n_inputs: 1
     projector:
       class_path: mst.modules.ParameterProjector
       init_args:
-        embed_dim: 512
+        embed_dim: 2048
         num_tracks: 8
         num_track_control_params: 27
         num_fx_bus_control_params: 25

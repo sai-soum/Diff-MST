@@ -47,9 +47,9 @@ model:
             nhead: 8
        
     loss: 
-      class_path: mst.loss.StereoCLAPLoss
+      class_path: mst.loss.ParameterEstimatorLoss
       init_args:
-        sum_and_diff: true
+        ckpt_path: /import/c4dm-datasets-ext/Diff-MST/DiffMST-Param/0ymfi1pp/checkpoints/epoch=20-step=37947.ckpt
 
 
     
