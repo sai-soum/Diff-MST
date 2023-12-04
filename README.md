@@ -59,26 +59,19 @@ output/ref_mix.wav \
 First update the paths in the configuration file for both the logger and the dataset root directory.
 Then call the `main.py` script passing in the configuration file. 
 ```
-
-CUDA_VISIBLE_DEVICES=4 python main.py fit \
+# new model configuration with audio feature loss
+CUDA_VISIBLE_DEVICES=0 python main.py fit \
 -c configs/config_cjs.yaml \
 -c configs/optimizer.yaml \
--c configs/data/medley+cambridge-4.yaml \
--c configs/models/naive.yaml \
---ckpt_path /import/c4dm-datasets-ext/Diff-MST/DiffMST/iig5qusc/checkpoints/epoch=58-step=140715.ckpt
+-c configs/data/medley+cambridge+jamendo-8.yaml \
+-c configs/models/gain+eq+comp-feat.yaml
 
-CUDA_VISIBLE_DEVICES=5 python main.py fit \
+# new model configuration with CLAP loss
+CUDA_VISIBLE_DEVICES=0 python main.py fit \
 -c configs/config_cjs.yaml \
 -c configs/optimizer.yaml \
--c configs/data/medley+cambridge-8.yaml \
--c configs/models/naive.yaml \
---ckpt_path /import/c4dm-datasets-ext/Diff-MST/DiffMST/d4z39un8/checkpoints/epoch=36-step=88245.ckpt
-
-CUDA_VISIBLE_DEVICES=6 python main.py fit \
--c configs/config_cjs.yaml \
--c configs/optimizer.yaml \
--c configs/data/medley+cambridge-4.yaml \
--c configs/models/naive+verb.yaml
+-c configs/data/medley+cambridge+jamendo-8.yaml \
+-c configs/models/gain+eq+comp-clap.yaml
 ```
 
 
