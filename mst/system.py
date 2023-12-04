@@ -26,6 +26,9 @@ class System(pl.LightningModule):
         active_compressor_epoch: int = 0,
         active_fx_bus_epoch: int = 0,
         active_master_bus_epoch: int = 0,
+        lr: float = 1e-4,
+        max_epochs: int = 500,
+        schedule: str = "step",
         **kwargs,
     ) -> None:
         super().__init__()
