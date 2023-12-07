@@ -1,18 +1,5 @@
 # Store mixing functions here (e.g. knowledge engineering)
-import json
 import torch
-import os
-import json
-import random
-import numpy as np
-import mst.modules
-import pyloudnorm as pyln
-from mst.modules import BasicMixConsole, AdvancedMixConsole
-
-
-from yaml import load, dump, Loader, Dumper
-
-import torchaudio
 import random
 
 
@@ -48,14 +35,13 @@ def instrument_metadata(
 def naive_random_mix(
     tracks: torch.Tensor,
     mix_console: torch.nn.Module,
-    use_track_gain: bool = True,
+    use_track_input_fader: bool = True,
     use_track_eq: bool = True,
     use_track_compressor: bool = True,
     use_track_panner: bool = True,
     use_fx_bus: bool = True,
     use_master_bus: bool = True,
-    sample_rate: int = 44100,
-    warmup: int = 0,
+    use_ouput_fader: bool = True,
     **kwargs,
 ):
     """Generate a random mix by sampling parameters uniformly on the parameter ranges.
@@ -70,8 +56,6 @@ def naive_random_mix(
         param_dict (dict):
     """
     bs, num_tracks, seq_len = tracks.size()
-
-    # torch.manual_seed(46)
 
     # generate random parameter tensors
     mix_params = torch.rand(bs, num_tracks, mix_console.num_track_control_params)
@@ -97,24 +81,16 @@ def naive_random_mix(
             mix_params,
             fx_bus_params,
             master_bus_params,
-            use_track_gain=use_track_gain,
+            use_track_input_fader=use_track_input_fader,
             use_track_eq=use_track_eq,
             use_track_compressor=use_track_compressor,
             use_track_panner=use_track_panner,
             use_master_bus=use_master_bus,
             use_fx_bus=use_fx_bus,
+            use_output_fader=use_ouput_fader,
         )
 
-        # remove warmup samples
-        mix = mix[..., warmup:]
-        mixed_tracks = mixed_tracks[..., warmup:]
-
-        # peak normalize mixes
-        gain_lin = mix.abs().max(dim=-1, keepdim=True)[0]
-        gain_lin = gain_lin.max(dim=-2, keepdim=True)[0]
-        mix /= gain_lin
-
-    return mixed_tracks, mix, track_param_dict, fx_bus_param_dict, master_bus_param_dict
+    return mixed_tracks, mix, track_param_dict, fx_bus_param_dict, master_bus_param_dict, mix_params, fx_bus_params, master_bus_params
 
 
 def knowledge_engineering_mix(
@@ -132,7 +108,6 @@ def knowledge_engineering_mix(
     use_master_bus: bool = True,
     sample_rate: int = 44100,
     warmup: int = 0,
-
 ):
     """Generate a mix using knowledge engineering"""
 
@@ -950,8 +925,10 @@ def knowledge_engineering_mix(
                 KE["master_bus"]["compressor"]["makeup_gain_db"][0],
                 KE["master_bus"]["compressor"]["makeup_gain_db"][1],
             )
-            master_params[j, 24] = random.uniform(KE["master_bus"]["fader"]["gain_db"][0],
-                                                    KE["master_bus"]["fader"]["gain_db"][1])
+            master_params[j, 24] = random.uniform(
+                KE["master_bus"]["fader"]["gain_db"][0],
+                KE["master_bus"]["fader"]["gain_db"][1],
+            )
 
     if mix_console.num_track_control_params == 2:
         mix_params[:, :, 1] = pan_params[:, :, 0]

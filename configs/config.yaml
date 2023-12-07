@@ -5,19 +5,36 @@ trainer:
     class_path: pytorch_lightning.loggers.WandbLogger
     init_args:
       project: DiffMST
-      save_dir: /homes/ssv02/Diff-MST/logs
+      save_dir: /import/c4dm-datasets-ext/diffmst_logs_soum
+      
   enable_checkpointing: true
+  
+
   callbacks:
     - class_path: mst.callbacks.audio.LogAudioCallback
     - class_path: pytorch_lightning.callbacks.ModelSummary
       init_args: 
         max_depth: 2
+    # - class_path: mst.callbacks.mix.LogReferenceMix
+    #   init_args:
+    #     root_dirs:
+    #       - /import/c4dm-datasets-ext/diffmst_validation/validation set/song2/Kat Wright_By My Side/
+    #       - /import/c4dm-datasets-ext/diffmst_validation/validation set/song1/BenFlowers_Ecstasy_Full
+    #       - /import/c4dm-datasets-ext/diffmst_validation/validation set/song3/Titanium_HauntedAge_Full/
+          
+    #     ref_mixes: 
+    #       - /import/c4dm-datasets-ext/diffmst_validation/listening/diffmst-examples_wavref/The Dip - Paddle To The Stars (Lyric Video).wav
+    #       - /import/c4dm-datasets-ext/diffmst_validation/listening/diffmst-examples_wavref/Feel it all Around by Washed Out (Portlandia Theme).wav
+    #       - /import/c4dm-datasets-ext/diffmst_validation/listening/diffmst-examples_wavref/Architects - Doomsday.wav
+          
+
   default_root_dir: null
-  gradient_clip_val: 10.0
+  gradient_clip_val: 1.0
+  detect_anomaly: True
   devices: 1
   check_val_every_n_epoch: 1
-  max_steps: 1000000
-  log_every_n_steps: 50
+  max_epochs: 10000
+  log_every_n_steps: 200
   accelerator: gpu
   strategy: ddp_find_unused_parameters_true
   sync_batchnorm: true
@@ -25,7 +42,9 @@ trainer:
   enable_model_summary: true
   num_sanity_val_steps: 2
   benchmark: true
-  accumulate_grad_batches: 4
+  accumulate_grad_batches: 1
   reload_dataloaders_every_n_epochs: 1
 
 
+# - /import/c4dm-datasets-ext/diffmst-examples/song1/BenFlowers_Ecstasy_Full/
+# - /import/c4dm-datasets-ext/diffmst_validation/listening/diffmst-examples_wavref/Feel it all Around by Washed Out (Portlandia Theme).wav

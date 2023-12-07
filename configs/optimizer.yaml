@@ -1,4 +1,4 @@
 optimizer:
-  class_path: torch.optim.AdamW
+  class_path: torch.optim.Adam
   init_args:
     lr: 0.0001

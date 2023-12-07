@@ -1,0 +1,22 @@
+data:
+  class_path: mst.dataloader.MultitrackDataModule
+  init_args:
+    track_root_dirs: 
+      - /import/c4dm-datasets-ext/mixing-secrets/
+      - /import/c4dm-datasets/
+    mix_root_dirs:  
+      - /import/c4dm-datasets-ext/mtg-jamendo
+    metadata_files: 
+      - ./data/cambridge.yaml 
+      - ./data/medley.yaml
+    length: 262144
+    min_tracks: 2
+    max_tracks: 16
+    batch_size: 1
+    num_workers: 4
+    num_train_passes: 20
+    num_val_passes: 1
+    train_buffer_size_gb: 4.0
+    val_buffer_size_gb: 0.2
+    target_track_lufs_db: -48.0
+    randomize_ref_mix_gain: true

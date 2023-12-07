@@ -1,1 +1,0 @@
-python main.py fit -c configs/config.yaml -c configs/optimizer.yaml -c configs/data/medleydb.yaml -c configs/models/naive_dmc_adv.yaml --ckpt_path /fsx/home-csteinmetz1/logs/DiffMST/DiffMST/hv1kexm6/checkpoints/epoch=12-step=32500.ckpt

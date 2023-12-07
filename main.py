@@ -17,7 +17,7 @@ def cli_main():
         trainer_defaults={
             "accelerator": "gpu",
             "strategy": DDPStrategy(find_unused_parameters=True),
-            "log_every_n_steps": 50,
+            "log_every_n_steps": 50, 
         },
     )
 
