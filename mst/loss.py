@@ -4,8 +4,10 @@ import laion_clap
 from typing import Callable, List
 
 from mst.filter import barkscale_fbanks
+
 import yaml
 from mst.fx_encoder import FXencoder
+
 from mst.modules import SpectrogramEncoder
 
 
@@ -410,6 +412,7 @@ class StereoCLAPLoss(torch.nn.Module):
 
         return losses
 
+
 class FX_encoder_loss(torch.nn.Module):
     def __init__(self, distance: Callable = torch.nn.functional.mse_loss, audiofeatures = True,  weights: list[float]= [1.0],):
         super().__init__()
@@ -513,3 +516,4 @@ class FX_encoder_loss(torch.nn.Module):
 #     losses = loss(input1, input2)
 #     print(losses)
 #     print(sum(losses.values()))
+

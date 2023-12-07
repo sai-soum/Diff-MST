@@ -36,20 +36,23 @@ class LogReferenceMix(pl.callbacks.Callback):
 
         self.songs = []
         for root_dir, ref_mix in zip(root_dirs, ref_mixes):
-            print(type(root_dir))
+
             print(f"Loading {root_dir}...")
             song = {}
-            song["name"] = os.path.basename(os.path.join(root_dir))
-            print(song)
+            song["name"] = os.path.basename(root_dir)
+            
 
             # load reference mix
             x, sr = torchaudio.load(ref_mix)
             print(f"Reference mix sample rate: {sr}")
 
+
             # convert sample rate if needed
             if sr != sample_rate:
                 x = torchaudio.functional.resample(x, sr, sample_rate)
+
             print(f"Reference mix sample rate after resampling: {sample_rate}")
+
 
             song["ref_mix"] = x
 

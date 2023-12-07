@@ -15,23 +15,22 @@ trainer:
     - class_path: pytorch_lightning.callbacks.ModelSummary
       init_args: 
         max_depth: 2
-    # - class_path: mst.callbacks.mix.LogReferenceMix
-    #   init_args:
-    #     root_dirs:
-    #       - /import/c4dm-datasets-ext/diffmst_validation/validation set/song2/Kat Wright_By My Side/
-    #       - /import/c4dm-datasets-ext/diffmst_validation/validation set/song1/BenFlowers_Ecstasy_Full
-    #       - /import/c4dm-datasets-ext/diffmst_validation/validation set/song3/Titanium_HauntedAge_Full/
-          
-    #     ref_mixes: 
-    #       - /import/c4dm-datasets-ext/diffmst_validation/listening/diffmst-examples_wavref/The Dip - Paddle To The Stars (Lyric Video).wav
-    #       - /import/c4dm-datasets-ext/diffmst_validation/listening/diffmst-examples_wavref/Feel it all Around by Washed Out (Portlandia Theme).wav
-    #       - /import/c4dm-datasets-ext/diffmst_validation/listening/diffmst-examples_wavref/Architects - Doomsday.wav
-          
 
+    - class_path: mst.callbacks.mix.LogReferenceMix
+      init_args:
+        root_dirs: 
+          - /import/c4dm-datasets-ext/diffmst-examples/song1/BenFlowers_Ecstasy_Full/
+          - /import/c4dm-datasets-ext/diffmst-examples/song2/Kat Wright_By My Side/
+          - /import/c4dm-datasets-ext/diffmst-examples/song3/Titanium_HauntedAge_Full/
+        ref_mixes: 
+          - /import/c4dm-datasets-ext/diffmst-examples/song1/ref/_Feel it all Around_ by Washed Out (Portlandia Theme).mp3
+          - /import/c4dm-datasets-ext/diffmst-examples/song2/ref/The Dip - Paddle To The Stars (Lyric Video).mp3
+          - /import/c4dm-datasets-ext/diffmst-examples/song3/ref/Architects - _Doomsday_.mp3
   default_root_dir: null
-  gradient_clip_val: 1.0
+  gradient_clip_val: 10.0
+  devices: 3
   detect_anomaly: True
-  devices: 1
+
   check_val_every_n_epoch: 1
   max_epochs: 10000
   log_every_n_steps: 200
