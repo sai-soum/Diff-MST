@@ -671,9 +671,6 @@ class WaveformTransformerEncoder(torch.nn.Module):
 class SpectrogramEncoder(torch.nn.Module):
     def __init__(
         self,
-=======
-    def __init__(
-        self,
         n_inputs=1,
         embed_dim: int = 1024,
         encoder_batchnorm: bool = True,
