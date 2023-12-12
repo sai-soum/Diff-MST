@@ -46,6 +46,7 @@ class MixStyleTransferModel(torch.nn.Module):
             ref_mix_side = ref_mix[..., 0:1, :] - ref_mix[..., 1:2, :]
 
             # process the reference mix
+
             mid_embeds = self.mix_encoder(ref_mix_mid)
             side_embeds = self.mix_encoder(ref_mix_side)
             mix_embeds = torch.stack((mid_embeds, side_embeds), dim=1)
@@ -221,15 +222,27 @@ class AdvancedMixConsole(torch.nn.Module):
         # move all tracks to batch dim for parallel processing
         tracks = tracks.view(-1, 1, seq_len)
 
+        if tracks.sum() == 0:
+            print("tracks is 0")
+            print(tracks)
+
         # apply effects in series but all tracks at once
         if use_track_input_fader:
+            
             tracks = gain(tracks, self.sample_rate, **track_param_dict["input_fader"])
+            if tracks.sum() == 0:
+                print("gain is 0")
+                print(tracks)
+
         if use_track_eq:
             tracks = parametric_eq(
                 tracks,
                 self.sample_rate,
                 **track_param_dict["parametric_eq"],
             )
+            if tracks.sum() == 0:
+                print("eq is 0")
+                print(tracks)
         if use_track_compressor:
             tracks = compressor(
                 tracks,
@@ -237,6 +250,12 @@ class AdvancedMixConsole(torch.nn.Module):
                 **track_param_dict["compressor"],
                 lookahead_samples=2048,
             )
+            if tracks.sum() == 0:
+                print("compressor is 0")    
+                print(tracks)
+
+        # restore tracks to original shape
+        tracks = tracks.view(bs, num_tracks, seq_len)
 
         # restore tracks to original shape
         tracks = tracks.view(bs, num_tracks, seq_len)
@@ -267,10 +286,12 @@ class AdvancedMixConsole(torch.nn.Module):
             # process Left channel
             master_bus = gain(
                 master_bus, self.sample_rate, **master_bus_param_dict["input_fader"]
+
             )
             master_bus = parametric_eq(
                 master_bus, self.sample_rate, **master_bus_param_dict["parametric_eq"]
             )
+
 
             # apply compressor to both channels
             master_bus = compressor(
@@ -566,6 +587,7 @@ class ParameterProjector(torch.nn.Module):
 
 
 class WaveformEncoder(torch.nn.Module):
+
     def __init__(
         self,
         n_inputs=1,
@@ -649,6 +671,91 @@ class WaveformTransformerEncoder(torch.nn.Module):
 class SpectrogramEncoder(torch.nn.Module):
     def __init__(
         self,
+=======
+    def __init__(
+        self,
+        n_inputs=1,
+        embed_dim: int = 1024,
+        encoder_batchnorm: bool = True,
+    ):
+        super().__init__()
+        self.n_inputs = n_inputs
+        self.embed_dim = embed_dim
+        self.encoder_batchnorm = encoder_batchnorm
+        self.model = TCN(n_inputs, embed_dim)
+
+    def forward(self, x: torch.Tensor):
+        return self.model(x)
+
+
+class PositionalEncoding(torch.nn.Module):
+    def __init__(self, d_model: int, dropout: float = 0.1, max_len: int = 1024):
+        super().__init__()
+        self.dropout = torch.nn.Dropout(p=dropout)
+        position = torch.arange(max_len).unsqueeze(1)
+        div_term = torch.exp(
+            torch.arange(0, d_model, 2) * (-math.log(10000.0) / d_model)
+        )
+        pe = torch.zeros(max_len, 1, d_model)
+        pe[:, 0, 0::2] = torch.sin(position * div_term)
+        pe[:, 0, 1::2] = torch.cos(position * div_term)
+        self.register_buffer("pe", pe)
+
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        """
+        Arguments:
+            x: Tensor, shape ``[seq_len, batch_size, embedding_dim]``
+        """
+        x = x + self.pe[: x.size(0)]
+        return self.dropout(x)
+
+
+class WaveformTransformerEncoder(torch.nn.Module):
+    def __init__(
+        self,
+        n_inputs: int = 1,
+        block_size: int = 1024,
+        embed_dim: int = 512,
+        nhead: int = 8,
+        num_layers: int = 12,
+    ) -> None:
+        super().__init__()
+        self.block_size = block_size
+
+        self.cls = torch.nn.Parameter(torch.randn(1, 1, block_size))
+        self.pos_encoding = PositionalEncoding(embed_dim)
+
+        encoder_layer = torch.nn.TransformerEncoderLayer(
+            d_model=block_size,
+            nhead=nhead,
+            batch_first=True,
+        )
+        self.model = torch.nn.TransformerEncoder(
+            encoder_layer,
+            num_layers=num_layers,
+        )
+
+    def forward(self, x: torch.Tensor):
+        bs, chs, seq_len = x.size()
+        # chunk the input waveform into non-overlapping blocks
+        x = x.unfold(-1, self.block_size, self.block_size)
+
+        # move channels to sequence dim
+        x = x.view(bs, chs * x.shape[-2], x.shape[-1])
+
+        # add cls token
+        cls_token = self.cls.repeat(bs, 1, 1)
+        x = torch.cat([cls_token, x], dim=1)
+
+        z = self.model(x)
+
+        return z[:, 0, :]
+
+
+class SpectrogramEncoder(torch.nn.Module):
+    def __init__(
+        self,
+
         embed_dim: int = 128,
         n_inputs: int = 1,
         n_fft: int = 2048,
@@ -684,6 +791,7 @@ class SpectrogramEncoder(torch.nn.Module):
         Returns:
             embed (torch.Tenesor): Embedding torch.Tensor of shape (bs, embed_dim)
         """
+
         bs, chs, seq_len = x.size()
 
         # move channels to batch dim
@@ -696,7 +804,9 @@ class SpectrogramEncoder(torch.nn.Module):
             window=self.window,
             return_complex=True,
         )
+
         X = X.view(bs, chs, X.shape[-2], X.shape[-1])
+
         X = torch.pow(X.abs() + 1e-8, 0.3)
         # X = X.repeat(1, 3, 1, 1)  # add dummy channels (3)
 
@@ -706,6 +816,7 @@ class SpectrogramEncoder(torch.nn.Module):
 
         # process with CNN
         embeds = self.model(X)
+        #print(embeds.shape)
         return embeds
 
 
@@ -815,3 +926,4 @@ class TransformerController(torch.nn.Module):
         )
 
         return pred_track_params, pred_fx_bus_params, pred_master_bus_params
+

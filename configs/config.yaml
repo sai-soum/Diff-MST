@@ -5,13 +5,17 @@ trainer:
     class_path: pytorch_lightning.loggers.WandbLogger
     init_args:
       project: DiffMST
-      save_dir: /homes/ssv02/Diff-MST/logs
+      save_dir: /import/c4dm-datasets-ext/diffmst_logs_soum
+      
   enable_checkpointing: true
+  
+
   callbacks:
     - class_path: mst.callbacks.audio.LogAudioCallback
     - class_path: pytorch_lightning.callbacks.ModelSummary
       init_args: 
         max_depth: 2
+
     - class_path: mst.callbacks.mix.LogReferenceMix
       init_args:
         root_dirs: 
@@ -25,9 +29,11 @@ trainer:
   default_root_dir: null
   gradient_clip_val: 10.0
   devices: 3
+  detect_anomaly: True
+
   check_val_every_n_epoch: 1
-  max_steps: 1000000
-  log_every_n_steps: 50
+  max_epochs: 10000
+  log_every_n_steps: 200
   accelerator: gpu
   strategy: ddp_find_unused_parameters_true
   sync_batchnorm: true
@@ -39,3 +45,5 @@ trainer:
   reload_dataloaders_every_n_epochs: 1
 
 
+# - /import/c4dm-datasets-ext/diffmst-examples/song1/BenFlowers_Ecstasy_Full/
+# - /import/c4dm-datasets-ext/diffmst_validation/listening/diffmst-examples_wavref/Feel it all Around by Washed Out (Portlandia Theme).wav

@@ -6,7 +6,7 @@ trainer:
     class_path: pytorch_lightning.loggers.WandbLogger
     init_args:
       project: DiffMST
-      save_dir: /import/c4dm-datasets-ext/Diff-MST
+      save_dir: /import/c4dm-datasets-ext/diffmst_logs_soum
   enable_checkpointing: true
   callbacks:
     - class_path: mst.callbacks.audio.LogAudioCallback
@@ -33,7 +33,9 @@ trainer:
   gradient_clip_val: 10.0
   devices: 1
   check_val_every_n_epoch: 1
-  max_epochs: 500
+
+  max_epochs: 800
+
   log_every_n_steps: 50
   accelerator: gpu
   strategy: ddp_find_unused_parameters_true

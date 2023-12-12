@@ -87,6 +87,10 @@ tar -xvf MedleyDB_v2.tar
 python main.py fit -c configs/config.yaml -c configs/optimizer.yaml -c configs/data/medleydb_cjs.yaml -c configs/models/naive_dmc_adv.yaml
 CUDA_VISIBLE_DEVICES=7 python main.py fit -c configs/config_cjs.yaml -c configs/optimizer.yaml -c configs/data/medleydb_c4dm.yaml -c configs/models/ke_dmc_adv.yaml
 
-CUDA_VISIBLE_DEVICES=6 python main.py fit -c configs/config_cjs.yaml -c configs/optimizer.yaml -c configs/data/medleydb_c4dm.yaml -c configs/models/naive_dmc_adv.yaml
+CUDA_VISIBLE_DEVICES=7 python main.py fit -c configs/config.yaml -c configs/optimizer.yaml -c configs/data/medley+cambridge-4.yaml -c configs/models/naive+fx_encoder_loss.yaml
+
+To run the paramloss code
+
+CUDA_VISIBLE_DEVICES=2 python main.py fit -c configs/config.yaml -c configs/optimizer.yaml -c configs/data/medley+cambridge-4.yaml -c configs/models/naive+paramloss.yaml
 
 ```

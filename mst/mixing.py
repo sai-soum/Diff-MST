@@ -90,7 +90,9 @@ def naive_random_mix(
             use_output_fader=use_ouput_fader,
         )
 
-    return mixed_tracks, mix, track_param_dict, fx_bus_param_dict, master_bus_param_dict
+
+    return mixed_tracks, mix, track_param_dict, fx_bus_param_dict, master_bus_param_dict, mix_params, fx_bus_params, master_bus_params
+
 
 
 def knowledge_engineering_mix(

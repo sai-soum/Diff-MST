@@ -21,9 +21,12 @@ class MixDataset(torch.utils.data.Dataset):
         self.root_dir = root_dir
         self.length = length
 
+         
         self.mix_filepaths = glob.glob(
-            os.path.join(root_dir, "**", "*.mp3"), recursive=True
-        )
+            os.path.join(root_dir, "**", "*.wav"), recursive=True
+
+        #self.mix_filepaths = glob.glob(
+            #os.path.join(root_dir, "**", "*.mp3"), recursive=True)
         print(f"Located {len(self.mix_filepaths)} mixes.")
 
         self.meter = pyln.Meter(44100)
@@ -42,7 +45,9 @@ class MixDataset(torch.utils.data.Dataset):
 
             # find random non-silent region of the mix
             offset = np.random.randint(0, num_frames - self.length - 1)
+
             offset = 0  # always use the same offset
+
 
             mix, _ = torchaudio.load(
                 mix_filepath,
@@ -171,7 +176,9 @@ class MultitrackDataset(torch.utils.data.Dataset):
 
         for mix_dir in mix_root_dirs:
             # find all mixes in directory recursively
-            mix_files = glob.glob(os.path.join(mix_dir, "**", "*.mp3"), recursive=True)
+
+            mix_files = glob.glob(os.path.join(mix_dir, "**", "*.wav"), recursive=True)
+
 
             self.mixes.extend(mix_files)
 
@@ -215,6 +222,8 @@ class MultitrackDataset(torch.utils.data.Dataset):
 
             mix_lufs_db = self.meter.integrated_loudness(mix.permute(1, 0).numpy())
 
+
+
             if mix_lufs_db < -48.0 or mix_lufs_db == float("-inf"):
                 continue
 
@@ -247,11 +256,16 @@ class MultitrackDataset(torch.utils.data.Dataset):
 
         for dirname in pbar:
             track_filepaths = glob.glob(os.path.join(dirname, "*.wav"))
+
+            song_name = os.path.basename(dirname)
+
             if len(track_filepaths) < self.min_tracks:
                 continue
             random.shuffle(track_filepaths)
 
             num_frames = torchaudio.info(track_filepaths[0]).num_frames
+
+            middle_idx = int(num_frames / 2)
 
             # ensure the song is long enough if we start from 25% in
             if (0.75 * num_frames) < self.length:
@@ -279,9 +293,11 @@ class MultitrackDataset(torch.utils.data.Dataset):
                 if track.size()[0] > 2:
                     continue
 
+
                 track_lufs_db = self.meter.integrated_loudness(
                     track.permute(1, 0).numpy()
                 )
+
 
                 if track_lufs_db < -48.0 or track_lufs_db == float("-inf"):
                     continue
@@ -329,14 +345,25 @@ class MultitrackDataset(torch.utils.data.Dataset):
 
             # convert to tensor
             tracks = torch.cat(tracks)
-            # tracks = tracks.reshape(self.max_tracks, self.length)
+
+            
+            # if tracks[...,0:middle_idx].sum() == 0 or tracks[...,middle_idx:].sum() == 0:
+            #     continue
+            tracks = tracks.reshape(self.max_tracks, self.length)
+            #create a sum mix of the tracks
+            mix_check = tracks.sum(0)
+            if torch.any(mix_check[...,0:middle_idx] == False) or torch.any(mix_check[...,middle_idx:] == False):
+                continue
+
             track_metadata = torch.tensor(track_metadata)
             stereo_info = torch.tensor(stereo_info).reshape(track_metadata.shape)
             track_padding = torch.tensor(track_padding)
 
             # add to buffer
             self.track_examples.append(
-                (tracks, stereo_info, track_metadata, track_padding)
+
+                (tracks, stereo_info, track_metadata, track_padding, song_name)
+
             )
 
             nbytes_loaded += tracks.element_size() * tracks.nelement()
@@ -354,9 +381,13 @@ class MultitrackDataset(torch.utils.data.Dataset):
         track_example = self.track_examples[track_example_idx]
 
         tracks = track_example[0]
+
+        
         stereo_info = track_example[1]
         track_metadata = track_example[2]
         track_padding = track_example[3]
+        song_name = track_example[4]
+
 
         # ------------ get example from mix buffer ------------
         # optional
@@ -371,7 +402,9 @@ class MultitrackDataset(torch.utils.data.Dataset):
         else:
             mix = torch.empty(1)
 
-        return tracks, stereo_info, track_metadata, track_padding, mix
+
+        return tracks, stereo_info, track_metadata, track_padding, mix, song_name
+
 
 
 class MultitrackDataModule(pl.LightningDataModule):

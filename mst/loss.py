@@ -4,6 +4,10 @@ import laion_clap
 from typing import Callable, List
 
 from mst.filter import barkscale_fbanks
+
+import yaml
+from mst.fx_encoder import FXencoder
+
 from mst.modules import SpectrogramEncoder
 
 
@@ -407,3 +411,109 @@ class StereoCLAPLoss(torch.nn.Module):
             losses[key] = sub_loss
 
         return losses
+
+
+class FX_encoder_loss(torch.nn.Module):
+    def __init__(self, distance: Callable = torch.nn.functional.mse_loss, audiofeatures = True,  weights: list[float]= [1.0],):
+        super().__init__()
+        self.distance = distance
+        config_path = "/homes/ssv02/Diff-MST/configs/models/fx_encoder_mst.yaml"
+        # load configuration file
+        with open(config_path, "r") as f:
+            self.config = yaml.safe_load(f)
+        checkpoint_path = "/homes/ssv02/Diff-MST/data/FXencoder_ps.pt"
+        self.ddp = True
+        #self.embed_distance = torch.nn.CosineEmbeddingLoss(reduction = 'mean')
+        self.embed_similarity = torch.nn.CosineSimilarity(dim=1, eps=1e-6)
+        
+        # load model
+        self.model = FXencoder(self.config["Effects_Encoder"]['default'])
+
+
+        # load checkpoint
+        checkpoint = torch.load(checkpoint_path)
+
+        from collections import OrderedDict
+        new_state_dict = OrderedDict()
+        for k, v in checkpoint["model"].items():
+            # remove `module.` if the model was trained with DDP
+            name = k[7:] if self.ddp else k
+            new_state_dict[name] = v
+    
+        # load params
+        self.model.load_state_dict(new_state_dict)
+        self.model.eval()
+        
+        # freeze all parameters in model
+        for param in self.model.parameters():
+            param.requires_grad = False
+        
+        def compute_fx_embeds(x: torch.Tensor):
+            embed = self.model(x)
+            return embed
+        
+        #weights = [0.1,0.001,1.0,1.0,0.1,100.0]
+        self.weights = weights
+        self.transforms = []
+        
+        if audiofeatures:
+            self.audiofeatures = audiofeatures  
+            
+            self.transforms = [
+                compute_rms,
+                compute_crest_factor,
+                compute_stereo_width,
+                compute_stereo_imbalance,
+                compute_barkspectrum,
+            ]
+
+        self.transforms.append(compute_fx_embeds)
+        
+ 
+        assert len(self.transforms) == len(self.weights)
+
+    def forward(self, input: torch.Tensor, target: torch.Tensor):
+        losses = {}
+        # compute embeddings
+        # input_embed = self.model(input)
+        # target_embed = self.model(target)
+
+        # # compute losses
+        # loss = self.distance(input_embed, target_embed)
+
+        # return loss
+    
+        for transform, weight in zip(self.transforms, self.weights):
+            transform_name = "_".join(transform.__name__.split("_")[1:])
+            #print(transform_name)
+            input_transform = transform(input)
+            target_transform = transform(target)
+            if transform_name == "fx_embeds":
+                val = 1-self.embed_similarity(input_transform, target_transform).mean().clamp(min=1e-8)
+                #print(val)
+            else:
+                val = torch.nn.functional.mse_loss(input_transform, target_transform)
+                #print(val)
+            losses[transform_name] = weight * val
+    
+        return losses
+    
+# if __name__ == "__main__":
+#     import torchaudio
+#     path = "/import/c4dm-datasets-ext/mtg-jamendo_wav/02/1012002.wav"
+    
+#     #input1, sr = torchaudio.load(path, channels_first = True, num_frames = 44100*10)
+    
+#     input1= torch.zeros(2,44100*10)
+#     input2 = input1
+#     #input2, sr = torchaudio.load(path, channels_first = True, num_frames = 44100*10, frame_offset = 44100*10)
+#     print(input1.shape)
+#     input1 = input1.unsqueeze(0)
+#     input2 = input2.unsqueeze(0)
+#     weights = [1.0, 0.001, 1.0, 1.0, 0.01 , 0.01]
+
+#     loss = FX_encoder_loss(weights = weights)
+#     losses = loss(input1, input2)
+#     print(losses)
+#     print(sum(losses.values()))
+
