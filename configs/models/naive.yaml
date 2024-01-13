@@ -5,7 +5,7 @@ model:
     active_eq_epoch: 0
     active_compressor_epoch: 0
     active_fx_bus_epoch: 1000
-    active_master_bus_epoch: 0
+    active_master_bus_epoch: 1000
     use_track_loss : false
     use_mix_loss : true
     use_param_loss : false

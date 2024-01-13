@@ -1,0 +1,45 @@
+train:
+    00016/tracks/MR1106_BlueLitMoon_Full:
+      01_Kick.wav: kick
+      02_Snare.wav: snare
+      03_Overheads.wav: overhead
+      04_Tom1.wav: tom
+      05_Tom2.wav: tom
+      06_Tom3.wav: tom
+      07_Tom4.wav: tom
+      08_Bass.wav: bass
+      09_AcGtr1Reverse.wav: guitar
+      10_AcGtr2.wav: guitar
+      11_LeadVox.wav: vox
+      12_BackingVox1.wav: backingvox
+      13_BackingVox2.wav: backingvox
+val:
+    00016/tracks/MR1106_BlueLitMoon_Full:
+      01_Kick.wav: kick
+      02_Snare.wav: snare
+      03_Overheads.wav: overhead
+      04_Tom1.wav: tom
+      05_Tom2.wav: tom
+      06_Tom3.wav: tom
+      07_Tom4.wav: tom
+      08_Bass.wav: bass
+      09_AcGtr1Reverse.wav: guitar
+      10_AcGtr2.wav: guitar
+      11_LeadVox.wav: vox
+      12_BackingVox1.wav: backingvox
+      13_BackingVox2.wav: backingvox
+test:
+    00016/tracks/MR1106_BlueLitMoon_Full:
+      01_Kick.wav: kick
+      02_Snare.wav: snare
+      03_Overheads.wav: overhead
+      04_Tom1.wav: tom
+      05_Tom2.wav: tom
+      06_Tom3.wav: tom
+      07_Tom4.wav: tom
+      08_Bass.wav: bass
+      09_AcGtr1Reverse.wav: guitar
+      10_AcGtr2.wav: guitar
+      11_LeadVox.wav: vox
+      12_BackingVox1.wav: backingvox
+      13_BackingVox2.wav: backingvox

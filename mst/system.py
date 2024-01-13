@@ -202,8 +202,6 @@ class System(pl.LightningModule):
             pred_master_bus_params,
         ) = self.model(tracks_b, ref_mix_a, track_padding_mask=track_padding)
 
-        
-   
         # ------- generate a mix using the predicted mix console parameters -------
         (
             pred_mixed_tracks_b,
@@ -226,7 +224,7 @@ class System(pl.LightningModule):
         )
 
         # normalize the predicted mix before computing the loss
-        # pred_mix_b = batch_stereo_peak_normalize(pred_mix_b)
+        pred_mix_b = batch_stereo_peak_normalize(pred_mix_b)
 
         if ref_track_param_dict is None:
             ref_track_param_dict = pred_track_param_dict

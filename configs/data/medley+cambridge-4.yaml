@@ -3,18 +3,18 @@ data:
   init_args:
     track_root_dirs: 
       - /import/c4dm-datasets-ext/mixing-secrets/
-      - /import/c4dm-datasets/
+      # - /import/c4dm-datasets/
     metadata_files: 
       - ./data/cambridge.yaml 
-      - ./data/medley.yaml
+      # - ./data/medley.yaml
     length: 262144
-    min_tracks: 4
-    max_tracks: 4
+    min_tracks: 8
+    max_tracks: 8
     batch_size: 2
     num_workers: 4
-    num_train_passes: 10
-    num_val_passes: 5
-    train_buffer_size_gb: 0.5
-    val_buffer_size_gb: 0.05
+    num_train_passes: 5
+    num_val_passes: 3
+    train_buffer_size_gb: 0.1
+    val_buffer_size_gb: 0.01
     target_track_lufs_db: -48.0
     randomize_ref_mix_gain: false

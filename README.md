@@ -91,6 +91,6 @@ CUDA_VISIBLE_DEVICES=7 python main.py fit -c configs/config.yaml -c configs/opti
 
 To run the paramloss code
 
-CUDA_VISIBLE_DEVICES=2 python main.py fit -c configs/config.yaml -c configs/optimizer.yaml -c configs/data/medley+cambridge-4.yaml -c configs/models/naive+paramloss.yaml
+CUDA_VISIBLE_DEVICES=1 python main.py fit -c configs/config.yaml -c configs/optimizer.yaml -c configs/data/medley+cambridge-4.yaml -c configs/models/naive.yaml
 
 ```
