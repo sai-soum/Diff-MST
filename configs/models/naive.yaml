@@ -9,6 +9,7 @@ model:
     use_track_loss : false
     use_mix_loss : true
     use_param_loss : false
+
     mix_fn: mst.mixing.naive_random_mix
     mix_console:
       class_path: mst.modules.AdvancedMixConsole
