@@ -211,7 +211,8 @@ class System(pl.LightningModule):
         )
 
         # normalize the predicted mix before computing the loss
-        # pred_mix_b = batch_stereo_peak_normalize(pred_mix_b)
+        pred_mix_b = batch_stereo_peak_normalize(pred_mix_b)
+        ref_mix_b = batch_stereo_peak_normalize(ref_mix_b)
 
         if ref_track_param_dict is None:
             ref_track_param_dict = pred_track_param_dict
