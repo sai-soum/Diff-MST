@@ -53,7 +53,7 @@ model:
             nhead: 8
        
     loss: 
-      class_path: mst.loss.AudioFeatureLoss
+      class_path: mst.loss.FeatureAndQualityLoss
       init_args:
         sample_rate: 44100
         stem_separation: false
@@ -64,5 +64,5 @@ model:
           - 1.0  # stereo width
           - 1.0 # stereo imbalance
           - 0.1 # bark spectrum
-
-  
+        quality_ckpt_path: /import/c4dm-datasets-ext/Diff-MST/DiffMST-Quality/q60vbm8l/checkpoints/epoch=499-step=903500.ckpt
+        quality_weight: 0.001
