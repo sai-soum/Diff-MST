@@ -125,41 +125,76 @@ class Cnn14(nn.Module):
         num_classes: int,
         n_inputs: int = 1,
         use_batchnorm: bool = True,
+        model_size: str = "large",
     ):
         super(Cnn14, self).__init__()
 
-        self.conv_block1 = ConvBlock(
-            in_channels=n_inputs,
-            out_channels=64,
-            use_batchnorm=use_batchnorm,
-        )
-        self.conv_block2 = ConvBlock(
-            in_channels=64,
-            out_channels=128,
-            use_batchnorm=use_batchnorm,
-        )
-        self.conv_block3 = ConvBlock(
-            in_channels=128,
-            out_channels=256,
-            use_batchnorm=use_batchnorm,
-        )
-        self.conv_block4 = ConvBlock(
-            in_channels=256,
-            out_channels=512,
-            use_batchnorm=use_batchnorm,
-        )
-        self.conv_block5 = ConvBlock(
-            in_channels=512,
-            out_channels=1024,
-            use_batchnorm=use_batchnorm,
-        )
-        self.conv_block6 = ConvBlock(
-            in_channels=1024,
-            out_channels=2048,
-            use_batchnorm=use_batchnorm,
-        )
+        if model_size == "large":
+            self.conv_block1 = ConvBlock(
+                in_channels=n_inputs,
+                out_channels=64,
+                use_batchnorm=use_batchnorm,
+            )
+            self.conv_block2 = ConvBlock(
+                in_channels=64,
+                out_channels=128,
+                use_batchnorm=use_batchnorm,
+            )
+            self.conv_block3 = ConvBlock(
+                in_channels=128,
+                out_channels=256,
+                use_batchnorm=use_batchnorm,
+            )
+            self.conv_block4 = ConvBlock(
+                in_channels=256,
+                out_channels=512,
+                use_batchnorm=use_batchnorm,
+            )
+            self.conv_block5 = ConvBlock(
+                in_channels=512,
+                out_channels=1024,
+                use_batchnorm=use_batchnorm,
+            )
+            self.conv_block6 = ConvBlock(
+                in_channels=1024,
+                out_channels=2048,
+                use_batchnorm=use_batchnorm,
+            )
+            out_channels = 2048
+        elif model_size == "small":
+            self.conv_block1 = ConvBlock(
+                in_channels=n_inputs,
+                out_channels=64,
+                use_batchnorm=use_batchnorm,
+            )
+            self.conv_block2 = ConvBlock(
+                in_channels=64,
+                out_channels=128,
+                use_batchnorm=use_batchnorm,
+            )
+            self.conv_block3 = ConvBlock(
+                in_channels=128,
+                out_channels=256,
+                use_batchnorm=use_batchnorm,
+            )
+            self.conv_block4 = ConvBlock(
+                in_channels=256,
+                out_channels=512,
+                use_batchnorm=use_batchnorm,
+            )
+            self.conv_block5 = ConvBlock5x5(
+                in_channels=512,
+                out_channels=512,
+            )
+            self.conv_block6 = ConvBlock5x5(
+                in_channels=512,
+                out_channels=512,
+            )
+            out_channels = 512
+        else:
+            raise Exception(f"Invalid model_size: {model_size}")
 
-        self.fc = nn.Linear(2048, num_classes, bias=True)
+        self.fc = nn.Linear(out_channels, num_classes, bias=True)
         self.init_weight()
 
     def init_weight(self):
@@ -172,33 +207,14 @@ class Cnn14(nn.Module):
         """
         batch_size, chs, bins, frames = x.size()
 
-        # x = x.view(batch_size, -1)
-        # x = self.spectrogram_extractor(x)  # (batch_size, 1, time_steps, freq_bins)
-        # x = self.logmel_extractor(x)  # (batch_size, 1, time_steps, mel_bins)
-        # x = x.transpose(1, 3)
-        # x = self.bn0(x)
-        # x = x.transpose(1, 3)
-        # if self.training:
-        #    x = self.spec_augmenter(x)
-
         x = self.conv_block1(x, pool_size=(2, 2), pool_type="avg")
-        # x = F.dropout(x, p=0.2, training=self.training)
         x = self.conv_block2(x, pool_size=(4, 4), pool_type="avg")
-        # x = F.dropout(x, p=0.2, training=self.training)
         x = self.conv_block3(x, pool_size=(4, 2), pool_type="avg")
-        # x = F.dropout(x, p=0.2, training=self.training)
         x = self.conv_block4(x, pool_size=(4, 2), pool_type="avg")
-        # x = F.dropout(x, p=0.2, training=self.training)
         x = self.conv_block5(x, pool_size=(4, 2), pool_type="avg")
-        # x = F.dropout(x, p=0.2, training=self.training)
         x = self.conv_block6(x, pool_size=(2, 2), pool_type="avg")
-        # x = F.dropout(x, p=0.2, training=self.training)
         x = torch.mean(x, dim=2)  # mean across stft bins
-
-        (x1, _) = torch.max(x, dim=2)
-        x2 = torch.mean(x, dim=2)
-        x = x1 + x2
-        # x = F.dropout(x, p=0.5, training=self.training)
+        x = x.permute(0, 2, 1)
         x_out = self.fc(x)
         clipwise_output = x_out
 
