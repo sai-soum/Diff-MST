@@ -60,20 +60,30 @@ First update the paths in the configuration file for both the logger and the dat
 Then call the `main.py` script passing in the configuration file. 
 ```
 # new model configuration with audio feature loss
-CUDA_VISIBLE_DEVICES=0 python main.py fit \
+CUDA_VISIBLE_DEVICES=2,4 python main.py fit \
 -c configs/config_cjs.yaml \
 -c configs/optimizer.yaml \
--c configs/data/medley+cambridge+jamendo-8.yaml \
+-c configs/data/medley+cambridge+jamendo-16.yaml \
 -c configs/models/gain+eq+comp-feat.yaml
 
 # new model configuration with CLAP loss
-CUDA_VISIBLE_DEVICES=0 python main.py fit \
+CUDA_VISIBLE_DEVICES=7 python main.py fit \
 -c configs/config_cjs.yaml \
 -c configs/optimizer.yaml \
--c configs/data/medley+cambridge+jamendo-8.yaml \
+-c configs/data/medley+cambridge+jamendo-4.yaml \
 -c configs/models/gain+eq+comp-clap.yaml
 ```
 
+```
+CUDA_VISIBLE_DEVICES=5 python main.py fit \
+-c configs/config_quality.yaml \
+-c configs/optimizer.yaml \
+-c configs/data/jamendo.yaml \
+-c configs/models/quality-estim.yaml
+```
+
+```
+```
 
 # Stability (ignore)
 ```

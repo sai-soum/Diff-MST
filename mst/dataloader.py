@@ -5,6 +5,7 @@ import torch
 import yaml
 import random
 import itertools
+import pedalboard
 import torchaudio
 import numpy as np
 import pyloudnorm as pyln
@@ -21,15 +22,16 @@ class MixDataset(torch.utils.data.Dataset):
         self.root_dir = root_dir
         self.length = length
 
-         
         self.mix_filepaths = glob.glob(
-            os.path.join(root_dir, "**", "*.wav"), recursive=True
+            os.path.join(root_dir, "**", "*.mp3"), recursive=True
+        )
 
-        #self.mix_filepaths = glob.glob(
-            #os.path.join(root_dir, "**", "*.mp3"), recursive=True)
+        # self.mix_filepaths = glob.glob(
+        # os.path.join(root_dir, "**", "*.mp3"), recursive=True)
         print(f"Located {len(self.mix_filepaths)} mixes.")
 
-        self.meter = pyln.Meter(44100)
+        self.sample_rate = 44100
+        self.meter = pyln.Meter(self.sample_rate)
 
     def __len__(self):
         return len(self.mix_filepaths)
@@ -39,15 +41,11 @@ class MixDataset(torch.utils.data.Dataset):
         while not valid:
             # get random file
             idx = np.random.randint(0, len(self.mix_filepaths))
-            # idx = 42  # always use the same mix for debug
             mix_filepath = self.mix_filepaths[idx]
             num_frames = torchaudio.info(mix_filepath).num_frames
 
             # find random non-silent region of the mix
             offset = np.random.randint(0, num_frames - self.length - 1)
-
-            offset = 0  # always use the same offset
-
 
             mix, _ = torchaudio.load(
                 mix_filepath,
@@ -68,13 +66,67 @@ class MixDataset(torch.utils.data.Dataset):
             if mix_lufs_db > -48.0:
                 valid = True
 
-            # random gain of the target mixes
-            target_lufs_db = np.random.randint(-48, 0)
-            target_lufs_db = -14.0  # always use same target
-            delta_lufs_db = torch.tensor([target_lufs_db - mix_lufs_db]).float()
-            mix = 10.0 ** (delta_lufs_db / 20.0) * mix
+        # now apply some random processing to the mix
+        if np.random.rand() > 0.5:
+            quality_label = False
+            mix = mix.numpy()  # convert to numpy for pedalboard
+            if np.random.rand() < 0.8:  # reduce stereo width
+                width = np.random.uniform(0.0, 0.6)
+                sqrt2 = np.sqrt(2)
+                mid = (mix[0, :] + mix[1, :]) / sqrt2
+                side = (mix[0, :] - mix[1, :]) / sqrt2
+                # amplify mid and side signal separately:
+                mid *= 2 * (1 - width)
+                side *= 2 * width
+                # covert back to stereo
+                left = (mid + side) / sqrt2
+                right = (mid - side) / sqrt2
+                # replace original mix with processed mix
+                mix[0, :] = left
+                mix[1, :] = right
+            if np.random.rand() < 0.3:  # downmix to mono
+                mono_mix = mix.mean(0, keepdims=True)
+                mix[0, :] = mono_mix
+                mix[1, :] = mono_mix
+            if np.random.rand() < 0.3:  # stereo imbalance
+                mix[0, :] *= np.random.uniform(0.0, 1.0)
+                mix[1, :] *= np.random.uniform(0.0, 1.0)
+            if np.random.rand() < 0.2:  # apply distortion
+                mix = pedalboard.Distortion(
+                    drive_db=np.random.uniform(0, 20.0)
+                ).process(mix, self.sample_rate)
+            if np.random.rand() < 0.2:  # apply reverb
+                mix = pedalboard.Reverb(
+                    room_size=np.random.uniform(0, 1.0),
+                    wet_level=0.5,
+                    dry_level=np.random.uniform(0.0, 1.0),
+                ).process(mix, self.sample_rate)
+            if np.random.rand() < 0.2:  # apply compression
+                mix = pedalboard.Compressor(
+                    threshold_db=np.random.uniform(-24.0, 0.0),
+                    ratio=np.random.uniform(2.0, 10.0),
+                ).process(mix, self.sample_rate)
+            if np.random.rand() < 0.4:  # apply lowpass
+                mix = pedalboard.LowpassFilter(
+                    cutoff_frequency_hz=np.random.uniform(1000.0, 20000.0)
+                ).process(mix, self.sample_rate)
+            if np.random.rand() < 0.4:  # apply highpass
+                mix = pedalboard.HighpassFilter(
+                    cutoff_frequency_hz=np.random.uniform(20.0, 4000.0)
+                ).process(mix, self.sample_rate)
+            if np.random.rand() < 0.2:  # add white noise
+                mix = mix + np.random.normal(0, 0.01, mix.shape).astype(np.float32)
+            # convert back to torch tensor
+            mix = torch.from_numpy(mix)
+        else:
+            quality_label = True
 
-        return mix
+        # random gain of the target mixes
+        target_lufs_db = -14.0 # np.random.randint(-48, 0)
+        delta_lufs_db = torch.tensor([target_lufs_db - mix_lufs_db]).float()
+        mix = 10.0 ** (delta_lufs_db / 20.0) * mix
+
+        return mix, torch.tensor(quality_label).float()
 
 
 class MixDataModule(pl.LightningDataModule):
@@ -176,11 +228,14 @@ class MultitrackDataset(torch.utils.data.Dataset):
 
         for mix_dir in mix_root_dirs:
             # find all mixes in directory recursively
-
-            mix_files = glob.glob(os.path.join(mix_dir, "**", "*.wav"), recursive=True)
-
-
+            ext = "mp3" if "jamendo" in mix_dir else "wav"
+            mix_files = glob.glob(
+                os.path.join(mix_dir, "**", f"*.{ext}"), recursive=True
+            )
             self.mixes.extend(mix_files)
+
+        if len(mix_root_dirs) > 0 and len(self.mixes) == 0:
+            raise ValueError("No mixes found in mix_root_dirs.")
 
         print(f"Located {len(self.mixes)} mixes.")
 
@@ -214,15 +269,13 @@ class MultitrackDataset(torch.utils.data.Dataset):
             )
 
             if mix.shape[0] == 1:
-                continue
+                mix = mix.repeat(2, 1)
             if mix.shape[-1] != self.length:
                 continue
             if mix.size()[0] > 2:
-                continue
+                mix = mix[0:2, :]
 
             mix_lufs_db = self.meter.integrated_loudness(mix.permute(1, 0).numpy())
-
-
 
             if mix_lufs_db < -48.0 or mix_lufs_db == float("-inf"):
                 continue
@@ -293,11 +346,9 @@ class MultitrackDataset(torch.utils.data.Dataset):
                 if track.size()[0] > 2:
                     continue
 
-
                 track_lufs_db = self.meter.integrated_loudness(
                     track.permute(1, 0).numpy()
                 )
-
 
                 if track_lufs_db < -48.0 or track_lufs_db == float("-inf"):
                     continue
@@ -346,13 +397,14 @@ class MultitrackDataset(torch.utils.data.Dataset):
             # convert to tensor
             tracks = torch.cat(tracks)
 
-            
             # if tracks[...,0:middle_idx].sum() == 0 or tracks[...,middle_idx:].sum() == 0:
             #     continue
             tracks = tracks.reshape(self.max_tracks, self.length)
-            #create a sum mix of the tracks
+            # create a sum mix of the tracks
             mix_check = tracks.sum(0)
-            if torch.any(mix_check[...,0:middle_idx] == False) or torch.any(mix_check[...,middle_idx:] == False):
+            if torch.any(mix_check[..., 0:middle_idx] == False) or torch.any(
+                mix_check[..., middle_idx:] == False
+            ):
                 continue
 
             track_metadata = torch.tensor(track_metadata)
@@ -361,9 +413,7 @@ class MultitrackDataset(torch.utils.data.Dataset):
 
             # add to buffer
             self.track_examples.append(
-
                 (tracks, stereo_info, track_metadata, track_padding, song_name)
-
             )
 
             nbytes_loaded += tracks.element_size() * tracks.nelement()
@@ -382,12 +432,10 @@ class MultitrackDataset(torch.utils.data.Dataset):
 
         tracks = track_example[0]
 
-        
         stereo_info = track_example[1]
         track_metadata = track_example[2]
         track_padding = track_example[3]
         song_name = track_example[4]
-
 
         # ------------ get example from mix buffer ------------
         # optional
@@ -402,9 +450,7 @@ class MultitrackDataset(torch.utils.data.Dataset):
         else:
             mix = torch.empty(1)
 
-
         return tracks, stereo_info, track_metadata, track_padding, mix, song_name
-
 
 
 class MultitrackDataModule(pl.LightningDataModule):

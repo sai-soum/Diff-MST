@@ -1,25 +1,21 @@
 import torch
+import torchaudio
 from mst.modules import Remixer, AdvancedMixConsole
 from mst.dataloader import MixDataset
 
 if __name__ == "__main__":
     root_dir = "/import/c4dm-datasets-ext/mtg-jamendo"
     mix_dataset = MixDataset(root_dir, length=262144)
-    mix_dataloader = torch.utils.data.DataLoader(mix_dataset, batch_size=4)
-
-    mix_console = AdvancedMixConsole(44100)
-    remixer = Remixer(44100)
-
-    remixer.cuda()
+    mix_dataloader = torch.utils.data.DataLoader(
+        mix_dataset, batch_size=4, num_workers=4
+    )
 
     for batch_idx, batch in enumerate(mix_dataloader):
-        mix = batch
+        mix, label = batch
 
-        mix = mix.cuda()
+        for i in range(mix.shape[0]):
+            torchaudio.save(f"debug/{batch_idx}-{i}-{label[i]}.wav", mix[i], 44100)
 
-        # create remix
-        remix, track_params, fx_bus_params, master_bus_params = remixer(
-            mix, mix_console
-        )
-
-        print(batch_idx, mix.abs().max(), remix.abs().max())
+        print(mix.shape, label)
+        if batch_idx > 10:
+            break

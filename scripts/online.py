@@ -20,6 +20,8 @@ def optimize(
     init_scale: float = 0.001,
     lr: float = 1e-3,
     n_iters: int = 100,
+    use_fx_bus: bool = False,
+    use_master_bus: bool = False,
 ):
     """Create a mix from the tracks that is as close as possible to the reference mixture.
 
@@ -29,6 +31,8 @@ def optimize(
         mix_console (torch.nn.Module): Mix console instance. (e.g. AdvancedMixConsole)
         loss_function (torch.nn.Module): Loss function instance. (e.g. AudioFeatureLoss)
         n_iters (int): Number of iterations for the optimization.
+        use_fx_bus (bool): Whether to use the fx bus in the mix console.
+        use_master_bus (bool): Whether to use the master bus in the mix console.
 
     Returns:
         torch.Tensor: Tensor of shape (2, n_samples) that is as close as possible to the reference mixture.
@@ -78,7 +82,8 @@ def optimize(
             torch.sigmoid(track_params),
             torch.sigmoid(fx_bus_params),
             torch.sigmoid(master_bus_params),
-            use_fx_bus=False,
+            use_fx_bus=use_fx_bus,
+            use_master_bus=use_master_bus,
         )
         mix = result[1]
         track_param_dict = result[2]
@@ -273,12 +278,11 @@ if __name__ == "__main__":
     mix_console = AdvancedMixConsole(args.sample_rate)
 
     weights = [
-        0.1,  # rms
-        0.001,  # crest factor
-        1.0,  # stereo width
-        1.0,  # stereo imbalance
-        1.00,  # bark spectrum
-        100.0,  # clap
+        10.0,  # rms
+        0.01,  # crest factor
+        10.0,  # stereo width
+        100.0,  # stereo imbalance
+        0.01,  # bark spectrum
     ]
 
     if args.loss == "feat":
@@ -286,6 +290,7 @@ if __name__ == "__main__":
             weights,
             args.sample_rate,
             stem_separation=args.stem_separation,
+            use_clap=False,
         )
     elif args.loss == "clap":
         loss_function = StereoCLAPLoss()
@@ -368,13 +373,15 @@ if __name__ == "__main__":
     plt.savefig(os.path.join(output_dir, "plots", "bark_specta.png"))
     plt.close("all")
 
+    fig, ax = plt.subplots(1, 1)
+
     for idx, (loss_name, loss_vals) in enumerate(loss_history.items()):
-        fig, ax = plt.subplots(1, 1)
         ax.plot(loss_vals, label=loss_name)
-        ax.set_xlabel("Iteration")
-        ax.set_ylabel(f"{loss_name}")
-        plt.savefig(os.path.join(output_dir, "plots", f"{loss_name}.png"))
-        plt.close("all")
+
+    plt.legend()
+    ax.set_xlabel("Iteration")
+    plt.savefig(os.path.join(output_dir, "plots", f"{loss_name}.png"))
+    plt.close("all")
 
     # -------------------------- save results -------------------------- #
     # save mix

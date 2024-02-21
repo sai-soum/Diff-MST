@@ -13,14 +13,14 @@ data:
       - ./data/medley.yaml
     length: 262144
 
-    min_tracks: 8
-    max_tracks: 8
-    batch_size: 2
+    min_tracks: 4
+    max_tracks: 4
+    batch_size: 4
     num_workers: 4
     num_train_passes: 4
     num_val_passes: 1
-    train_buffer_size_gb: 0.05
-    val_buffer_size_gb: 0.02
+    train_buffer_size_gb: 4.0
+    val_buffer_size_gb: 0.5
     target_track_lufs_db: -48.0
     randomize_ref_mix_gain: False
 

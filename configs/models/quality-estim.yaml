@@ -1,0 +1,11 @@
+model:
+  class_path: mst.quality_system.QualityEstimationSystem
+  init_args:
+    encoder:
+      class_path: mst.modules.SpectrogramEncoder
+      init_args:
+        embed_dim: 512
+        n_inputs: 1
+        l2_norm: true
+        input_batchnorm: false
+        encoder_batchnorm: false

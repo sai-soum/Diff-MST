@@ -1,0 +1,29 @@
+seed_everything: 42
+#ckpt_path: /import/c4dm-datasets-ext/Diff-MST/DiffMST/4bjbp29c/checkpoints/epoch=118-step=148750.ckpt
+
+trainer:
+  logger: 
+    class_path: pytorch_lightning.loggers.WandbLogger
+    init_args:
+      project: DiffMST-Quality
+      save_dir: /import/c4dm-datasets-ext/Diff-MST
+  enable_checkpointing: true
+  callbacks:
+    - class_path: pytorch_lightning.callbacks.ModelSummary
+      init_args: 
+        max_depth: 2
+  default_root_dir: null
+  gradient_clip_val: 10.0
+  devices: 1
+  check_val_every_n_epoch: 1
+  max_epochs: 500
+  log_every_n_steps: 50
+  accelerator: gpu
+  strategy: ddp_find_unused_parameters_true
+  sync_batchnorm: true
+  precision: 32
+  enable_model_summary: true
+  num_sanity_val_steps: 2
+  benchmark: true
+  accumulate_grad_batches: 1
+

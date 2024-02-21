@@ -44,15 +44,13 @@ class MixStyleTransferModel(torch.nn.Module):
         if self.sum_and_diff:
             ref_mix_mid = ref_mix.sum(dim=1)
             ref_mix_side = ref_mix[..., 0:1, :] - ref_mix[..., 1:2, :]
+            mix_mid_size = torch.stack((ref_mix_mid, ref_mix_side), dim=1)
 
             # process the reference mix
-
-            mid_embeds = self.mix_encoder(ref_mix_mid)
-            side_embeds = self.mix_encoder(ref_mix_side)
-            mix_embeds = torch.stack((mid_embeds, side_embeds), dim=1)
+            mix_embeds = self.mix_encoder(mix_mid_size)
         else:
-            mix_embeds = self.mix_encoder(ref_mix.view(bs * 2, 1, -1))
-            mix_embeds = mix_embeds.view(bs, 2, -1)  # restore
+            mix_embeds = self.mix_encoder(ref_mix)
+            mix_embeds = mix_embeds.unsqueeze(1)
 
         # controller will predict mix parameters for each stem based on embeds
         track_params, fx_bus_params, master_bus_params = self.controller(
@@ -228,7 +226,6 @@ class AdvancedMixConsole(torch.nn.Module):
 
         # apply effects in series but all tracks at once
         if use_track_input_fader:
-            
             tracks = gain(tracks, self.sample_rate, **track_param_dict["input_fader"])
             if tracks.sum() == 0:
                 print("gain is 0")
@@ -251,7 +248,7 @@ class AdvancedMixConsole(torch.nn.Module):
                 lookahead_samples=2048,
             )
             if tracks.sum() == 0:
-                print("compressor is 0")    
+                print("compressor is 0")
                 print(tracks)
 
         # restore tracks to original shape
@@ -286,12 +283,10 @@ class AdvancedMixConsole(torch.nn.Module):
             # process Left channel
             master_bus = gain(
                 master_bus, self.sample_rate, **master_bus_param_dict["input_fader"]
-
             )
             master_bus = parametric_eq(
                 master_bus, self.sample_rate, **master_bus_param_dict["parametric_eq"]
             )
-
 
             # apply compressor to both channels
             master_bus = compressor(
@@ -587,7 +582,6 @@ class ParameterProjector(torch.nn.Module):
 
 
 class WaveformEncoder(torch.nn.Module):
-
     def __init__(
         self,
         n_inputs=1,
@@ -668,26 +662,6 @@ class WaveformTransformerEncoder(torch.nn.Module):
         return z[:, 0, :]
 
 
-class SpectrogramEncoder(torch.nn.Module):
-    def __init__(
-        self,
-=======
-    def __init__(
-        self,
-        n_inputs=1,
-        embed_dim: int = 1024,
-        encoder_batchnorm: bool = True,
-    ):
-        super().__init__()
-        self.n_inputs = n_inputs
-        self.embed_dim = embed_dim
-        self.encoder_batchnorm = encoder_batchnorm
-        self.model = TCN(n_inputs, embed_dim)
-
-    def forward(self, x: torch.Tensor):
-        return self.model(x)
-
-
 class PositionalEncoding(torch.nn.Module):
     def __init__(self, d_model: int, dropout: float = 0.1, max_len: int = 1024):
         super().__init__()
@@ -755,13 +729,14 @@ class WaveformTransformerEncoder(torch.nn.Module):
 class SpectrogramEncoder(torch.nn.Module):
     def __init__(
         self,
-
         embed_dim: int = 128,
         n_inputs: int = 1,
         n_fft: int = 2048,
         hop_length: int = 512,
         input_batchnorm: bool = False,
         encoder_batchnorm: bool = True,
+        l2_norm: bool = False,
+        model_size: str = "large",
     ) -> None:
         super().__init__()
         self.embed_dim = embed_dim
@@ -769,6 +744,7 @@ class SpectrogramEncoder(torch.nn.Module):
         self.n_fft = n_fft
         self.hop_length = hop_length
         self.input_batchnorm = input_batchnorm
+        self.l2_norm = l2_norm
         window_length = int(n_fft)
         self.register_buffer("window", torch.hann_window(window_length=window_length))
 
@@ -777,6 +753,14 @@ class SpectrogramEncoder(torch.nn.Module):
             n_inputs=n_inputs,
             num_classes=embed_dim,
             use_batchnorm=encoder_batchnorm,
+            model_size=model_size,
+        )
+
+        self.attention = torch.nn.MultiheadAttention(
+            embed_dim=embed_dim,
+            num_heads=8,
+            dropout=0.0,
+            batch_first=True,
         )
 
         if self.input_batchnorm:
@@ -814,10 +798,34 @@ class SpectrogramEncoder(torch.nn.Module):
         if self.input_batchnorm:
             X = self.bn(X)
 
+        # move channels to batch dim
+        X = X.view(-1, 1, X.shape[-2], X.shape[-1])
+
         # process with CNN
-        embeds = self.model(X)
-        #print(embeds.shape)
-        return embeds
+        embeds = self.model(X)  # bs x chs, embed_dim, seq_len
+        embeds = embeds.view(-1, chs, self.embed_dim)
+
+        # project down to embedding dim via attention
+        embeds, _ = self.attention(embeds, embeds, embeds)
+        # bs x seq_len, chs, embed_dim
+        embeds = embeds.mean(dim=1)  # mean across channels
+
+        # move seq dim back
+        embeds = embeds.view(bs, -1, self.embed_dim)
+        # bs, seq_len, embed_dim
+
+        # compute statistics (mean, std, max, min) across time
+        (x1, _) = torch.max(embeds, dim=1)
+        # (x2, _) = torch.min(embeds, dim=1)
+        x3 = torch.mean(embeds, dim=1)
+        # x4 = torch.std(embeds, dim=1)
+        x = x1 + x3
+
+        # apply l2 norm
+        if self.l2_norm:
+            x = torch.nn.functional.normalize(x, p=2, dim=1)
+
+        return x
 
 
 class TransformerController(torch.nn.Module):
@@ -853,7 +861,7 @@ class TransformerController(torch.nn.Module):
         self.use_master_bus = use_master_bus
 
         self.track_embedding = torch.nn.Parameter(torch.randn(1, 1, embed_dim))
-        self.mix_embedding = torch.nn.Parameter(torch.randn(1, 2, embed_dim))
+        self.mix_embedding = torch.nn.Parameter(torch.randn(1, 1, embed_dim))
         self.fx_bus_embedding = torch.nn.Parameter(torch.randn(1, 1, embed_dim))
         self.master_bus_embedding = torch.nn.Parameter(torch.randn(1, 1, embed_dim))
 
@@ -881,7 +889,7 @@ class TransformerController(torch.nn.Module):
 
         Args:
             track_embeds (torch.torch.Tensor): Embeddings for each track with shape (bs, num_tracks, embed_dim)
-            mix_embeds (torch.torch.Tensor): Embeddings for the reference mix with shape (bs, 2, embed_dim)
+            mix_embeds (torch.torch.Tensor): Embeddings for the reference mix with shape (bs, 1, embed_dim)
             track_padding_mask (Optional[torch.Tensor]): Mask for the track embeddings with shape (bs, num_tracks)
 
         Returns:
@@ -905,7 +913,7 @@ class TransformerController(torch.nn.Module):
             track_padding_mask = torch.cat(
                 (
                     track_padding_mask,
-                    torch.zeros(bs, 4).bool().type_as(track_padding_mask),
+                    torch.zeros(bs, 3).bool().type_as(track_padding_mask),
                 ),
                 dim=1,
             )
@@ -926,4 +934,3 @@ class TransformerController(torch.nn.Module):
         )
 
         return pred_track_params, pred_fx_bus_params, pred_master_bus_params
-
