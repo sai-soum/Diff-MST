@@ -82,8 +82,8 @@ class LogReferenceMix(pl.callbacks.Callback):
             name = song["name"]
 
             # take a chunk from the middle of the mix
-            start_idx = (ref_mix.shape[-1] // 2) - (262144 // 2)
-            stop_idx = start_idx + 262144
+            start_idx = (ref_mix.shape[-1] // 2) - (131072 // 2)
+            stop_idx = start_idx + 131072
             ref_mix_chunk = ref_mix[..., start_idx:stop_idx]
 
             # loudness normalize the mix
@@ -101,7 +101,7 @@ class LogReferenceMix(pl.callbacks.Callback):
 
             # make a mix of multiple sections of the tracks
             for n, start_idx in enumerate([0, 524288, 2 * 524288, 3 * 524288]):
-                stop_idx = start_idx + 262144
+                stop_idx = start_idx + 131072
 
                 # loudness normalize tracks
                 normalized_tracks = []
@@ -111,7 +111,7 @@ class LogReferenceMix(pl.callbacks.Callback):
                     if len(normalized_tracks) > 16:
                         break
 
-                    if track.shape[-1] < 262144:
+                    if track.shape[-1] < 131072:
                         continue
 
                     track_lufs_db = self.meter.integrated_loudness(
