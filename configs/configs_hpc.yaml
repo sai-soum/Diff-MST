@@ -20,7 +20,6 @@ trainer:
   max_steps: 1000000
   log_every_n_steps: 50
   accelerator: gpu
-  strategy: ddp_find_unused_parameters_true
   sync_batchnorm: true
   precision: 32
   enable_model_summary: true
