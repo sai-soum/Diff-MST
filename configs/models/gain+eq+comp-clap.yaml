@@ -49,7 +49,6 @@ model:
     loss: 
       class_path: mst.loss.StereoCLAPLoss
       init_args:
-        sum_and_diff: true
+        distance: torch.nn.functional.cosine_similarity
 
-
-    
+  

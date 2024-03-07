@@ -10,10 +10,13 @@ data:
     length: 262144
     min_tracks: 4
     max_tracks: 4
-    batch_size: 4
+
+    batch_size: 2
     num_workers: 4
     num_train_passes: 10
-    num_val_passes: 10
-    train_buffer_size_gb: 2.0
+    num_val_passes: 5
+    train_buffer_size_gb: 0.5
     val_buffer_size_gb: 0.05
     target_track_lufs_db: -48.0
+    randomize_ref_mix_gain: false
+

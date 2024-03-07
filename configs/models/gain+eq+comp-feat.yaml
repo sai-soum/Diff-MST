@@ -1,16 +1,11 @@
 model:
   class_path: mst.system.System
   init_args:
-
-    generate_mix: True
+    generate_mix: false
     active_eq_epoch: 0
     active_compressor_epoch: 0
     active_fx_bus_epoch: 1000
     active_master_bus_epoch: 0
-    use_track_loss : false
-    use_mix_loss : true
-    use_param_loss : false
-
     mix_fn: mst.mixing.naive_random_mix
     mix_console:
       class_path: mst.modules.AdvancedMixConsole
@@ -24,8 +19,8 @@ model:
         eq_max_gain_db: 12.0
         min_pan: 0.0
         max_pan: 1.0
-    model: 
-      class_path: mst.modules.MixStyleTransferModel 
+    model:
+      class_path: mst.modules.MixStyleTransferModel
       init_args:
         track_encoder: 
           class_path: mst.modules.SpectrogramEncoder
@@ -56,18 +51,12 @@ model:
       init_args:
         sample_rate: 44100
         stem_separation: false
-
-        use_clap: True
-
-
+        use_clap: false
         weights: 
           - 0.1 # rms
           - 0.001 # crest factor
           - 1.0  # stereo width
           - 1.0 # stereo imbalance
           - 0.1 # bark spectrum
-          - 1.0 # CLAP
-    
 
-
-
+  

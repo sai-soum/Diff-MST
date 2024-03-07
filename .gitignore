@@ -16,3 +16,4 @@ debug
 dasp-pytorch
 *.wav
 *.png
+data/FXencoder_ps.pt

@@ -47,17 +47,9 @@ model:
             nhead: 8
        
     loss: 
-      class_path: mst.loss.AudioFeatureLoss
+      class_path: mst.loss.ParameterEstimatorLoss
       init_args:
-        sample_rate: 44100
-        stem_separation: true
-        weights: 
-          - 10.0 # rms
-          - 0.1 # crest factor
-          - 100.0  # stereo width
-          - 100.0 # stereo imbalance
-          - 10.0 # melspectrum
+        ckpt_path: /import/c4dm-datasets-ext/Diff-MST/DiffMST-Param/0ymfi1pp/checkpoints/epoch=20-step=37947.ckpt
+
+
     
-
-
-  

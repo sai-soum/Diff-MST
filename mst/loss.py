@@ -12,6 +12,20 @@ def compute_mid_side(x: torch.Tensor):
     return x_mid, x_side
 
 
+from mst.filter import barkscale_fbanks
+
+import yaml
+from mst.fx_encoder import FXencoder
+
+from mst.modules import SpectrogramEncoder
+
+
+def compute_mid_side(x: torch.Tensor):
+    x_mid = x[:, 0, :] + x[:, 1, :]
+    x_side = x[:, 0, :] - x[:, 1, :]
+    return x_mid, x_side
+
+
 def compute_melspectrum(
     x: torch.Tensor,
     sample_rate: int = 44100,
