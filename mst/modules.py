@@ -222,7 +222,11 @@ class AdvancedMixConsole(torch.nn.Module):
 
         # apply effects in series but all tracks at once
         if use_track_input_fader:
-            tracks = gain(tracks, **track_param_dict["input_fader"])
+            tracks = gain(
+                tracks,
+                self.sample_rate,
+                **track_param_dict["input_fader"],
+            )
         if use_track_eq:
             tracks = parametric_eq(
                 tracks,
@@ -241,7 +245,11 @@ class AdvancedMixConsole(torch.nn.Module):
         tracks = tracks.view(bs, num_tracks, seq_len)
 
         if use_track_panner:
-            tracks = stereo_panner(tracks, **track_param_dict["stereo_panner"])
+            tracks = stereo_panner(
+                tracks,
+                self.sample_rate,
+                **track_param_dict["stereo_panner"],
+            )
         else:
             tracks = tracks.unsqueeze(1).repeat(1, 2, 1)
 
@@ -262,9 +270,15 @@ class AdvancedMixConsole(torch.nn.Module):
 
         if use_master_bus:
             # process Left channel
-            master_bus = gain(master_bus, **master_bus_param_dict["input_fader"])
+            master_bus = gain(
+                master_bus,
+                self.sample_rate,
+                **master_bus_param_dict["input_fader"],
+            )
             master_bus = parametric_eq(
-                master_bus, self.sample_rate, **master_bus_param_dict["parametric_eq"]
+                master_bus,
+                self.sample_rate,
+                **master_bus_param_dict["parametric_eq"],
             )
 
             # apply compressor to both channels
@@ -272,11 +286,15 @@ class AdvancedMixConsole(torch.nn.Module):
                 master_bus,
                 self.sample_rate,
                 **master_bus_param_dict["compressor"],
-                lookahead_samples=2048,
+                lookahead_samples=1024,
             )
 
         if use_output_fader:
-            master_bus = gain(master_bus, **master_bus_param_dict["output_fader"])
+            master_bus = gain(
+                master_bus,
+                self.sample_rate,
+                **master_bus_param_dict["output_fader"],
+            )
 
         return tracks, master_bus
 
