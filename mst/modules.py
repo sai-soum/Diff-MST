@@ -231,12 +231,11 @@ class AdvancedMixConsole(torch.nn.Module):
 
         # apply effects in series but all tracks at once
         if use_track_input_fader:
-            
-            tracks = gain(tracks, self.sample_rate, **track_param_dict["input_fader"])
-            if tracks.sum() == 0:
-                print("gain is 0")
-                print(tracks)
-
+            tracks = gain(
+                tracks,
+                self.sample_rate,
+                **track_param_dict["input_fader"],
+            )
         if use_track_eq:
             tracks = parametric_eq(
                 tracks,
@@ -254,7 +253,7 @@ class AdvancedMixConsole(torch.nn.Module):
                 lookahead_samples=2048,
             )
             if tracks.sum() == 0:
-                print("compressor is 0")    
+                print("compressor is 0")
                 print(tracks)
 
         # restore tracks to original shape
@@ -265,7 +264,9 @@ class AdvancedMixConsole(torch.nn.Module):
 
         if use_track_panner:
             tracks = stereo_panner(
-                tracks, self.sample_rate, **track_param_dict["stereo_panner"]
+                tracks,
+                self.sample_rate,
+                **track_param_dict["stereo_panner"],
             )
         else:
             tracks = tracks.unsqueeze(1).repeat(1, 2, 1)
@@ -288,25 +289,29 @@ class AdvancedMixConsole(torch.nn.Module):
         if use_master_bus:
             # process Left channel
             master_bus = gain(
-                master_bus, self.sample_rate, **master_bus_param_dict["input_fader"]
-
+                master_bus,
+                self.sample_rate,
+                **master_bus_param_dict["input_fader"],
             )
             master_bus = parametric_eq(
-                master_bus, self.sample_rate, **master_bus_param_dict["parametric_eq"]
+                master_bus,
+                self.sample_rate,
+                **master_bus_param_dict["parametric_eq"],
             )
-
 
             # apply compressor to both channels
             master_bus = compressor(
                 master_bus,
                 self.sample_rate,
                 **master_bus_param_dict["compressor"],
-                lookahead_samples=2048,
+                lookahead_samples=1024,
             )
 
         if use_output_fader:
             master_bus = gain(
-                master_bus, self.sample_rate, **master_bus_param_dict["output_fader"]
+                master_bus,
+                self.sample_rate,
+                **master_bus_param_dict["output_fader"],
             )
 
         return tracks, master_bus
@@ -671,24 +676,6 @@ class WaveformTransformerEncoder(torch.nn.Module):
         return z[:, 0, :]
 
 
-class SpectrogramEncoder(torch.nn.Module):
-
-    def __init__(
-        self,
-        n_inputs=1,
-        embed_dim: int = 1024,
-        encoder_batchnorm: bool = True,
-    ):
-        super().__init__()
-        self.n_inputs = n_inputs
-        self.embed_dim = embed_dim
-        self.encoder_batchnorm = encoder_batchnorm
-        self.model = TCN(n_inputs, embed_dim)
-
-    def forward(self, x: torch.Tensor):
-        return self.model(x)
-
-
 class PositionalEncoding(torch.nn.Module):
     def __init__(self, d_model: int, dropout: float = 0.1, max_len: int = 1024):
         super().__init__()
@@ -756,7 +743,6 @@ class WaveformTransformerEncoder(torch.nn.Module):
 class SpectrogramEncoder(torch.nn.Module):
     def __init__(
         self,
-
         embed_dim: int = 128,
         n_inputs: int = 1,
         n_fft: int = 2048,
@@ -817,7 +803,7 @@ class SpectrogramEncoder(torch.nn.Module):
 
         # process with CNN
         embeds = self.model(X)
-        #print(embeds.shape)
+        # print(embeds.shape)
         return embeds
 
 
@@ -927,4 +913,3 @@ class TransformerController(torch.nn.Module):
         )
 
         return pred_track_params, pred_fx_bus_params, pred_master_bus_params
-

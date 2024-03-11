@@ -1,4 +1,4 @@
-test:
+val:
   MedleyDB_V1/V1/AlexanderRoss_VelvetCurtain/AlexanderRoss_VelvetCurtain_RAW:
     AlexanderRoss_VelvetCurtain_RAW_01_01.wav: acoustic guitar
     AlexanderRoss_VelvetCurtain_RAW_01_02.wav: acoustic guitar
@@ -239,6 +239,7 @@ test:
     PurlingHiss_Lolita_RAW_05_02.wav: tambourine
     PurlingHiss_Lolita_RAW_06_01.wav: male singer
     PurlingHiss_Lolita_RAW_06_02.wav: male singer
+train:
   MedleyDB_V1/V1/Snowmine_Curfews/Snowmine_Curfews_RAW:
     Snowmine_Curfews_RAW_01_01.wav: fx/processed sound
     Snowmine_Curfews_RAW_01_02.wav: fx/processed sound
@@ -722,7 +723,6 @@ test:
     Torres_NewSkin_RAW_08_03.wav: distorted electric guitar
     Torres_NewSkin_RAW_09_01.wav: clean electric guitar
     Torres_NewSkin_RAW_10_01.wav: female singer
-train:
   MedleyDB_V1/V1/AlexanderRoss_GoodbyeBolero/AlexanderRoss_GoodbyeBolero_RAW:
     AlexanderRoss_GoodbyeBolero_RAW_01_01.wav: acoustic guitar
     AlexanderRoss_GoodbyeBolero_RAW_01_02.wav: acoustic guitar
@@ -2778,7 +2778,6 @@ train:
     TrevorAndTheSoundwaves_AloneAndSad_RAW_05_06.wav: distorted electric guitar
     TrevorAndTheSoundwaves_AloneAndSad_RAW_05_07.wav: distorted electric guitar
     TrevorAndTheSoundwaves_AloneAndSad_RAW_05_08.wav: distorted electric guitar
-val:
   MedleyDB_V1/V1/AClassicEducation_NightOwl/AClassicEducation_NightOwl_RAW:
     AClassicEducation_NightOwl_RAW_01_01.wav: electric bass
     AClassicEducation_NightOwl_RAW_01_02.wav: electric bass

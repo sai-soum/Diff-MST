@@ -1,4 +1,4 @@
-test:
+val:
   00003/tracks/SongOfIndia_Full:
     DRUM OVERHEAD STEREO L - AR-70 - Neve 33102.wav: overhead
     DRUM OVERHEAD STEREO R - AR-70 - Neve 33102.wav: overhead
@@ -197,6 +197,7 @@ test:
     12_Cello2.wav: cello
     13_LeadVox.wav: vox
     14_BackingVox.wav: backingvox
+train:
   00055/tracks/JeffreyHayat_AlexTheAdventurer:
     01_BassDrum.wav: bass
     02_OutroHit.wav: hit
@@ -2254,7 +2255,6 @@ test:
     09_LeadVox.wav: vox
     10_LowBVs.wav: misc
     11_HighBVs.wav: misc
-train:
   00000/tracks/Piano solo 1:
     Piano1_010_OCT3D_1_FL.wav: piano
     Piano1_011_OCT3D_2_FR.wav: piano
@@ -9784,7 +9784,6 @@ train:
     Keys-Leslie Top-M81.wav: keys
     Vocals-Erica-Proto.wav: vocals
     Vocals-Mike-Proto.wav: vocals
-val:
   00004/tracks/AlejoGranados_RumbaChonta_Full:
     01_Bombo.wav: percussion
     02_SnareUp.wav: snare

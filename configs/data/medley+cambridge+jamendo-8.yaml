@@ -7,7 +7,6 @@ data:
 
     mix_root_dirs:  
       - /import/c4dm-datasets-ext/mtg-jamendo
-
     metadata_files: 
       - ./data/cambridge.yaml 
       - ./data/medley.yaml

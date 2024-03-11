@@ -337,6 +337,7 @@ class MultitrackDataset(torch.utils.data.Dataset):
         target_track_lufs_db: float = -32.0,
         target_mix_lufs_db: float = -16.0,
         randomize_ref_mix_gain: bool = False,
+        num_examples_per_epoch: int = 20000,
         num_passes: int = 1,
     ) -> None:
         super().__init__()
@@ -352,6 +353,7 @@ class MultitrackDataset(torch.utils.data.Dataset):
         self.meter = pyln.Meter(sample_rate)
         self.length = self.length
         self.num_passes = num_passes
+        self.num_examples_per_epoch = num_examples_per_epoch
 
         with open(instrument_id_json, "r") as f:
             self.instrument_ids = json.load(f)
@@ -384,12 +386,12 @@ class MultitrackDataset(torch.utils.data.Dataset):
 
         print(f"Located {len(self.mixes)} mixes.")
 
-        # call reload buffer to load initial buffer
-        self.reload_track_buffer()
-        self.reload_mix_buffer()
+        self.num_examples = (
+            self.num_examples_per_epoch + 1
+        )  # this will trigger a reload of the buffer
 
     def __len__(self):
-        return len(self.track_examples) * self.num_passes
+        return self.num_examples_per_epoch
 
     def reload_mix_buffer(self):
         self.mix_examples = []  # clear buffer
@@ -400,7 +402,7 @@ class MultitrackDataset(torch.utils.data.Dataset):
         pbar = tqdm(itertools.cycle(self.mixes))
 
         for filepath in pbar:
-            num_frames = torchaudio.info(filepath).num_frames
+            num_frames = torchaudio.info(filepath, backend="soundfile").num_frames
             offset = np.random.randint(0.25 * num_frames, num_frames - self.length - 1)
 
             # ensure the song is long enough if we start from 25% in
@@ -411,6 +413,7 @@ class MultitrackDataset(torch.utils.data.Dataset):
                 filepath,
                 frame_offset=offset,
                 num_frames=self.length,
+                backend="soundfile",
             )
 
             if mix.shape[0] == 1:
@@ -463,7 +466,9 @@ class MultitrackDataset(torch.utils.data.Dataset):
                 continue
             random.shuffle(track_filepaths)
 
-            num_frames = torchaudio.info(track_filepaths[0]).num_frames
+            num_frames = torchaudio.info(
+                track_filepaths[0], backend="soundfile"
+            ).num_frames
 
             middle_idx = int(num_frames / 2)
 
@@ -487,6 +492,7 @@ class MultitrackDataset(torch.utils.data.Dataset):
                     track_filepath,
                     frame_offset=offset,
                     num_frames=self.length,
+                    backend="soundfile",
                 )
 
                 if track.shape[-1] != self.length:
@@ -577,8 +583,15 @@ class MultitrackDataset(torch.utils.data.Dataset):
                 break
 
     def __getitem__(self, idx):
+
+        # ----------- reload buffers if needed ------------
+        if self.num_examples > self.num_examples_per_epoch:
+            self.reload_track_buffer()
+            self.reload_mix_buffer()
+            self.num_examples = 0  # reset counter
+
         # ------------ get example from track buffer ------------
-        track_example_idx = idx % len(self.track_examples)
+        track_example_idx = np.random.randint(0, len(self.track_examples))
         track_example = self.track_examples[track_example_idx]
 
         tracks = track_example[0]
@@ -619,6 +632,8 @@ class MultitrackDataModule(pl.LightningDataModule):
         max_tracks: int = 20,
         num_workers: int = 4,
         batch_size: int = 16,
+        num_train_examples: int = 20000,
+        num_val_examples: int = 1000,
         num_train_passes: int = 1,
         num_val_passes: int = 1,
         train_buffer_size_gb: float = 0.01,
@@ -629,7 +644,6 @@ class MultitrackDataModule(pl.LightningDataModule):
     ):
         super().__init__()
         self.save_hyperparameters()
-        torchaudio.set_audio_backend("soundfile")
 
     def setup(self, stage=None):
         pass
