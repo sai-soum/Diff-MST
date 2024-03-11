@@ -103,7 +103,6 @@ class System(pl.LightningModule):
         self,
         batch: tuple,
         batch_idx: int,
-        optimizer_idx: int = 0,
         train: bool = False,
     ):
         """Model step used for validation and training.
@@ -252,13 +251,13 @@ class System(pl.LightningModule):
 
             ref_mix_a = ref_mix[..., :middle_idx]  # this is passed to the model
             ref_mix_b = ref_mix[..., middle_idx:]  # this is used for loss computation
+            # tracks_a = tracks[..., :input_middle_idx] # not used currently
+            tracks_b = tracks[..., middle_idx:]  # this is passed to the model
         else:
             # when using a real mix, pass the same mix to model and loss
             ref_mix_a = ref_mix
             ref_mix_b = ref_mix
-
-        # tracks_a = tracks[..., :input_middle_idx] # not used currently
-        tracks_b = tracks[..., middle_idx:]  # this is passed to the model
+            tracks_b = tracks
 
        
         #  ---- run model with tracks from section A using reference mix from section B ----
@@ -404,7 +403,7 @@ class System(pl.LightningModule):
         
         return loss, data_dict
 
-    def training_step(self, batch, batch_idx, optimizer_idx=0):
+    def training_step(self, batch, batch_idx):
         loss, data_dict = self.common_step(batch, batch_idx, train=True)
 
         #print(loss)
