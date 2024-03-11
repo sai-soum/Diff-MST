@@ -14,16 +14,217 @@ from typing import List
 
 from torch.utils.data import random_split
 
+class InferenceDataset(torch.utils.data.Dataset):
+    def __init__(
+        self,
+        root_dirs: List[str],
+        ref_mixes: List[str],
+        peak_normalize: bool = True,
+        sample_rate: int = 44100,
+        length: int = 524288,
+        target_track_lufs_db: float = -48.0,
+        target_mix_lufs_db: float = -16.0,
+    ):
+        super().__init__()
+        self.peak_normalize = peak_normalize
+        self.sample_rate = sample_rate
+        self.length = length
+        self.target_track_lufs_db = target_track_lufs_db
+        self.target_mix_lufs_db = target_mix_lufs_db
+        self.meter = pyln.Meter(self.sample_rate)
+        self.stereo_info = []
+
+        print(f"Initalizing reference mix logger with {len(root_dirs)} mixes.")
+
+        self.songs = []
+        for root_dir, ref_mix in zip(root_dirs, ref_mixes):
+
+
+            print(f"Loading {root_dir}...")
+            song = {}
+            song["name"] = os.path.basename(root_dir)
+            
+
+            # load reference mix
+            x, sr = torchaudio.load(ref_mix)
+
+            print(f"Reference mix sample rate: {sr}")
+
+
+            # convert sample rate if needed
+            if sr != sample_rate:
+                x = torchaudio.functional.resample(x, sr, sample_rate)
+
+            print(f"Reference mix sample rate after resampling: {sample_rate}")
+
+
+            song["ref_mix"] = x
+
+
+            # load tracks
+            track_filepaths = glob.glob(os.path.join(root_dir, "*.wav"))
+            print(track_filepaths)
+            print(f"Located {len(track_filepaths)} tracks.")
+            tracks = []
+            print("Loading tracks...")
+            ch, num_samples = torchaudio.load(track_filepaths[0]).shape
+            offset = torch.randint(0, num_samples/2, (1,)).item()
+            for track_idx, track_filepath in enumerate(tqdm(track_filepaths)):
+                x, sr = torchaudio.load(track_filepath, num_frames=self.length, offset=offset)
+
+                # convert sample rate if needed
+                if sr != sample_rate:
+                    x = torchaudio.functional.resample(x, sr, sample_rate)
+
+                # peak normalize
+                track_lufs_db = self.meter.integrated_loudness(
+                    x.permute(1, 0).numpy()
+                )
+
+
+                delta_lufs_db = torch.tensor(
+                    [target_track_lufs_db - track_lufs_db]
+                ).float()
+
+                gain_lin = 10.0 ** (delta_lufs_db.clamp(-120, 40.0) / 20.0)
+                x= gain_lin * x
+                
+                if x.shape[0] > 2:
+                    continue
+                elif x.shape[0] == 2:
+                    self.stereo_info.append(True)
+                    self.stereo_info.append(False)
+                else:
+                    self.stereo_info.append(False)
+                
+
+                # separate channels
+                for ch_idx in range(x.shape[0]):
+                    x_ch = x[ch_idx : ch_idx + 1, :]
+
+                    # save
+                    tracks.append(x_ch)
+
+            song["tracks"] = tracks
+            self.songs.append(song)
+
+    def __len__(self):
+        return len(self.songs)
+
+    def __getitem__(self, _):
+        for idx, song in enumerate(self.songs):
+            ref_mix = song["ref_mix"]
+            tracks = song["tracks"]
+            name = song["name"]
+
+            # take a chunk from the middle of the mix
+            start_idx = (ref_mix.shape[-1] // 2) - (262144 // 2)
+            stop_idx = start_idx + 262144
+            ref_mix_chunk = ref_mix[..., start_idx:stop_idx]
+
+            # loudness normalize the mix
+            mix_lufs_db = self.meter.integrated_loudness(
+                ref_mix_chunk.permute(1, 0).numpy()
+            )
+            delta_lufs_db = torch.tensor(
+                [self.target_mix_lufs_db - mix_lufs_db]
+            ).float()
+            gain_lin = 10.0 ** (delta_lufs_db.clamp(-120, 40.0) / 20.0)
+            ref_mix_chunk = gain_lin * ref_mix_chunk
+
+            # move to gpu
+            ref_mix_chunk = ref_mix_chunk.cuda()
+
+            # make a mix of multiple sections of the tracks
+            for n, start_idx in enumerate([0, 524288, 2 * 524288, 3 * 524288]):
+                stop_idx = start_idx + 262144
+
+                # loudness normalize tracks
+                normalized_tracks = []
+                for track in tracks:
+                    track = track[..., start_idx:stop_idx]
+
+                    if len(normalized_tracks) > 16:
+                        break
+
+                    if track.shape[-1] < 262144:
+                        continue
+
+                    track_lufs_db = self.meter.integrated_loudness(
+                        track.permute(1, 0).numpy()
+                    )
+
+                    if track_lufs_db < -48.0 or track_lufs_db == float("-inf"):
+                        continue
+
+                    delta_lufs_db = torch.tensor(
+                        [self.target_track_lufs_db - track_lufs_db]
+                    ).float()
+
+                    gain_lin = 10.0 ** (delta_lufs_db.clamp(-120, 40.0) / 20.0)
+                    track = gain_lin * track
+                    normalized_tracks.append(track)
+
+                if len(normalized_tracks) == 0:
+                    continue
+
+                # cat tracks
+                tracks_chunk = torch.cat(normalized_tracks, dim=0)
+                tracks_chunk = tracks_chunk.cuda().unsqueeze(0)
+                ref_mix_chunk = ref_mix_chunk.cuda().unsqueeze(0)
+
+                instrument_id = torch.tensor([n]).long().cuda()
+                stereo_info = torch.tensor(self.stereo_info).cuda()
+                track_padding = torch.zeros(1).bool().cuda()
+                
+
+                return tracks_chunk, instrument_id, stereo_info, track_padding,  ref_mix_chunk, name
+            
+class InferenceDataModule(pl.LightningDataModule):
+    def __init__(
+        self,
+        root_dirs: List[str],
+        ref_mixes: List[str],
+        peak_normalize: bool = True,
+        sample_rate: int = 44100,
+        length: int = 524288,
+        target_track_lufs_db: float = -48.0,
+        target_mix_lufs_db: float = -16.0,
+        batch_size: int = 16,
+    ):
+        super().__init__()
+        self.save_hyperparameters()
+        torchaudio.set_audio_backend("soundfile")
+
+    def setup(self, stage=None):
+        self.dataset = InferenceDataset(
+            self.hparams.root_dirs,
+            self.hparams.ref_mixes,
+            self.hparams.peak_normalize,
+            self.hparams.sample_rate,
+            self.hparams.length,
+            self.hparams.target_track_lufs_db,
+            self.hparams.target_mix_lufs_db,
+        )
+
+    def predict_dataloader(self):
+        return torch.utils.data.DataLoader(
+            self.dataset,
+            batch_size=self.hparams.batch_size,
+            num_workers=1,
+        )
+
+        
 
 class MixDataset(torch.utils.data.Dataset):
     def __init__(self, root_dir: str, length: int = 524288):
         super().__init__()
         self.root_dir = root_dir
         self.length = length
-
+        print(f"Loading mixes from {root_dir}...")
          
         self.mix_filepaths = glob.glob(
-            os.path.join(root_dir, "**", "*.wav"), recursive=True
+            os.path.join(root_dir, "**", "*.mp3"), recursive=True  
         )
        
         print(f"Located {len(self.mix_filepaths)} mixes.")
@@ -176,7 +377,7 @@ class MultitrackDataset(torch.utils.data.Dataset):
         for mix_dir in mix_root_dirs:
             # find all mixes in directory recursively
 
-            mix_files = glob.glob(os.path.join(mix_dir, "**", "*.wav"), recursive=True)
+            mix_files = glob.glob(os.path.join(mix_dir, "**", "*.mp3"), recursive=True)
 
 
             self.mixes.extend(mix_files)

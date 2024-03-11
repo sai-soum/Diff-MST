@@ -4,7 +4,7 @@ model:
     generate_mix: true
     active_eq_epoch: 0
     active_compressor_epoch: 0
-    active_fx_bus_epoch: 100000
+    active_fx_bus_epoch: 10000
     active_master_bus_epoch: 0
     mix_fn: mst.mixing.naive_random_mix
     mix_console:
@@ -48,16 +48,8 @@ model:
         sum_and_diff: false
        
     loss: 
-      class_path: mst.loss.AudioFeatureLoss
+      class_path: mst.loss.MSTFT_with_stereo_balance
       init_args:
         sample_rate: 44100
-        stem_separation: false
-        use_clap: false
-        weights: 
-          - 0.1 # rms
-          - 0.001 # crest factor
-          - 1.0  # stereo width
-          - 1.0 # stereo imbalance
-          - 0.1 # bark spectrum
-
+       
   

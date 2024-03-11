@@ -89,7 +89,7 @@ def naive_random_mix(
             use_fx_bus=use_fx_bus,
             use_output_fader=use_ouput_fader,
         )
-
+    #print("mix", mix.shape)
 
     return mixed_tracks, mix, track_param_dict, fx_bus_param_dict, master_bus_param_dict, mix_params, fx_bus_params, master_bus_params
 

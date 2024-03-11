@@ -9,6 +9,7 @@ import yaml
 from mst.fx_encoder import FXencoder
 
 from mst.modules import SpectrogramEncoder
+import auraloss
 
 
 def compute_mid_side(x: torch.Tensor):
@@ -497,23 +498,30 @@ class FX_encoder_loss(torch.nn.Module):
             losses[transform_name] = weight * val
     
         return losses
-    
-# if __name__ == "__main__":
-#     import torchaudio
-#     path = "/import/c4dm-datasets-ext/mtg-jamendo_wav/02/1012002.wav"
-    
-#     #input1, sr = torchaudio.load(path, channels_first = True, num_frames = 44100*10)
-    
-#     input1= torch.zeros(2,44100*10)
-#     input2 = input1
-#     #input2, sr = torchaudio.load(path, channels_first = True, num_frames = 44100*10, frame_offset = 44100*10)
-#     print(input1.shape)
-#     input1 = input1.unsqueeze(0)
-#     input2 = input2.unsqueeze(0)
-#     weights = [1.0, 0.001, 1.0, 1.0, 0.01 , 0.01]
 
-#     loss = FX_encoder_loss(weights = weights)
-#     losses = loss(input1, input2)
-#     print(losses)
-#     print(sum(losses.values()))
+class MSTFT_with_stereo_balance(torch.nn.Module):
+    def __init__(self, sample_rate, distance: Callable = torch.nn.functional.mse_loss, weights: list[float]= [10.0, 1.0, 0.1]):
+        super().__init__()
+        self.distance = distance
+        self.weights = weights
+        self.sample_rate = sample_rate
+        self.transforms = [
+            compute_stereo_width,
+            compute_stereo_imbalance,
+            compute_barkspectrum,
+        ]
+        self.mstft = auraloss.freq.MultiResolutionSTFTLoss(fft_sizes = [512, 2048, 8192], hop_sizes = [256, 1024, 4096], win_lengths = [512, 2048, 8192])
+        
+        assert len(self.transforms) == len(self.weights)
 
+    def forward(self, input: torch.Tensor, target: torch.Tensor):
+        losses = {}
+        for transform, weight in zip(self.transforms, self.weights):
+            transform_name = "_".join(transform.__name__.split("_")[1:])
+            input_transform = transform(input, sample_rate=self.sample_rate)
+            target_transform = transform(target, sample_rate=self.sample_rate)
+            val = torch.nn.functional.mse_loss(input_transform, target_transform)
+            losses[transform_name] = weight * val
+        losses["mstft"] = self.mstft(input, target)
+        return losses
+    

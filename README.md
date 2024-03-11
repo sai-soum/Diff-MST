@@ -60,10 +60,10 @@ First update the paths in the configuration file for both the logger and the dat
 Then call the `main.py` script passing in the configuration file. 
 ```
 # new model configuration with audio feature loss
-CUDA_VISIBLE_DEVICES=0 python main.py fit \
--c configs/config_cjs.yaml \
+CUDA_VISIBLE_DEVICES=3 python main.py fit \
+-c configs/config.yaml \
 -c configs/optimizer.yaml \
--c configs/data/medley+cambridge+jamendo-8.yaml \
+-c configs/data/medley+cambridge+jamendo-4.yaml \
 -c configs/models/gain+eq+comp-feat.yaml
 
 # new model configuration with CLAP loss
@@ -87,10 +87,10 @@ tar -xvf MedleyDB_v2.tar
 python main.py fit -c configs/config.yaml -c configs/optimizer.yaml -c configs/data/medleydb_cjs.yaml -c configs/models/naive_dmc_adv.yaml
 CUDA_VISIBLE_DEVICES=7 python main.py fit -c configs/config_cjs.yaml -c configs/optimizer.yaml -c configs/data/medleydb_c4dm.yaml -c configs/models/ke_dmc_adv.yaml
 
-CUDA_VISIBLE_DEVICES=7 python main.py fit -c configs/config.yaml -c configs/optimizer.yaml -c configs/data/medley+cambridge-4.yaml -c configs/models/naive+fx_encoder_loss.yaml
+CUDA_VISIBLE_DEVICES=3 python main.py fit -c configs/config.yaml -c configs/optimizer.yaml -c configs/data/medley+cambridge-4.yaml -c configs/models/mstft+stereolosses.yaml
 
 To run the paramloss code
 
-CUDA_VISIBLE_DEVICES=1 python main.py fit -c configs/config.yaml -c configs/optimizer.yaml -c configs/data/medley+cambridge-4.yaml -c configs/models/naive.yaml
-
+CUDA_VISIBLE_DEVICES=3 python main.py validate -c configs/config.yaml -c configs/optimizer.yaml -c configs/data/medley+cambridge-4.yaml -c configs/models/gain+eq+comp-feat.yaml
 ```
+

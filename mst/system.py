@@ -134,7 +134,7 @@ class System(pl.LightningModule):
             self.use_master_bus = True
 
         bs, num_tracks, seq_len = tracks.shape
-
+        
         # apply random gain to input tracks
         # tracks *= 10 ** ((torch.rand(bs, num_tracks, 1).type_as(tracks) * -12.0) / 20.0)
         ref_track_param_dict = None
@@ -148,6 +148,7 @@ class System(pl.LightningModule):
             
         # --------- create a random mix (on GPU, if applicable) ---------
         if self.generate_mix:
+           
             (
                 ref_mix_tracks,
                 ref_mix,
@@ -175,7 +176,7 @@ class System(pl.LightningModule):
 
             # normalize the reference mix
             ref_mix = batch_stereo_peak_normalize(ref_mix)
-
+            
             if torch.isnan(ref_mix).any():
                 #print(ref_track_param_dict)
                 raise ValueError("Found nan in ref_mix")
@@ -202,65 +203,11 @@ class System(pl.LightningModule):
         #print("ref_mix: ", ref_mix_a)
 
 
-        if self.current_epoch >= self.active_compressor_epoch:
-            self.use_track_compressor = True
-
-        if self.current_epoch >= self.active_fx_bus_epoch:
-            self.use_fx_bus = True
-
-        if self.current_epoch >= self.active_master_bus_epoch:
-            self.use_master_bus = True
-
-        bs, num_tracks, seq_len = tracks.shape
-
-        # apply random gain to input tracks
-        # tracks *= 10 ** ((torch.rand(bs, num_tracks, 1).type_as(tracks) * -12.0) / 20.0)
-        ref_track_param_dict = None
-        ref_fx_bus_param_dict = None
-        ref_master_bus_param_dict = None
-
-        # --------- create a random mix (on GPU, if applicable) ---------
-        if self.generate_mix:
-            (
-                ref_mix_tracks,
-                ref_mix,
-                ref_track_param_dict,
-                ref_fx_bus_param_dict,
-                ref_master_bus_param_dict,
-            ) = self.mix_fn(
-                tracks,
-                self.mix_console,
-                use_track_input_fader=False,  # do not use track input fader for training
-                use_track_panner=self.use_track_panner,
-                use_track_eq=self.use_track_eq,
-                use_track_compressor=self.use_track_compressor,
-                use_fx_bus=self.use_fx_bus,
-                use_master_bus=self.use_master_bus,
-                use_output_fader=False,  # not used because we normalize output mixes
-                instrument_id=instrument_id,
-                stereo_id=stereo_info,
-                instrument_number_file=self.instrument_number_lookup,
-                ke_dict=self.knowledge_engineering_dict,
-            )
-
-            # normalize the reference mix
-            ref_mix = batch_stereo_peak_normalize(ref_mix)
-
-            if torch.isnan(ref_mix).any():
-                print(ref_track_param_dict)
-                raise ValueError("Found nan in ref_mix")
-
-            ref_mix_a = ref_mix[..., :middle_idx]  # this is passed to the model
-            ref_mix_b = ref_mix[..., middle_idx:]  # this is used for loss computation
-        else:
-            # when using a real mix, pass the same mix to model and loss
-            ref_mix_a = ref_mix
-            ref_mix_b = ref_mix
-
+        
         # tracks_a = tracks[..., :input_middle_idx] # not used currently
         tracks_b = tracks[..., middle_idx:]  # this is passed to the model
 
-       
+        #print(ref_mix_a.shape)
         #  ---- run model with tracks from section A using reference mix from section B ----
         (
             pred_track_params,
@@ -411,6 +358,10 @@ class System(pl.LightningModule):
         return loss
 
     def validation_step(self, batch, batch_idx):
+        loss, data_dict = self.common_step(batch, batch_idx, train=False)
+        return data_dict
+
+    def predict_step(self, batch, batch_idx, dataloader_idx=None):
         loss, data_dict = self.common_step(batch, batch_idx, train=False)
         return data_dict
 

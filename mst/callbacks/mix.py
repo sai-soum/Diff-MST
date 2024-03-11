@@ -58,6 +58,8 @@ class LogReferenceMix(pl.callbacks.Callback):
 
             # load tracks
             track_filepaths = glob.glob(os.path.join(root_dir, "*.wav"))
+            #randomise the order of the tracks
+            np.random.shuffle(track_filepaths)
             tracks = []
             print("Loading tracks...")
             for track_idx, track_filepath in enumerate(tqdm(track_filepaths)):
@@ -73,6 +75,8 @@ class LogReferenceMix(pl.callbacks.Callback):
 
                     # save
                     tracks.append(x_ch)
+                if len(tracks) > 16:
+                    break
 
             song["tracks"] = tracks
             self.songs.append(song)

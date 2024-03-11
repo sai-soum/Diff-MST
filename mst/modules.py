@@ -39,11 +39,14 @@ class MixStyleTransferModel(torch.nn.Module):
         # first process the tracks
         track_embeds = self.track_encoder(tracks.view(bs * num_tracks, 1, -1))
         track_embeds = track_embeds.view(bs, num_tracks, -1)  # restore
+        #print(ref_mix.shape)
 
         # compute mid/side from the reference mix
         if self.sum_and_diff:
-            ref_mix_mid = ref_mix.sum(dim=1)
+            ref_mix_mid = ref_mix[..., 0:1, :] + ref_mix[..., 1:2, :]
             ref_mix_side = ref_mix[..., 0:1, :] - ref_mix[..., 1:2, :]
+            # print(ref_mix_mid.shape)
+            # print(ref_mix_side.shape)
 
             # process the reference mix
 
@@ -669,9 +672,7 @@ class WaveformTransformerEncoder(torch.nn.Module):
 
 
 class SpectrogramEncoder(torch.nn.Module):
-    def __init__(
-        self,
-=======
+
     def __init__(
         self,
         n_inputs=1,
