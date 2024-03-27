@@ -34,7 +34,7 @@ def equal_loudness_mix(tracks: torch.Tensor, *args, **kwargs):
 
 if __name__ == "__main__":
     meter = pyln.Meter(44100)
-    target_lufs_db = -18.0
+    target_lufs_db = -22.0
     output_dir = "outputs/listen"
     os.makedirs(output_dir, exist_ok=True)
 
@@ -115,6 +115,9 @@ if __name__ == "__main__":
 
             print(track_idx, os.path.basename(track_filepath), audio.shape, sr, lufs_db)
 
+            if audio.shape[0] == 2:
+                audio = audio.mean(dim=0, keepdim=True)
+
             chs, seq_len = audio.shape
 
             for ch_idx in range(chs):
@@ -170,72 +173,97 @@ if __name__ == "__main__":
             # crop the tracks to create a mix twice the size of the reference section
             mix_tracks = tracks
             # [..., track_start_idx : track_start_idx + (262144 * 2)]
+            mix_tracks = tracks[..., track_start_idx : track_start_idx + (262144 * 2)]
+            track_start_idx = 0
             print("mix_tracks", mix_tracks.shape)
 
             # save the reference mix section for analysis
             ref_analysis = ref_audio[..., ref_start_idx : ref_start_idx + 262144]
-            ref_filepath = os.path.join(example_dir, f"ref-analysis-{song_section}.wav")
 
-            # loudness normalize the reference mix section to -14 LUFS
-            ref_lufs_db = meter.integrated_loudness(
-                ref_analysis.squeeze().permute(1, 0).numpy()
-            )
-            lufs_delta_db = target_lufs_db - ref_lufs_db
-            ref_analysis = ref_analysis * 10 ** (lufs_delta_db / 20)
-
-            torchaudio.save(ref_filepath, ref_analysis.squeeze(), 44100)
-
-            for method_name, method in methods.items():
-                print(method_name)
-                # tracks (torch.Tensor): Set of input tracks with shape (bs, num_tracks, seq_len)
-                # ref_audio (torch.Tensor): Reference mix with shape (bs, 2, seq_len)
-
-                model, mix_console = method["model"]
-                func = method["func"]
-
-                print(tracks.shape, ref_audio.shape)
-
-                with torch.no_grad():
-                    result = func(
-                        mix_tracks.clone(),
-                        ref_analysis.clone(),
-                        model,
-                        mix_console,
-                        track_start_idx=track_start_idx,
-                        ref_start_idx=ref_start_idx,
-                    )
-
-                    (
-                        pred_mix,
-                        pred_track_param_dict,
-                        pred_fx_bus_param_dict,
-                        pred_master_bus_param_dict,
-                    ) = result
-
-                bs, chs, seq_len = pred_mix.shape
-
-                # loudness normalize the output mix
-                mix_lufs_db = meter.integrated_loudness(
-                    pred_mix.squeeze(0).permute(1, 0).numpy()
-                )
-                print(mix_lufs_db)
-                lufs_delta_db = target_lufs_db - mix_lufs_db
-                pred_mix = pred_mix * 10 ** (lufs_delta_db / 20)
-
-                # save resulting audio and parameters
-                mix_filepath = os.path.join(
-                    example_dir, f"{example_name}-{method_name}-ref={song_section}.wav"
-                )
-                torchaudio.save(mix_filepath, pred_mix.view(chs, -1), 44100)
-
-                # also save only the analysis section
-                mix_analysis = pred_mix[
-                    ..., track_start_idx : track_start_idx + (2 * 262144)
-                ]
-                mix_filepath = os.path.join(
+            # create mixes varying the loudness of the reference
+            for ref_loudness_target in [-24, -16, -14.0, -12, -6]:
+                print("Ref loudness", ref_loudness_target)
+                ref_filepath = os.path.join(
                     example_dir,
-                    f"{example_name}-{method_name}-analysis-{song_section}.wav",
+                    f"ref-analysis-{song_section}-lufs-{ref_loudness_target:0.0f}.wav",
                 )
-                torchaudio.save(mix_filepath, mix_analysis.view(chs, -1), 44100)
+
+                # loudness normalize the reference mix section to -14 LUFS
+                ref_lufs_db = meter.integrated_loudness(
+                    ref_analysis.squeeze().permute(1, 0).numpy()
+                )
+                lufs_delta_db = ref_loudness_target - ref_lufs_db
+                ref_analysis = ref_analysis * 10 ** (lufs_delta_db / 20)
+
+                torchaudio.save(ref_filepath, ref_analysis.squeeze(), 44100)
+
+                for method_name, method in methods.items():
+                    print(method_name)
+                    # tracks (torch.Tensor): Set of input tracks with shape (bs, num_tracks, seq_len)
+                    # ref_audio (torch.Tensor): Reference mix with shape (bs, 2, seq_len)
+
+                    if method_name == "sum":
+                        if ref_loudness_target != -16:
+                            continue
+
+                    if method_name == "sum" and song_section == "chorus":
+                        continue
+
+                    model, mix_console = method["model"]
+                    func = method["func"]
+
+                    print(tracks.shape, ref_audio.shape)
+
+                    with torch.no_grad():
+                        result = func(
+                            mix_tracks.clone(),
+                            ref_analysis.clone(),
+                            model,
+                            mix_console,
+                            track_start_idx=track_start_idx,
+                            ref_start_idx=ref_start_idx,
+                        )
+
+                        (
+                            pred_mix,
+                            pred_track_param_dict,
+                            pred_fx_bus_param_dict,
+                            pred_master_bus_param_dict,
+                        ) = result
+
+                    bs, chs, seq_len = pred_mix.shape
+
+                    # loudness normalize the output mix
+                    mix_lufs_db = meter.integrated_loudness(
+                        pred_mix.squeeze(0).permute(1, 0).numpy()
+                    )
+                    print(mix_lufs_db)
+                    lufs_delta_db = target_lufs_db - mix_lufs_db
+                    pred_mix = pred_mix * 10 ** (lufs_delta_db / 20)
+
+                    # save resulting audio and parameters
+                    mix_filepath = os.path.join(
+                        example_dir,
+                        f"{example_name}-{method_name}-ref={song_section}-lufs-{ref_loudness_target:0.0f}.wav",
+                    )
+                    torchaudio.save(mix_filepath, pred_mix.view(chs, -1), 44100)
+
+                    # also save only the analysis section
+                    mix_analysis = pred_mix[
+                        ..., track_start_idx : track_start_idx + (2 * 262144)
+                    ]
+
+                    # loudness normalize the output mix
+                    mix_lufs_db = meter.integrated_loudness(
+                        mix_analysis.squeeze(0).permute(1, 0).numpy()
+                    )
+                    print(mix_lufs_db)
+                    mix_analysis = mix_analysis * 10 ** (lufs_delta_db / 20)
+
+                    mix_filepath = os.path.join(
+                        example_dir,
+                        f"{example_name}-{method_name}-analysis-{song_section}-lufs-{ref_loudness_target:0.0f}.wav",
+                    )
+                    torchaudio.save(mix_filepath, mix_analysis.view(chs, -1), 44100)
 
         print()
