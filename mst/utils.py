@@ -148,8 +148,13 @@ def run_diffmst(
                 pred_mix_window, (0, analysis_len - pred_mix_window.shape[-1])
             )
 
+        window = torch.hann_window(pred_mix_window.shape[-1])
         # apply hann window
-        pred_mix_window *= torch.hann_window(pred_mix_window.shape[-1])
+        if i == 0:
+            # set the first half of the window to 1
+            window[: window.shape[-1] // 2] = 1.0
+
+        pred_mix_window *= window
 
         # check length of the mix window
         output_len = pred_mix[..., i : i + analysis_len].shape[-1]
