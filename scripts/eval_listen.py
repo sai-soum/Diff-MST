@@ -35,7 +35,7 @@ def equal_loudness_mix(tracks: torch.Tensor, *args, **kwargs):
 if __name__ == "__main__":
     meter = pyln.Meter(44100)
     target_lufs_db = -22.0
-    output_dir = "outputs/listen"
+    output_dir = "outputs/listen_1"
     os.makedirs(output_dir, exist_ok=True)
 
     methods = {
@@ -113,7 +113,7 @@ if __name__ == "__main__":
             # lufs_delta_db = -48 - lufs_db
             # audio = audio * 10 ** (lufs_delta_db / 20)
 
-            print(track_idx, os.path.basename(track_filepath), audio.shape, sr, lufs_db)
+            #print(track_idx, os.path.basename(track_filepath), audio.shape, sr, lufs_db)
 
             if audio.shape[0] == 2:
                 audio = audio.mean(dim=0, keepdim=True)
@@ -123,14 +123,14 @@ if __name__ == "__main__":
             for ch_idx in range(chs):
                 tracks.append(audio[ch_idx : ch_idx + 1, :])
                 lengths.append(audio.shape[-1])
-
+        print("Loaded tracks.")
         # find max length and pad if shorter
         max_length = max(lengths)
         for track_idx in range(len(tracks)):
             tracks[track_idx] = torch.nn.functional.pad(
                 tracks[track_idx], (0, max_length - lengths[track_idx])
             )
-
+        print("Padded tracks.")
         # stack into a tensor
         tracks = torch.cat(tracks, dim=0)
         tracks = tracks.view(1, -1, max_length)
@@ -144,6 +144,8 @@ if __name__ == "__main__":
         # create a sum mix with equal loudness
         sum_mix = torch.sum(tracks, dim=1, keepdim=True).squeeze(0)
         sum_filepath = os.path.join(example_dir, f"{example_name}-sum.wav")
+        os.makepath(sum_filepath)
+        print("sum_mix path created")
 
         # loudness normalize the sum mix
         sum_lufs_db = meter.integrated_loudness(sum_mix.permute(1, 0).numpy())
@@ -151,10 +153,12 @@ if __name__ == "__main__":
         sum_mix = sum_mix * 10 ** (lufs_delta_db / 20)
 
         torchaudio.save(sum_filepath, sum_mix.view(1, -1), 44100)
+        print("Sum mix saved.")
 
         # save the reference mix
         ref_filepath = os.path.join(example_dir, "ref-full.wav")
         torchaudio.save(ref_filepath, ref_audio.squeeze(), 44100)
+        print("Reference mix saved.")
 
         for song_section in ["verse", "chorus"]:
             print("Mixing", song_section)
