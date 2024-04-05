@@ -55,8 +55,8 @@ if __name__ == "__main__":
     methods = {
         "diffmst-16": {
             "model": load_diffmst(
-                "/import/c4dm-datasets-ext/Diff-MST/DiffMST/b4naquji/config.yaml",
-                "/import/c4dm-datasets-ext/Diff-MST/DiffMST/b4naquji/checkpoints/epoch=191-step=626608.ckpt",
+                "/Users/svanka/Downloads/b4naquji/config.yaml",
+                "/Users/svanka/Downloads/b4naquji/checkpoints/epoch=191-step=626608.ckpt",
             ),
             "func": run_diffmst,
         },
@@ -68,17 +68,17 @@ if __name__ == "__main__":
 
     # get the validation examples
     examples = {
-        "ecstasy": {
-            "tracks": "/import/c4dm-datasets-ext/diffmst-examples/song1/BenFlowers_Ecstasy_Full/",
-            "ref": "/import/c4dm-datasets-ext/diffmst-examples/song1/ref/_Feel it all Around_ by Washed Out (Portlandia Theme)_01.wav",
-        },
-        "by-my-side": {
-            "tracks": "/import/c4dm-datasets-ext/diffmst-examples/song2/Kat Wright_By My Side/",
-            "ref": "/import/c4dm-datasets-ext/diffmst-examples/song2/ref/The Dip - Paddle To The Stars (Lyric Video)_01.wav",
-        },
+        # "ecstasy": {
+        #     "tracks": "/Users/svanka/Downloads//diffmst-examples/song1/BenFlowers_Ecstasy_Full/",
+        #     "ref": "/Users/svanka/Downloads//diffmst-examples/song1/ref/_Feel it all Around_ by Washed Out (Portlandia Theme)_01.wav",
+        # },
+        # "by-my-side": {
+        #     "tracks": "/Users/svanka/Downloads//diffmst-examples/song2/Kat Wright_By My Side/",
+        #     "ref": "/Users/svanka/Downloads//diffmst-examples/song2/ref/The Dip - Paddle To The Stars (Lyric Video)_01.wav",
+        # },
         "haunted-aged": {
-            "tracks": "/import/c4dm-datasets-ext/diffmst-examples/song3/Titanium_HauntedAge_Full/",
-            "ref": "/import/c4dm-datasets-ext/diffmst-examples/song3/ref/Architects - _Doomsday__01.wav",
+            "tracks": "/Users/svanka/Downloads//diffmst-examples/song3/Titanium_HauntedAge_Full/",
+            "ref": "/Users/svanka/Downloads//diffmst-examples/song3/ref/Architects - _Doomsday__01.wav",
         },
     }
     loss = AudioFeatureLoss([0.1,0.001,1.0,1.0,0.1], 44100)
@@ -157,7 +157,7 @@ if __name__ == "__main__":
 
         # crop tracks to max of 60 seconds or so
         # tracks = tracks[..., :4194304]
-        tracks_length = min_length
+        tracks_length = max_length
         
         #print(tracks.shape)
         track_start_idx = int(tracks_length / 4)
@@ -180,7 +180,7 @@ if __name__ == "__main__":
                 ref_analysis = ref_audio[..., ref_start_idx + j*441000 : ref_start_idx + (j+1)*441000]
 
                 # create mixes varying the loudness of the reference
-                for ref_loudness_target in [-16, -14.0]:
+                for ref_loudness_target in [-16.0]:
                     print("Ref loudness", ref_loudness_target)
                     ref_filepath = os.path.join(
                         example_dir,
@@ -195,7 +195,8 @@ if __name__ == "__main__":
                     lufs_delta_db = ref_loudness_target - ref_lufs_db
                     ref_analysis = ref_analysis * 10 ** (lufs_delta_db / 20)
 
-                    #torchaudio.save(ref_filepath, ref_analysis.squeeze(), 44100)
+                    torchaudio.save(ref_filepath, ref_analysis.squeeze(), 44100)
+                    
                     AF_loss = 0
                     for method_name, method in methods.items():
                         AF[example_name][method_name] = {}
@@ -236,7 +237,7 @@ if __name__ == "__main__":
                             ) = result
 
                         bs, chs, seq_len = pred_mix.shape
-
+                        print("pred_mix shape", pred_mix.shape)
                         # loudness normalize the output mix
                         mix_lufs_db = meter.integrated_loudness(
                             pred_mix.squeeze(0).permute(1, 0).numpy()
@@ -245,12 +246,13 @@ if __name__ == "__main__":
                         #print(mix_lufs_db)
                         lufs_delta_db = target_lufs_db - mix_lufs_db
                         pred_mix = pred_mix * 10 ** (lufs_delta_db / 20)
+                        mix_filepath = os.path.join(
+                            example_dir,
+                            f"{example_name}-{method_name}-tracks-{i}-ref={j}-lufs-{ref_loudness_target:0.0f}.wav",
+                        )
+                        torchaudio.save(mix_filepath, pred_mix.view(chs, -1), 44100)
                         
-                        # AF[example_name][method_name][audio_section]["rms"] = compute_rms(pred_mix, sample_rate=44100)
-                        # AF[example_name][method_name][audio_section]["crest_factor"] = compute_crest_factor(pred_mix, sample_rate=44100)
-                        # AF[example_name][method_name][audio_section]["stereo_width"] = compute_stereo_width(pred_mix, sample_rate=44100)
-                        # AF[example_name][method_name][audio_section]["stereo_imbalance"] = compute_stereo_imbalance(pred_mix, sample_rate=44100)
-                        # AF[example_name][method_name][audio_section]["barkspectrum"] = compute_barkspectrum(pred_mix, sample_rate=44100)
+                        # compute audio features
                         AF_loss = loss(pred_mix, ref_analysis)
                        
                         for key, value in AF_loss.items():
@@ -264,35 +266,13 @@ if __name__ == "__main__":
                         print("min_AF_loss", min_AF_loss)
                         print("min_AF_loss_example", min_AF_loss_example)
                         # save resulting audio and parameters
-                        mix_filepath = os.path.join(
-                            example_dir,
-                            f"{example_name}-{method_name}-tracks-{i}-ref={j}-lufs-{ref_loudness_target:0.0f}.wav",
-                        )
-                        #torchaudio.save(mix_filepath, pred_mix.view(chs, -1), 44100)
-
-                        # also save only the analysis section
-                        # mix_analysis = pred_mix[
-                        #     ..., track_start_idx : track_start_idx + (262144)
-                        # ]
-                        # print("pred_mix shape", mix_analysis.shape)
-                        # # loudness normalize the output mix
-                        # mix_lufs_db = meter.integrated_loudness(
-                        #     mix_analysis.squeeze(0).permute(1, 0).numpy()
-                        # )
-                        # print(mix_lufs_db)
-                        # mix_analysis = mix_analysis * 10 ** (lufs_delta_db / 20)
-
-                        mix_filepath = os.path.join(
-                            example_dir,
-                            f"{example_name}-{method_name}-analysis-tracks-{i}-ref={j}-lufs-{ref_loudness_target:0.0f}.wav",
-                        )
                         #append to csv the method name, audio section, audio features values and net loss on different columns
                        
                         with open(csv_path, 'a') as f:
                             writer = csv.writer(f)
                             writer.writerow([method_name, audio_section, AF[example_name][method_name][audio_section]["track_start_idx"], AF[example_name][method_name][audio_section]["track_stop_idx"], AF[example_name][method_name][audio_section]["ref_start_idx"], AF[example_name][method_name][audio_section]["ref_stop_idx"], AF[example_name][method_name][audio_section]["mix-rms"], AF[example_name][method_name][audio_section]["mix-crest_factor"], AF[example_name][method_name][audio_section]["mix-stereo_width"], AF[example_name][method_name][audio_section]["mix-stereo_imbalance"], AF[example_name][method_name][audio_section]["mix-barkspectrum"], AF[example_name][method_name][audio_section]["net_AF_loss"]])
                             f.close()
-                        #torchaudio.save(mix_filepath, pred_mix.view(chs, -1), 44100)
+                      
         
         print(f"for {example_name} min loss is {min_AF_loss} corresponding to {min_AF_loss_example}")
         print()
