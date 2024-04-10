@@ -21,12 +21,12 @@ class MixDataset(torch.utils.data.Dataset):
         self.root_dir = root_dir
         self.length = length
 
-         
         self.mix_filepaths = glob.glob(
             os.path.join(root_dir, "**", "*.wav"), recursive=True
+        )
 
-        #self.mix_filepaths = glob.glob(
-            #os.path.join(root_dir, "**", "*.mp3"), recursive=True)
+        # self.mix_filepaths = glob.glob(
+        # os.path.join(root_dir, "**", "*.mp3"), recursive=True)
         print(f"Located {len(self.mix_filepaths)} mixes.")
 
         self.meter = pyln.Meter(44100)
@@ -47,7 +47,6 @@ class MixDataset(torch.utils.data.Dataset):
             offset = np.random.randint(0, num_frames - self.length - 1)
 
             offset = 0  # always use the same offset
-
 
             mix, _ = torchaudio.load(
                 mix_filepath,
@@ -181,6 +180,10 @@ class MultitrackDataset(torch.utils.data.Dataset):
 
             mix_files = glob.glob(os.path.join(mix_dir, "**", "*.wav"), recursive=True)
 
+            if "MUSDB" in mix_dir:
+                mix_files = [
+                    mix_file for mix_file in mix_files if "mixture" in mix_file
+                ]
 
             self.mixes.extend(mix_files)
 
@@ -224,8 +227,6 @@ class MultitrackDataset(torch.utils.data.Dataset):
                 continue
 
             mix_lufs_db = self.meter.integrated_loudness(mix.permute(1, 0).numpy())
-
-
 
             if mix_lufs_db < -48.0 or mix_lufs_db == float("-inf"):
                 continue
@@ -299,11 +300,9 @@ class MultitrackDataset(torch.utils.data.Dataset):
                 if track.size()[0] > 2:
                     continue
 
-
                 track_lufs_db = self.meter.integrated_loudness(
                     track.permute(1, 0).numpy()
                 )
-
 
                 if track_lufs_db < -48.0 or track_lufs_db == float("-inf"):
                     continue
@@ -352,13 +351,14 @@ class MultitrackDataset(torch.utils.data.Dataset):
             # convert to tensor
             tracks = torch.cat(tracks)
 
-            
             # if tracks[...,0:middle_idx].sum() == 0 or tracks[...,middle_idx:].sum() == 0:
             #     continue
             tracks = tracks.reshape(self.max_tracks, self.length)
-            #create a sum mix of the tracks
+            # create a sum mix of the tracks
             mix_check = tracks.sum(0)
-            if torch.any(mix_check[...,0:middle_idx] == False) or torch.any(mix_check[...,middle_idx:] == False):
+            if torch.any(mix_check[..., 0:middle_idx] == False) or torch.any(
+                mix_check[..., middle_idx:] == False
+            ):
                 continue
 
             track_metadata = torch.tensor(track_metadata)
@@ -367,9 +367,7 @@ class MultitrackDataset(torch.utils.data.Dataset):
 
             # add to buffer
             self.track_examples.append(
-
                 (tracks, stereo_info, track_metadata, track_padding, song_name)
-
             )
 
             nbytes_loaded += tracks.element_size() * tracks.nelement()
@@ -395,12 +393,10 @@ class MultitrackDataset(torch.utils.data.Dataset):
 
         tracks = track_example[0]
 
-        
         stereo_info = track_example[1]
         track_metadata = track_example[2]
         track_padding = track_example[3]
         song_name = track_example[4]
-
 
         # ------------ get example from mix buffer ------------
         # optional
@@ -415,9 +411,7 @@ class MultitrackDataset(torch.utils.data.Dataset):
         else:
             mix = torch.empty(1)
 
-
         return tracks, stereo_info, track_metadata, track_padding, mix, song_name
-
 
 
 class MultitrackDataModule(pl.LightningDataModule):
@@ -437,6 +431,7 @@ class MultitrackDataModule(pl.LightningDataModule):
         num_val_passes: int = 1,
         train_buffer_size_gb: float = 0.01,
         val_buffer_size_gb: float = 0.1,
+        test_buffer_size_gb: float = 0.1,
         target_track_lufs_db: float = -48.0,
         target_mix_lufs_db: float = -16.0,
         randomize_ref_mix_gain: bool = False,
@@ -496,11 +491,11 @@ class MultitrackDataModule(pl.LightningDataModule):
     def test_dataloader(self):
         self.test_dataset = MultitrackDataset(
             track_root_dirs=self.hparams.track_root_dirs,
-            metadata_files=self.hparams.split,
+            metadata_files=self.hparams.metadata_files,
             mix_root_dirs=self.hparams.mix_root_dirs,
             subset="test",
             min_tracks=self.hparams.min_tracks,
-            max_tracks=self.max_tracks,
+            max_tracks=self.hparams.max_tracks,
             length=self.hparams.length,
             num_passes=self.hparams.num_val_passes,
             buffer_size_gb=self.hparams.test_buffer_size_gb,
