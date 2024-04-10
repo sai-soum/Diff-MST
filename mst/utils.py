@@ -32,8 +32,7 @@ def batch_stereo_peak_normalize(x: torch.Tensor):
 def run_diffmst(
     tracks: torch.Tensor,
     ref: torch.Tensor,
-    model: torch.nn.Module,
-    mix_console: torch.nn.Module,
+    models: dict,
     track_start_idx: int = 0,
     ref_start_idx: int = 0,
 ):
@@ -53,6 +52,9 @@ def run_diffmst(
         pred_fx_bus_param_dict (dict): Dictionary with predicted fx bus parameters.
         pred_master_bus_param_dict (dict): Dictionary with predicted master bus parameters.
     """
+    model = models["model"]
+    mix_console = models["mix_console"]
+
     # ------ defaults ------
     use_track_input_fader = True
     use_track_panner = True
@@ -174,6 +176,7 @@ def run_diffmst(
 
 
 def load_diffmst(config_path: str, ckpt_path: str, map_location: str = "cpu"):
+    print(f"Loading model from {ckpt_path}.")
     with open(config_path) as f:
         config = yaml.safe_load(f)
 
@@ -255,7 +258,9 @@ def load_diffmst(config_path: str, ckpt_path: str, map_location: str = "cpu"):
     )
     model.eval()
 
-    return model, mix_console
+    models = {"model": model, "mix_console": mix_console}
+
+    return models
 
 
 def denorm(p, p_min=0.0, p_max=1.0):
