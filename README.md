@@ -67,10 +67,12 @@ CUDA_VISIBLE_DEVICES=0 python main.py fit \
 -c configs/config.yaml \
 -c configs/optimizer.yaml \
 -c configs/data/medley+cambridge+jamendo-8.yaml \
--c configs/models/gain+eq+comp-feat.yaml
+-c configs/models/naive+feat.yaml
 ```
 
 ## Inference
 To evaluate the model on real world data, run the ` scripts/eval_all_combo.py` script. 
 
 Update the model checkpoints and the inference examples directory in the script. 
+
+`Python 3.10` was used for training. 
