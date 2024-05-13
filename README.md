@@ -41,7 +41,6 @@ pip install -e .
 [dasp-pytorch](https://github.com/csteinmetz1/dasp-pytorch) is required for differentiable audio effects.
 Clone the repo into the top-level of the project directory.
 ```
-git clone https://github.com/csteinmetz1/dasp-pytorch.git
 cd dasp-pytorch
 pip install -e .
 ```
