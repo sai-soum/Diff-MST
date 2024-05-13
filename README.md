@@ -5,7 +5,7 @@
 [Paper](https://sai-soum.github.io/assets/pdf/diffmst.pdf) | [Website](https://sai-soum.github.io/projects/diffmst/)
 
 
-<img src="./Assets/diffmst-main.png">
+<img src="./Assets/diffmst-main_modified.jpg">
 
 </div>
 
