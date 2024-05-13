@@ -66,14 +66,14 @@ def run_diffmst(
     meter = pyln.Meter(44100)
 
     # crop the input tracks and reference mix to the analysis length
-    if tracks.shape[-1] > analysis_len:
+    if tracks.shape[-1] >= analysis_len:
         analysis_tracks = tracks[
             ..., track_start_idx : track_start_idx + analysis_len
         ].clone()
     else:
         analysis_tracks = tracks.clone()
 
-    if ref.shape[-1] > analysis_len:
+    if ref.shape[-1] >= analysis_len:
         analysis_ref = ref[..., ref_start_idx : ref_start_idx + analysis_len]
     else:
         analysis_ref = ref.clone()
