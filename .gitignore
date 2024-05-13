@@ -13,7 +13,6 @@ mix_KE_adv/**
 logs/**
 checkpoints/
 debug
-dasp-pytorch
 *.wav
 *.png
 data/FXencoder_ps.pt
