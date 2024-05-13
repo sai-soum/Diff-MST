@@ -18,15 +18,15 @@ Mixes for training can be created using either `naive_random_mix` (assigns rando
 
  -->
 # Repository Structure
-1. 'configs' - Contains configuration files for training and inference.
-2. 'mst' - Contains the main codebase for the project.
-    - 'dataloaders' - Contains dataloaders for the project.
-    - 'modules' - Contains the modules for different components of the system.
-    - 'mixing' - Contains the mixing modules for creating mixes.
-    - 'loss' - Contains the loss functions for the project.
-    - 'panns' - contains the most basic components like cnn14, resnet, etc.
-    - 'utils' - Contains utility functions for the project.
-3. 'scripts' - Contains scripts for running inference.  
+1. `configs` - Contains configuration files for training and inference.
+2. `mst` - Contains the main codebase for the project.
+    - `dataloaders` - Contains dataloaders for the project.
+    - `modules` - Contains the modules for different components of the system.
+    - `mixing` - Contains the mixing modules for creating mixes.
+    - `loss` - Contains the loss functions for the project.
+    - `panns` - contains the most basic components like cnn14, resnet, etc.
+    - `utils` - Contains utility functions for the project.
+3. `scripts` - Contains scripts for running inference.  
 
 # Usage
 Clone the repository and install the `mst` package.
