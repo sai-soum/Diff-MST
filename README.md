@@ -47,6 +47,33 @@ pip install -e .
 
 ## Train
 We use [LightningCLI](https://lightning.ai/docs/pytorch/stable/) for training and [Wandb](https://wandb.ai/site) for logging.
+
+### Setup
+In the `configs` directory, you will find the configuration files for the project.
+- `config.yaml` - Contains the general configuration for the project.
+- `optimizer.yaml` - Contains the optimizer configuration for the project.
+- `data/` - Contains the data configuration for the project.
+- `models/` - Contains the model configuration for the project.
+We have provided instructions within the configuration files for setting up the project.
+
+Few important configuration parameters:
+- In `configs/data/` change the following
+    - `track_root_dirs` - The root directory for the dataset needs to be setup. You can pass multiple dataset directories as a list. However, you will also need to provide corresponding metadata YAML files containing train, test, and val split. Check `data/` directory for examples.
+    - For method 1: set `generate_mix` to `True` in the model configuration file. Use `medley+cambridge-8.yaml` for training with random mixes of the same song as reference.
+    - For method 2: set `generate_mix` to `False` in the model configuration file. Use `medley+cambridge+jamendo-8.yaml` for training with real unpaired songs as reference.
+    - update `mix_root_dirs` - The root directory for the mix dataset. This is used for training with real unpaired songs as reference. 
+- You may benefit from setting a smaller value for `train_buffer_size_gb` and `val_buffer_size_gb` in the data configuration file for initial testing of the code.
+- In `configs/models/`
+    - you can change the audio effects you want to disable by setting a very large value for the corresponding parameter. For example, to disable the compressor, set `active_compressor_epoch` to `1000`.
+    - You can change the loss function used for training by setting the `loss` parameter.
+- In `optimizer.yaml` you can change the learning rate parameters.
+- In `config.yaml` 
+    - Update the directory for logging using `save_dir` under `trainer`.
+    - You can use `ckpt_path` to load a pre-trained model for fine-tuning, resuming training, or testing.
+
+
+
+
 First update the paths in the configuration file for both the logger, loss function, and the dataset root directory.
 Then call the `main.py` script passing in the configuration file. 
 
@@ -71,14 +98,13 @@ CUDA_VISIBLE_DEVICES=0 python main.py fit \
 You can change the number of tracks, the size of training data for an epoch, and the batch size in the data configuration file located at `configs/data/`
 
 ### Method 2: Training with real unpaired songs as reference using AFloss.
-First set `generate_mix` to `False` in the naive+feat.yaml file.
 
 ```
 CUDA_VISIBLE_DEVICES=0 python main.py fit \
 -c configs/config.yaml \
 -c configs/optimizer.yaml \
 -c configs/data/medley+cambridge+jamendo-8.yaml \
--c configs/models/naive+feat.yaml
+-c configs/models/unpaired+feat.yaml
 ```
 
 ## Inference
