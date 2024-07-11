@@ -113,3 +113,24 @@ To evaluate the model on real world data, run the ` scripts/eval_all_combo.py` s
 Update the model checkpoints and the inference examples directory in the script. 
 
 `Python 3.10` was used for training. 
+
+
+## Acknowledgements
+This work is funded and supported by UK Research and Innovation [grant number EP/S022694/1] and Steinberg Media Technologies GmbH under the AI and Music Centre for Doctoral Training (AIM-CDT) at the Centre for Digital Music, Queen Mary University of London, London, UK. 
+
+## Citation
+If you find this work useful, please consider citing our paper:
+```
+@inproceedings{vanka2024diffmst,
+  title={Diff-MST: Differentiable Mixing Style Transfer},
+  author={Vanka, Soumya and Steinmetz, Christian and Rolland, Jean-Baptiste and Reiss, Joshua and Fazekas, Gy{\"o}rgy},
+  booktitle={Proc. of the 25th Int. Society for Music Information Retrieval Conf. (ISMIR)},
+  year={2024},
+  organization={Int. Society for Music Information Retrieval (ISMIR)},
+  abbr = {ISMIR},
+  address = {San Francisco, USA},
+}
+```
+
+## License
+The code is licensed under the terms of the CC-BY-NC-SA 4.0 license. For a human-readable summary of the license, see https://creativecommons.org/licenses/by-nc-sa/4.0/deed.en .
