@@ -72,11 +72,6 @@ Few important configuration parameters:
     - You can use `ckpt_path` to load a pre-trained model for fine-tuning, resuming training, or testing.
 
 
-
-
-First update the paths in the configuration file for both the logger, loss function, and the dataset root directory.
-Then call the `main.py` script passing in the configuration file. 
-
 ### Method 1: Training with random mixes of the same song as reference using MRSTFT loss.
 ```
 CUDA_VISIBLE_DEVICES=0 python main.py fit \

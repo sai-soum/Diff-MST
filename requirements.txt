@@ -14,7 +14,7 @@ contourpy==1.2.1
 cycler==0.12.1
 -e git+ssh://git@github.com/csteinmetz1/dasp-pytorch.git@c9ae0126e1c441979b93995da061503a0abdceff#egg=dasp_pytorch
 decorator==5.1.1
--e git+ssh://git@github.com/sai-soum/Diff-MST.git@0d030edbce56dc68726c7b58aac3fd29047c5d88#egg=DiffMST
+-e git+ssh://git@github.com/sai-soum/Diff-MST.git@f65df9e178b7e4af33c6fb3e728452024fd8169b#egg=DiffMST
 docker-pycreds==0.4.0
 docstring_parser==0.16
 filelock==3.15.4
