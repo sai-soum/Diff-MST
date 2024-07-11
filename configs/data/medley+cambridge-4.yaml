@@ -1,6 +1,8 @@
 data:
   class_path: mst.dataloader.MultitrackDataModule
   init_args:
+  #update the root dirs to the location of the dataset for Cambridge.mt and MEdleyDB. You can use just one dataset if you want. Multiple datasets should be provided as list of diectories. 
+  #corresponding metadata files should be provided as list of yaml files which contain train, val and test splits. We have default splits for Cambridge and MedleyDB in the data folder.
     track_root_dirs: 
       - /import/c4dm-datasets-ext/mixing-secrets/
       - /import/c4dm-datasets/
@@ -8,15 +10,15 @@ data:
       - ./data/cambridge.yaml 
       - ./data/medley.yaml
     length: 262144
+    #supports different values for min and max tracks
     min_tracks: 4
     max_tracks: 4
-
     batch_size: 2
     num_workers: 4
-    num_train_passes: 10
-    num_val_passes: 5
-    train_buffer_size_gb: 0.5
-    val_buffer_size_gb: 0.05
+    num_train_passes: 20
+    num_val_passes: 1
+    train_buffer_size_gb: 4.0
+    val_buffer_size_gb: 1.0
     target_track_lufs_db: -48.0
     randomize_ref_mix_gain: false
 

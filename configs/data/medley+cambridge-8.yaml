@@ -15,5 +15,5 @@ data:
     num_train_passes: 20
     num_val_passes: 1
     train_buffer_size_gb: 4.0
-    val_buffer_size_gb: 0.2
+    val_buffer_size_gb: 1.0
     target_track_lufs_db: -48.0

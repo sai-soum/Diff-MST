@@ -226,6 +226,9 @@ class System(pl.LightningModule):
                 ref_track_param_dict,
                 ref_fx_bus_param_dict,
                 ref_master_bus_param_dict,
+                ref_mix_params,
+                ref_fx_bus_params,
+                ref_master_bus_params,
             ) = self.mix_fn(
                 tracks,
                 self.mix_console,

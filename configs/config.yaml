@@ -1,10 +1,12 @@
 seed_everything: 42
-
+# use ckpt_path to load a model from a checkpoint
+# ckpt_path: /import/c4dm-datasets-ext/diffmst_logs_soum/2021-10-06/14-00-00/checkpoints/epoch=0-step=0.ckpt
 trainer:
   logger: 
     class_path: pytorch_lightning.loggers.WandbLogger
     init_args:
       project: DiffMST
+      #change to the directory where you want to save wandb logs
       save_dir: /import/c4dm-datasets-ext/diffmst_logs_soum
   enable_checkpointing: true
   callbacks:
@@ -12,28 +14,28 @@ trainer:
     - class_path: pytorch_lightning.callbacks.ModelSummary
       init_args: 
         max_depth: 2
-    - class_path: mst.callbacks.mix.LogReferenceMix
-      init_args:
-        root_dirs:
-          - /import/c4dm-datasets-ext/diffmst_validation/validation_set/song1/Soren_ALittleLate_Full
-          - /import/c4dm-datasets-ext/diffmst_validation/validation_set/song1/Soren_ALittleLate_Full
-          - /import/c4dm-datasets-ext/diffmst_validation/validation_set/song2/MR0903_Moosmusic_Full
-          - /import/c4dm-datasets-ext/diffmst_validation/validation_set/song2/MR0903_Moosmusic_Full
-          - /import/c4dm-datasets-ext/diffmst_validation/validation_set/song3/SaturnSyndicate_CatchTheWave_Full
-        ref_mixes: 
-          - /import/c4dm-datasets-ext/diffmst_validation/validation_set/song1/ref/Harry Styles - Late Night Talking (Official Video).wav
-          - /import/c4dm-datasets-ext/diffmst_validation/validation_set/song1/ref/Poom - Les Voiles (Official Audio).wav
-          - /import/c4dm-datasets-ext/diffmst_validation/validation_set/song2/ref/Justin Timberlake - Can't Stop The Feeling! [Lyrics].wav
-          - /import/c4dm-datasets-ext/diffmst_validation/validation_set/song2/ref/Taylor Swift - Shake It Off.wav
-          - /import/c4dm-datasets-ext/diffmst_validation/validation_set/song3/ref/Miley Cyrus - Wrecking Ball (Lyrics).wav
+    #uncomment if you want to run validation on custom examples during training
+    # - class_path: mst.callbacks.mix.LogReferenceMix
+    #   init_args:
+    #     root_dirs:
+    #       - /import/c4dm-datasets-ext/diffmst_validation/validation_set/song1/Soren_ALittleLate_Full
+    #       - /import/c4dm-datasets-ext/diffmst_validation/validation_set/song1/Soren_ALittleLate_Full
+    #       - /import/c4dm-datasets-ext/diffmst_validation/validation_set/song2/MR0903_Moosmusic_Full
+    #       - /import/c4dm-datasets-ext/diffmst_validation/validation_set/song2/MR0903_Moosmusic_Full
+    #       - /import/c4dm-datasets-ext/diffmst_validation/validation_set/song3/SaturnSyndicate_CatchTheWave_Full
+    #     ref_mixes: 
+    #       - /import/c4dm-datasets-ext/diffmst_validation/validation_set/song1/ref/Harry Styles - Late Night Talking (Official Video).wav
+    #       - /import/c4dm-datasets-ext/diffmst_validation/validation_set/song1/ref/Poom - Les Voiles (Official Audio).wav
+    #       - /import/c4dm-datasets-ext/diffmst_validation/validation_set/song2/ref/Justin Timberlake - Can't Stop The Feeling! [Lyrics].wav
+    #       - /import/c4dm-datasets-ext/diffmst_validation/validation_set/song2/ref/Taylor Swift - Shake It Off.wav
+    #       - /import/c4dm-datasets-ext/diffmst_validation/validation_set/song3/ref/Miley Cyrus - Wrecking Ball (Lyrics).wav
   default_root_dir: null
   gradient_clip_val: 10.0
   devices: 1
   check_val_every_n_epoch: 1
-
   max_epochs: 800
-
-  log_every_n_steps: 50
+  #change to log less or more often to wandb
+  log_every_n_steps: 500
   accelerator: gpu
   strategy: ddp_find_unused_parameters_true
   sync_batchnorm: true

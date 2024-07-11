@@ -58,9 +58,21 @@ CUDA_VISIBLE_DEVICES=0 python main.py fit \
 -c configs/data/medley+cambridge-8.yaml \
 -c configs/models/naive.yaml
 ```
+
+To run the fine-tuning using AFLoss
+```
+CUDA_VISIBLE_DEVICES=0 python main.py fit \
+-c configs/config.yaml \
+-c configs/optimizer.yaml \
+-c configs/data/medley+cambridge-8.yaml \
+-c configs/models/naive+feat.yaml
+```
+
 You can change the number of tracks, the size of training data for an epoch, and the batch size in the data configuration file located at `configs/data/`
 
 ### Method 2: Training with real unpaired songs as reference using AFloss.
+First set `generate_mix` to `False` in the naive+feat.yaml file.
+
 ```
 CUDA_VISIBLE_DEVICES=0 python main.py fit \
 -c configs/config.yaml \

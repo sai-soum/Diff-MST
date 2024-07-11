@@ -4,18 +4,12 @@ data:
     track_root_dirs: 
       - /import/c4dm-datasets-ext/mixing-secrets/
       - /import/c4dm-datasets/
-
     mix_root_dirs:  
       - /import/c4dm-datasets-ext/mtg-jamendo
-<<<<<<< HEAD
-=======
-
->>>>>>> 40e1dcd8289adff51973e41041b8b91a64513ae6
     metadata_files: 
       - ./data/cambridge.yaml 
       - ./data/medley.yaml
     length: 262144
-<<<<<<< HEAD
     min_tracks: 2
     max_tracks: 8
     batch_size: 4
@@ -27,17 +21,3 @@ data:
     target_mix_lufs_db: -16.0
     target_track_lufs_db: -48.0
     randomize_ref_mix_gain: false
-=======
-
-    min_tracks: 4
-    max_tracks: 4
-    batch_size: 2
-    num_workers: 4
-    num_train_passes: 4
-    num_val_passes: 1
-    train_buffer_size_gb: 0.05
-    val_buffer_size_gb: 0.02
-    target_track_lufs_db: -48.0
-    randomize_ref_mix_gain: False
-
->>>>>>> 40e1dcd8289adff51973e41041b8b91a64513ae6

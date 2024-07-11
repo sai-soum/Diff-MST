@@ -1,8 +1,9 @@
 model:
   class_path: mst.system.System
   init_args:
-
+    #geerate random mixes as specified in Method 1 of the paper ; True for Method 1, False for Method 2
     generate_mix: True
+    #set the epoch values very high to disable any of the effects during training; fx_bus corresponds to reverb module. 
     active_eq_epoch: 0
     active_compressor_epoch: 0
     active_fx_bus_epoch: 1000
@@ -10,6 +11,8 @@ model:
     use_track_loss : false
     use_mix_loss : true
     use_param_loss : false
+
+    #We generate random mixes using the naive random mix function
 
     mix_fn: mst.mixing.naive_random_mix
     mix_console:
@@ -56,10 +59,7 @@ model:
       init_args:
         sample_rate: 44100
         stem_separation: false
-
-        use_clap: True
-
-
+        use_clap: False
         weights: 
           - 0.1 # rms
           - 0.001 # crest factor

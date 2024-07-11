@@ -23,7 +23,7 @@ class MixDataset(torch.utils.data.Dataset):
 
          
         self.mix_filepaths = glob.glob(
-            os.path.join(root_dir, "**", "*.wav"), recursive=True
+            os.path.join(root_dir, "**", "*.wav"), recursive=True)
 
         #self.mix_filepaths = glob.glob(
             #os.path.join(root_dir, "**", "*.mp3"), recursive=True)
