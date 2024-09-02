@@ -12,7 +12,7 @@ charset-normalizer==3.3.2
 click==8.1.7
 contourpy==1.2.1
 cycler==0.12.1
--e git+ssh://git@github.com/csteinmetz1/dasp-pytorch.git@c9ae0126e1c441979b93995da061503a0abdceff#egg=dasp_pytorch
+dasp-pytorch==0.0.1
 decorator==5.1.1
 -e git+ssh://git@github.com/sai-soum/Diff-MST.git@f65df9e178b7e4af33c6fb3e728452024fd8169b#egg=DiffMST
 docker-pycreds==0.4.0
