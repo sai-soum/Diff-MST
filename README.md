@@ -28,23 +28,30 @@ Mixes for training can be created using either `naive_random_mix` (assigns rando
     - `utils` - Contains utility functions for the project.
 3. `scripts` - Contains scripts for running inference.  
 
-# Usage
-Clone the repository and install the `mst` package.
+# Setup
+- Clone the repository
 ```
 git clone https://github.com/sai-soum/Diff-MST.git
 cd Diff-MST
-python -m venv env
+```
+
+- Create new Python environment
+```
+# for Linux/macOS
+python3 -m venv env
 source env/bin/activate
-pip install -e .
 ```
 
-[dasp-pytorch](https://github.com/csteinmetz1/dasp-pytorch) is required for differentiable audio effects.
-Clone the repo into the top-level of the project directory.
+- Install the `mst` package from source
 ```
-cd dasp-pytorch
+# Install as editable (for development)
 pip install -e .
+
+# Alternatively, do a regular install (read-only)
+pip install .
 ```
 
+# Usage
 ## Train
 We use [LightningCLI](https://lightning.ai/docs/pytorch/stable/) for training and [Wandb](https://wandb.ai/site) for logging.
 
