@@ -765,6 +765,8 @@ class SpectrogramEncoder(torch.nn.Module):
 
         if self.input_batchnorm:
             self.bn = torch.nn.BatchNorm2d(3)
+        else:
+            self.bn = torch.nn.Identity()
 
     def forward(self, x: torch.torch.Tensor) -> torch.torch.Tensor:
         """Process waveform as a spectrogram and return single embedding.
@@ -889,7 +891,7 @@ class TransformerController(torch.nn.Module):
             track_padding_mask = torch.cat(
                 (
                     track_padding_mask,
-                    torch.zeros(bs, 4).bool().type_as(track_padding_mask),
+                    torch.zeros((bs, 4), dtype=torch.bool).type_as(track_padding_mask),
                 ),
                 dim=1,
             )
