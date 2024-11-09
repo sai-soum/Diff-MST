@@ -2,7 +2,7 @@
 <div align="center">
 
 # Diff-MST: Differentiable Mixing Style Transfer
-[Paper](https://sai-soum.github.io/assets/pdf/Differentiable_Mixing_Style_Transfer.pdf) | [Website](https://sai-soum.github.io/projects/diffmst/)
+[Paper](https://sai-soum.github.io/assets/pdf/Differentiable_Mixing_Style_Transfer.pdf) | [Website](https://sai-soum.github.io/projects/diffmst/) | [Video](https://youtu.be/w90RGZ3IqQw)
 
 
 <img src="./Assets/diffmst-main_modified.jpg">
