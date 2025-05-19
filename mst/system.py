@@ -329,6 +329,9 @@ class System(pl.LightningModule):
 
         loss = 0
         if self.use_mix_loss:
+            # normalise the predicted mix before computing the loss
+            pred_mix_b = batch_stereo_peak_normalize(pred_mix_b)
+            ref_mix_b = batch_stereo_peak_normalize(ref_mix_b)
             mix_loss = self.loss(pred_mix_b, ref_mix_b)
 
             if type(mix_loss) == dict:

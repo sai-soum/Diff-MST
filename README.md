@@ -102,10 +102,10 @@ You can change the number of tracks, the size of training data for an epoch, and
 ### Method 2: Training with real unpaired songs as reference using AFloss.
 
 ```
-CUDA_VISIBLE_DEVICES=0 python main.py fit \
+CUDA_VISIBLE_DEVICES=3 python main.py fit \
 -c configs/config.yaml \
 -c configs/optimizer.yaml \
--c configs/data/medley+cambridge+jamendo-8.yaml \
+-c configs/data/medley+cambridge+jamendo-16.yaml \
 -c configs/models/unpaired+feat.yaml
 ```
 

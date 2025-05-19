@@ -1,13 +1,13 @@
 seed_everything: 42
 # use ckpt_path to load a model from a checkpoint
-# ckpt_path: /import/c4dm-datasets-ext/diffmst_logs_soum/2021-10-06/14-00-00/checkpoints/epoch=0-step=0.ckpt
+ckpt_path: /import/c4dm-datasets-ext/soum/Diff-MST/DiffMST/mgp42pln/checkpoints/epoch=8-step=45000.ckpt
 trainer:
   logger: 
     class_path: pytorch_lightning.loggers.WandbLogger
     init_args:
       project: DiffMST
       #change to the directory where you want to save wandb logs
-      save_dir: /import/c4dm-datasets-ext/diffmst_logs_soum
+      save_dir: /import/c4dm-datasets-ext/soum/Diff-MST
   enable_checkpointing: true
   callbacks:
     - class_path: mst.callbacks.audio.LogAudioCallback
@@ -35,14 +35,14 @@ trainer:
   check_val_every_n_epoch: 1
   max_epochs: 800
   #change to log less or more often to wandb
-  log_every_n_steps: 500
+  log_every_n_steps: 25
   accelerator: gpu
   strategy: ddp_find_unused_parameters_true
   sync_batchnorm: true
   precision: 32
   enable_model_summary: true
-  num_sanity_val_steps: 2
+  num_sanity_val_steps: 1
   benchmark: true
-  accumulate_grad_batches: 1
+  accumulate_grad_batches: 4
   #reload_dataloaders_every_n_epochs: 1
 

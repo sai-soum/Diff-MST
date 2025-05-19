@@ -3,7 +3,6 @@ import torch
 from typing import Callable, Optional, List
 from torchaudio.pipelines import HDEMUCS_HIGH_MUSDB_PLUS
 from mst.panns import Cnn14
-
 from dasp_pytorch.functional import (
     gain,
     stereo_panner,
@@ -122,9 +121,9 @@ class AdvancedMixConsole(torch.nn.Module):
             "input_fader": {"gain_db": (input_min_gain_db, input_max_gain_db)},
             "output_fader": {"gain_db": (output_min_gain_db, output_max_gain_db)},
             "parametric_eq": {
-                "low_shelf_gain_db": (eq_min_gain_db, eq_max_gain_db),
+                "low_shelf_gain_db": (0.0,0.0),
                 "low_shelf_cutoff_freq": (20, 2000),
-                "low_shelf_q_factor": (0.1, 5.0),
+                "low_shelf_q_factor": (0.1, 0.1),
                 "band0_gain_db": (eq_min_gain_db, eq_max_gain_db),
                 "band0_cutoff_freq": (80, 2000),
                 "band0_q_factor": (0.1, 5.0),
@@ -137,16 +136,16 @@ class AdvancedMixConsole(torch.nn.Module):
                 "band3_gain_db": (eq_min_gain_db, eq_max_gain_db),
                 "band3_cutoff_freq": (12000, (sample_rate // 2) - 1000),
                 "band3_q_factor": (0.1, 5.0),
-                "high_shelf_gain_db": (eq_min_gain_db, eq_max_gain_db),
+                "high_shelf_gain_db": (0.0, 0.0),
                 "high_shelf_cutoff_freq": (6000, (sample_rate // 2) - 1000),
-                "high_shelf_q_factor": (0.1, 5.0),
+                "high_shelf_q_factor": (0.1, 0.1),
             },
             "compressor": {
                 "threshold_db": (-60.0, 0.0),
                 "ratio": (1.0, 10.0),
                 "attack_ms": (5.0, 250.0),
                 "release_ms": (10.0, 250.0),
-                "knee_db": (3.0, 12.0),
+                "knee_db": (1.0, 1.0),
                 "makeup_gain_db": (0.0, 6.0),
             },
             "reverberation": {
@@ -176,12 +175,13 @@ class AdvancedMixConsole(torch.nn.Module):
                 "band11_decay": (reverb_min_band_decay, reverb_max_band_decay),
                 "mix": (0.0, 1.0),
             },
-            "fx_bus": {"send_db": (min_send_db, max_send_db)},
+            "fx_bus": {"send_db": (0.0,0.0)},
             "stereo_panner": {"pan": (min_pan, max_pan)},
         }
-        self.num_track_control_params = 27
+        self.num_track_control_params = 19
         self.num_fx_bus_control_params = 25
-        self.num_master_bus_control_params = 26
+        self.num_master_bus_control_params = 18
+        # self.knee = torch.tensor(1.0)  # hardcoded for now
 
     def forward_mix_console(
         self,
@@ -285,11 +285,11 @@ class AdvancedMixConsole(torch.nn.Module):
 
         if use_master_bus:
             # process Left channel
-            master_bus = gain(
-                master_bus,
-                self.sample_rate,
-                **master_bus_param_dict["input_fader"],
-            )
+            # master_bus = gain(
+            #     master_bus,
+            #     self.sample_rate,
+            #     **master_bus_param_dict["input_fader"],
+            # )
             master_bus = parametric_eq(
                 master_bus,
                 self.sample_rate,
@@ -349,45 +349,46 @@ class AdvancedMixConsole(torch.nn.Module):
             fx_bus_param_dict (dict): Denormalized fx bus parameter values.
             master_bus_param_dict (dict): Denormalized master bus parameter values.
         """
+        device = tracks.device
         # extract and denormalize the parameters
         track_param_dict = {
             "input_fader": {
                 "gain_db": track_params[..., 0],
             },
             "parametric_eq": {
-                "low_shelf_gain_db": track_params[..., 1],
-                "low_shelf_cutoff_freq": track_params[..., 2],
-                "low_shelf_q_factor": track_params[..., 3],
-                "band0_gain_db": track_params[..., 4],
-                "band0_cutoff_freq": track_params[..., 5],
-                "band0_q_factor": track_params[..., 6],
-                "band1_gain_db": track_params[..., 7],
-                "band1_cutoff_freq": track_params[..., 8],
-                "band1_q_factor": track_params[..., 9],
-                "band2_gain_db": track_params[..., 10],
-                "band2_cutoff_freq": track_params[..., 11],
-                "band2_q_factor": track_params[..., 12],
-                "band3_gain_db": track_params[..., 13],
-                "band3_cutoff_freq": track_params[..., 14],
-                "band3_q_factor": track_params[..., 15],
-                "high_shelf_gain_db": track_params[..., 16],
-                "high_shelf_cutoff_freq": track_params[..., 17],
-                "high_shelf_q_factor": track_params[..., 18],
+                "low_shelf_gain_db": torch.tensor(0.0).to(device),
+                "low_shelf_cutoff_freq": torch.tensor(0.0).to(device),
+                "low_shelf_q_factor": torch.tensor(0.0).to(device),
+                "band0_gain_db": track_params[..., 1],
+                "band0_cutoff_freq": track_params[..., 2],
+                "band0_q_factor": track_params[..., 3],
+                "band1_gain_db": track_params[..., 4],
+                "band1_cutoff_freq": track_params[..., 5],
+                "band1_q_factor": track_params[..., 6],
+                "band2_gain_db": track_params[..., 7],
+                "band2_cutoff_freq": track_params[..., 8],
+                "band2_q_factor": track_params[..., 9],
+                "band3_gain_db": track_params[..., 10],
+                "band3_cutoff_freq": track_params[..., 11],
+                "band3_q_factor": track_params[..., 12],
+                "high_shelf_gain_db": torch.tensor(0.0).to(device),
+                "high_shelf_cutoff_freq": torch.tensor(0.0).to(device),
+                "high_shelf_q_factor": torch.tensor(0.0).to(device),
             },
             # release and attack time must be the same
             "compressor": {
-                "threshold_db": track_params[..., 19],
-                "ratio": track_params[..., 20],
-                "attack_ms": track_params[..., 21],
-                "release_ms": track_params[..., 22],
-                "knee_db": track_params[..., 23],
-                "makeup_gain_db": track_params[..., 24],
+                "threshold_db": track_params[..., 13],
+                "ratio": track_params[..., 14],
+                "attack_ms": track_params[..., 15],
+                "release_ms": track_params[..., 16],
+                "knee_db": torch.tensor(1.0).to(device),
+                "makeup_gain_db": track_params[..., 17],
             },
             "stereo_panner": {
-                "pan": track_params[..., 25],
+                "pan": track_params[..., 18],
             },
             "fx_bus": {
-                "send_db": track_params[..., 26],
+                "send_db": torch.tensor(0.0).to(device),
             },
         }
 
@@ -423,40 +424,40 @@ class AdvancedMixConsole(torch.nn.Module):
 
         master_bus_param_dict = {
             "parametric_eq": {
-                "low_shelf_gain_db": master_bus_params[..., 0],
-                "low_shelf_cutoff_freq": master_bus_params[..., 1],
-                "low_shelf_q_factor": master_bus_params[..., 2],
-                "band0_gain_db": master_bus_params[..., 3],
-                "band0_cutoff_freq": master_bus_params[..., 4],
-                "band0_q_factor": master_bus_params[..., 5],
-                "band1_gain_db": master_bus_params[..., 6],
-                "band1_cutoff_freq": master_bus_params[..., 7],
-                "band1_q_factor": master_bus_params[..., 8],
-                "band2_gain_db": master_bus_params[..., 9],
-                "band2_cutoff_freq": master_bus_params[..., 10],
-                "band2_q_factor": master_bus_params[..., 11],
-                "band3_gain_db": master_bus_params[..., 12],
-                "band3_cutoff_freq": master_bus_params[..., 13],
-                "band3_q_factor": master_bus_params[..., 14],
-                "high_shelf_gain_db": master_bus_params[..., 15],
-                "high_shelf_cutoff_freq": master_bus_params[..., 16],
-                "high_shelf_q_factor": master_bus_params[..., 17],
+                "low_shelf_gain_db": torch.tensor(0.0).to(device),
+                "low_shelf_cutoff_freq": torch.tensor(0.0).to(device),
+                "low_shelf_q_factor": torch.tensor(0.0).to(device),
+                "band0_gain_db": master_bus_params[..., 0],
+                "band0_cutoff_freq": master_bus_params[..., 1],
+                "band0_q_factor": master_bus_params[..., 2],
+                "band1_gain_db": master_bus_params[..., 3],
+                "band1_cutoff_freq": master_bus_params[..., 4],
+                "band1_q_factor": master_bus_params[..., 5],
+                "band2_gain_db": master_bus_params[..., 6],
+                "band2_cutoff_freq": master_bus_params[..., 7],
+                "band2_q_factor": master_bus_params[..., 8],
+                "band3_gain_db": master_bus_params[..., 9],
+                "band3_cutoff_freq": master_bus_params[..., 10],
+                "band3_q_factor": master_bus_params[..., 11],
+                "high_shelf_gain_db": torch.tensor(0.0).to(device),
+                "high_shelf_cutoff_freq": torch.tensor(0.0).to(device),
+                "high_shelf_q_factor": torch.tensor(0.0).to(device),
             },
             # release and attack time must be the same
             "compressor": {
-                "threshold_db": master_bus_params[..., 18],
-                "ratio": master_bus_params[..., 19],
-                "attack_ms": master_bus_params[..., 20],
-                "release_ms": master_bus_params[..., 21],
-                "knee_db": master_bus_params[..., 22],
-                "makeup_gain_db": master_bus_params[..., 23],
+                "threshold_db": master_bus_params[..., 12],
+                "ratio": master_bus_params[..., 13],
+                "attack_ms": master_bus_params[..., 14],
+                "release_ms": master_bus_params[..., 15],
+                "knee_db": torch.tensor(1.0).to(device),
+                "makeup_gain_db": master_bus_params[..., 16],
             },
             "output_fader": {
-                "gain_db": master_bus_params[..., 24],
+                "gain_db": master_bus_params[..., 17],
             },
-            "input_fader": {
-                "gain_db": master_bus_params[..., 25],
-            },
+            # "input_fader": {
+            #     "gain_db": master_bus_params[..., 18],
+            # },
         }
 
         track_param_dict = denormalize_parameters(track_param_dict, self.param_ranges)

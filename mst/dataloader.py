@@ -1,16 +1,21 @@
 import os
+# os.environ["PATH"] = "/import/linux/ubuntu/ffmpeg/7.0/bin:" + os.environ["PATH"]
+# import torchaudio
+# torchaudio.set_audio_backend("ffmpeg")
 import glob
 import json
 import torch
 import yaml
 import random
 import itertools
-import torchaudio
+# import torchaudio
 import numpy as np
 import pyloudnorm as pyln
 import pytorch_lightning as pl
 from tqdm import tqdm
 from typing import List
+import torchaudio
+import subprocess
 
 from torch.utils.data import random_split
 
@@ -23,7 +28,11 @@ class MixDataset(torch.utils.data.Dataset):
 
          
         self.mix_filepaths = glob.glob(
-            os.path.join(root_dir, "**", "*.wav"), recursive=True)
+            os.path.join(root_dir, "**", "*.mp3"), recursive=True)
+        if len(self.mix_filepaths) == 0:
+            raise ValueError(
+                f"No mix files found in {root_dir}. Please check the path."
+            )
 
         #self.mix_filepaths = glob.glob(
             #os.path.join(root_dir, "**", "*.mp3"), recursive=True)
@@ -180,9 +189,14 @@ class MultitrackDataset(torch.utils.data.Dataset):
             # find all mixes in directory recursively
 
             mix_files = glob.glob(os.path.join(mix_dir, "**", "*.wav"), recursive=True)
+            
 
 
             self.mixes.extend(mix_files)
+        if len(self.mixes) == 0:
+                raise ValueError(
+                    f"No mix files found in {mix_dir}. Please check the path."
+                )
 
         print(f"Located {len(self.mixes)} mixes.")
 
@@ -193,61 +207,62 @@ class MultitrackDataset(torch.utils.data.Dataset):
     def __len__(self):
         return self.num_examples_per_epoch
 
+
     def reload_mix_buffer(self):
-        self.mix_examples = []  # clear buffer
-        nbytes_loaded = 0  # counter for data in RAM
+            self.mix_examples = []  # clear buffer
+            nbytes_loaded = 0  # counter for data in RAM
 
-        random.shuffle(self.mix_dirs)  # shuffle dataset
+            random.shuffle(self.mix_dirs)  # shuffle dataset
 
-        pbar = tqdm(itertools.cycle(self.mixes))
+            pbar = tqdm(itertools.cycle(self.mixes))
 
-        for filepath in pbar:
-            num_frames = torchaudio.info(filepath, backend="soundfile").num_frames
-            offset = np.random.randint(0.25 * num_frames, num_frames - self.length - 1)
+            for filepath in pbar:
+                num_frames = torchaudio.info(filepath).num_frames
+                offset = np.random.randint(0.25 * num_frames, num_frames - self.length - 1)
 
-            # ensure the song is long enough if we start from 25% in
-            if (0.75 * num_frames) < self.length:
-                continue
-
-            mix, _ = torchaudio.load(
-                filepath,
-                frame_offset=offset,
-                num_frames=self.length,
-                backend="soundfile",
-            )
-
-            if mix.shape[0] == 1:
-                continue
-            if mix.shape[-1] != self.length:
-                continue
-            if mix.size()[0] > 2:
-                continue
-
-            mix_lufs_db = self.meter.integrated_loudness(mix.permute(1, 0).numpy())
+                # ensure the song is long enough if we start from 25% in
+                if (0.75 * num_frames) < self.length:
+                    continue
 
 
+                mix, _ = torchaudio.load(
+                    filepath,
+                    frame_offset=offset,
+                    num_frames=self.length,
+                    backend="soundfile",
+                )
 
-            if mix_lufs_db < -48.0 or mix_lufs_db == float("-inf"):
-                continue
+                if mix.shape[0] == 1:
+                    continue
+                if mix.shape[-1] != self.length:
+                    continue
+                if mix.size()[0] > 2:
+                    continue
 
-            delta_lufs_db = torch.tensor(
-                [self.target_mix_lufs_db - mix_lufs_db]
-            ).float()
+                mix_lufs_db = self.meter.integrated_loudness(mix.permute(1, 0).numpy())
 
-            gain_lin = 10.0 ** (delta_lufs_db.clamp(-120, 40.0) / 20.0)
-            mix = gain_lin * mix
 
-            self.mix_examples.append(mix)
 
-            nbytes_loaded += mix.element_size() * mix.nelement()
-            pbar.set_description(
-                f"Loaded {nbytes_loaded/1e9:0.3f}/{self.buffer_size_gb} gb ({(nbytes_loaded/1e9/self.buffer_size_gb)*100:0.3f}%)"
-            )
+                if mix_lufs_db < -48.0 or mix_lufs_db == float("-inf"):
+                    continue
 
-            # check if buffer is full
-            if nbytes_loaded > self.buffer_size_gb * 1e9:
-                break
+                delta_lufs_db = torch.tensor(
+                    [self.target_mix_lufs_db - mix_lufs_db]
+                ).float()
 
+                gain_lin = 10.0 ** (delta_lufs_db.clamp(-120, 40.0) / 20.0)
+                mix = gain_lin * mix
+
+                self.mix_examples.append(mix)
+
+                nbytes_loaded += mix.element_size() * mix.nelement()
+                pbar.set_description(
+                    f"Loaded {nbytes_loaded/1e9:0.3f}/{self.buffer_size_gb} gb ({(nbytes_loaded/1e9/self.buffer_size_gb)*100:0.3f}%)"
+                )
+
+                # check if buffer is full
+                if nbytes_loaded > self.buffer_size_gb * 1e9:
+                    break
     def reload_track_buffer(self):
         self.track_examples = []  # clear buffer
         nbytes_loaded = 0  # counter for data in RAM
@@ -267,7 +282,7 @@ class MultitrackDataset(torch.utils.data.Dataset):
             random.shuffle(track_filepaths)
 
             num_frames = torchaudio.info(
-                track_filepaths[0], backend="soundfile"
+                track_filepaths[0]
             ).num_frames
 
             middle_idx = int(num_frames / 2)
