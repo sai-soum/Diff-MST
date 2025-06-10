@@ -233,15 +233,21 @@ class AdvancedMixConsole(torch.nn.Module):
                 self.sample_rate,
                 **track_param_dict["input_fader"],
             )
+        print("gain values", track_param_dict["input_fader"]["gain_db"])
+        # if tracks.sum() == 0:
+        #     print("tracks is 0 after gain")
+        #     print(tracks)
+        #     raise ValueError("tracks is 0 after gain")
         if use_track_eq:
             tracks = parametric_eq(
                 tracks,
                 self.sample_rate,
                 **track_param_dict["parametric_eq"],
             )
-            if tracks.sum() == 0:
-                print("eq is 0")
-                print(tracks)
+        # if tracks.sum() == 0:
+        #         print("eq is 0")
+        #         print(tracks)
+        #         raise ValueError("eq is 0")
         if use_track_compressor:
             tracks = compressor(
                 tracks,
@@ -249,12 +255,12 @@ class AdvancedMixConsole(torch.nn.Module):
                 **track_param_dict["compressor"],
                 lookahead_samples=2048,
             )
-            if tracks.sum() == 0:
-                print("compressor is 0")
-                print(tracks)
-
+        # if tracks.sum() == 0:
+        #         print("compressor is 0")
+        #         print(tracks)
+        #         raise ValueError("compressor is 0")
         # restore tracks to original shape
-        tracks = tracks.view(bs, num_tracks, seq_len)
+        # tracks = tracks.view(bs, num_tracks, seq_len)
 
         # restore tracks to original shape
         tracks = tracks.view(bs, num_tracks, seq_len)

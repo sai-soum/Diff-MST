@@ -29,7 +29,7 @@ class LogAudioCallback(pl.callbacks.Callback):
     ):
         """Called when the validation batch ends."""
         if outputs is not None:
-            num_examples = outputs["ref_mix_a"].shape[0]
+            num_examples = outputs["ref_mix_b_norm"].shape[0]
             if batch_idx < self.num_batches:
                 for sample_idx in range(num_examples):
                     self.log_audio(

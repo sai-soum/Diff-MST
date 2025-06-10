@@ -146,7 +146,7 @@ class MultitrackDataset(torch.utils.data.Dataset):
         target_track_lufs_db: float = -32.0,
         target_mix_lufs_db: float = -16.0,
         randomize_ref_mix_gain: bool = False,
-        num_examples_per_epoch: int = 20000,
+        num_examples_per_epoch: int = 250,
         num_passes: int = 1,
     ) -> None:
         super().__init__()
@@ -178,7 +178,6 @@ class MultitrackDataset(torch.utils.data.Dataset):
                     full_song_dir = directory + songs
                     self.song_dirs[full_song_dir] = track_info
                     self.dirs.append(full_song_dir)
-
         print(f"Located {len(self.dirs)} track directories.")
 
         # load metadata for mixes
@@ -205,6 +204,7 @@ class MultitrackDataset(torch.utils.data.Dataset):
         )  # this will trigger a reload of the buffer
 
     def __len__(self):
+        # print(f"Number of examples per epoch: {self.num_examples_per_epoch}")
         return self.num_examples_per_epoch
 
 
@@ -261,7 +261,7 @@ class MultitrackDataset(torch.utils.data.Dataset):
                 )
 
                 # check if buffer is full
-                if nbytes_loaded > self.buffer_size_gb * 1e9:
+                if nbytes_loaded > int(self.buffer_size_gb/2) * 1e9:
                     break
     def reload_track_buffer(self):
         self.track_examples = []  # clear buffer
