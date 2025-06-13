@@ -1,6 +1,6 @@
 seed_everything: 42
 # use ckpt_path to load a model from a checkpoint
-ckpt_path: /import/c4dm-datasets-ext/soum/Diff-MST/DiffMST/4sfexj46/checkpoints/epoch=273-step=81443.ckpt
+# ckpt_path: /import/c4dm-datasets-ext/soum/Diff-MST/DiffMST/4sfexj46/checkpoints/epoch=273-step=81443.ckpt
 trainer:
   logger: 
     class_path: pytorch_lightning.loggers.WandbLogger

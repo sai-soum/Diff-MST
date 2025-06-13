@@ -322,12 +322,16 @@ class MultitrackDataset(torch.utils.data.Dataset):
 
                 if track_lufs_db < -48.0 or track_lufs_db == float("-inf"):
                     continue
+                # Random target loudness between -16 and -8 dB LUFS
+                target_track_lufs_db = np.random.uniform(-16.0, -8.0)
 
-                delta_lufs_db = torch.tensor(
-                    [self.target_track_lufs_db - track_lufs_db]
-                ).float()
+                # Compute gain required to match target loudness
+                delta_lufs_db = torch.tensor([target_track_lufs_db - track_lufs_db]).float()
 
+                # Convert dB gain to linear gain
                 gain_lin = 10.0 ** (delta_lufs_db.clamp(-120, 40.0) / 20.0)
+
+                # Apply gain
                 track = gain_lin * track
 
                 instrument = self.song_dirs[dirname][os.path.basename(track_filepath)]

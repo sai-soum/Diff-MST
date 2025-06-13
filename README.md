@@ -136,3 +136,10 @@ If you find this work useful, please consider citing our paper:
 
 ## License
 The code is licensed under the terms of the CC-BY-NC-SA 4.0 license. For a human-readable summary of the license, see https://creativecommons.org/licenses/by-nc-sa/4.0/deed.en .
+
+
+CUDA_VISIBLE_DEVICES=3 python main.py fit \
+-c configs/config.yaml \
+-c configs/optimizer.yaml \
+-c configs/data/medley+cambridge+jamendo-16.yaml \
+-c configs/models/unpaired+feat+gpec.yaml

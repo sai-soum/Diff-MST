@@ -292,7 +292,7 @@ class System(pl.LightningModule):
         )
 
         # normalize the predicted mix before computing the loss
-        pred_mix_b = batch_stereo_peak_normalize(pred_mix_b)
+        # pred_mix_b = batch_stereo_peak_normalize(pred_mix_b)
         if torch.isnan(pred_mix_b).any():
             # print(pred_track_param_dict)
             raise ValueError("Found nan in pred_mix_b")
@@ -398,7 +398,7 @@ class System(pl.LightningModule):
         # print("pred_mix_b:  ", pred_mix_b)
         # for plotting down the line
         sum_mix_b = tracks_b.sum(dim=1, keepdim=True).detach().float().cpu()
-        sum_mix_b = batch_stereo_peak_normalize(sum_mix_b)
+        # sum_mix_b = batch_stereo_peak_normalize(sum_mix_b)
         # data_dict = {
         #     "ref_mix_a": ref_mix_a.detach().float().cpu(),
         #     "ref_mix_b_norm": ref_mix_b.detach().float().cpu(),
@@ -426,6 +426,10 @@ class System(pl.LightningModule):
         return loss
 
     def validation_step(self, batch, batch_idx):
+        loss, data_dict = self.common_step(batch, batch_idx, train=False)
+        return data_dict
+    
+    def test_step(self, batch, batch_idx):
         loss, data_dict = self.common_step(batch, batch_idx, train=False)
         return data_dict
 

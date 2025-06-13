@@ -1,0 +1,22 @@
+data:
+  class_path: mst.dataloader.MultitrackDataModule
+  init_args:
+    track_root_dirs: 
+      - /homes/ssv02/Diff-MST/test_data
+    mix_root_dirs:  
+      - /homes/ssv02/Diff-MST/test_reference
+    metadata_files: 
+      - ./data/test.yaml
+    length: 4410000
+    min_tracks: 4
+    max_tracks: 4
+    batch_size: 1
+    num_workers: 1
+    num_train_passes: 5
+    num_val_passes: 1
+    train_buffer_size_gb: 0.01
+    val_buffer_size_gb: 0.015
+    target_track_lufs_db: -48.0
+    randomize_ref_mix_gain: true
+    num_train_examples: 1
+    num_val_examples: 1

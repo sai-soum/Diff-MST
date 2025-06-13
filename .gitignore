@@ -17,3 +17,4 @@ debug
 *.png
 data/FXencoder_ps.pt
 outputs/**
+test_data/**

@@ -16,9 +16,9 @@ data:
     num_workers: 1
     num_train_passes: 5
     num_val_passes: 1
-    train_buffer_size_gb: 0.01
-    val_buffer_size_gb: 0.001
-    target_track_lufs_db: -48.0
+    train_buffer_size_gb: 1.0
+    val_buffer_size_gb: 0.3
+    target_track_lufs_db: -20.0
     randomize_ref_mix_gain: true
-    num_train_examples: 250
-    num_val_examples: 100
+    num_train_examples: 10
+    num_val_examples: 10

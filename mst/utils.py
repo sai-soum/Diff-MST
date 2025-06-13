@@ -38,9 +38,10 @@ def run_diffmst(
     model: torch.nn.Module,
     mix_console: torch.nn.Module,
     *,
-    analysis_window: int = 262_144,           # window length for console render
+    analysis_window: int = 441000,           # window length for console render
     track_lufs_target: float = -48.0,
     meter_sr: int = 44_100,
+    
 ) -> Tuple[
         torch.Tensor,
         Dict[str, torch.Tensor],
@@ -73,7 +74,7 @@ def run_diffmst(
     pred_track_param_dict / pred_fx_bus_param_dict / pred_master_bus_param_dict
     """
 
-    bs, n_tracks, _, T = tracks.shape
+    bs, n_tracks,_, T = tracks.shape
     assert bs == 1, "Current implementation handles batch=1 inference."
 
     # -----------------------------------------------------------
@@ -111,7 +112,8 @@ def run_diffmst(
     # -----------------------------------------------------------
     # 3) Render mix in sliding windows (keeps console memory low)
     # -----------------------------------------------------------
-    step = analysis_window // 2                   # 50 % overlap
+    # step = analysis_window // 2   
+    step = analysis_window               # 50 % overlap
     pred_mix = torch.zeros(1, 2, T, device=tracks.device)
     window = torch.hann_window(analysis_window, device=tracks.device)
 

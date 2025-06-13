@@ -233,7 +233,7 @@ class AdvancedMixConsole(torch.nn.Module):
                 self.sample_rate,
                 **track_param_dict["input_fader"],
             )
-        print("gain values", track_param_dict["input_fader"]["gain_db"])
+        # print("gain values", track_param_dict["input_fader"]["gain_db"])
         # if tracks.sum() == 0:
         #     print("tracks is 0 after gain")
         #     print(tracks)
@@ -310,12 +310,12 @@ class AdvancedMixConsole(torch.nn.Module):
                 lookahead_samples=1024,
             )
 
-        if use_output_fader:
-            master_bus = gain(
-                master_bus,
-                self.sample_rate,
-                **master_bus_param_dict["output_fader"],
-            )
+            if use_output_fader:
+                master_bus = gain(
+                    master_bus,
+                    self.sample_rate,
+                    **master_bus_param_dict["output_fader"],
+                )
 
         return tracks, master_bus
 
@@ -471,7 +471,7 @@ class AdvancedMixConsole(torch.nn.Module):
         master_bus_param_dict = denormalize_parameters(
             master_bus_param_dict, self.param_ranges
         )
-
+        print("track gain values", track_param_dict["input_fader"]["gain_db"])
         mixed_tracks, mix = self.forward_mix_console(
             tracks,
             track_param_dict,
@@ -485,6 +485,7 @@ class AdvancedMixConsole(torch.nn.Module):
             use_master_bus=use_master_bus,
             use_output_fader=use_output_fader,
         )
+
         return (
             mixed_tracks,
             mix,

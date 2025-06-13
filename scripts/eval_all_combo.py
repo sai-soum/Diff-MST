@@ -53,17 +53,29 @@ if __name__ == "__main__":
     os.makedirs(output_dir, exist_ok=True)
 
     methods = {
-        "diffmst-16": {
+        "diffmst_gep": {
             "model": load_diffmst(
-                "/Users/svanka/Downloads/b4naquji/config.yaml",
-                "/Users/svanka/Downloads/b4naquji/checkpoints/epoch=191-step=626608.ckpt",
+                "/homes/ssv02/Diff-MST/configs/models/unpaired+feat+gpe.yaml",
+                "/import/c4dm-datasets-ext/soum/Diff-MST/DiffMST/4sfexj46/checkpoints/epoch=273-step=81443.ckpt",
             ),
-            "func": run_diffmst,
-        },
-        "sum": {
-            "model": (None, None),
-            "func": equal_loudness_mix,
-        },
+
+            "func": run_diffmst},
+        "diffmst_gp": {
+            "model": load_diffmst(
+                "/homes/ssv02/Diff-MST/configs/models/unpaired+feat+gp.yaml",
+                "/import/c4dm-datasets-ext/soum/Diff-MST/DiffMST/chgy6oih/checkpoints/epoch=201-step=229954.ckpt",
+            ),
+            "func": run_diffmst},
+        "diffmst_gepc": {
+            "model": load_diffmst(
+                "/homes/ssv02/Diff-MST/configs/models/unpaired+feat+gpec.yaml",
+                "/import/c4dm-datasets-ext/soum/Diff-MST/DiffMST/g8jmx68p/checkpoints/epoch=173-step=89954.ckpt",
+            ),
+            "func": run_diffmst},
+        # "sum": {
+        #     "model": (None, None),
+        #     "func": equal_loudness_mix,
+        # },
     }
 
     # get the validation examples
@@ -76,9 +88,13 @@ if __name__ == "__main__":
         #     "tracks": "/Users/svanka/Downloads//diffmst-examples/song2/Kat Wright_By My Side/",
         #     "ref": "/Users/svanka/Downloads//diffmst-examples/song2/ref/The Dip - Paddle To The Stars (Lyric Video)_01.wav",
         # },
-        "haunted-aged": {
-            "tracks": "/Users/svanka/Downloads//diffmst-examples/song3/Titanium_HauntedAge_Full/",
-            "ref": "/Users/svanka/Downloads//diffmst-examples/song3/ref/Architects - _Doomsday__01.wav",
+        # "haunted-aged": {
+        #     "tracks": "/Users/svanka/Downloads//diffmst-examples/song3/Titanium_HauntedAge_Full/",
+        #     "ref": "/Users/svanka/Downloads//diffmst-examples/song3/ref/Architects - _Doomsday__01.wav",
+        # },
+         "cubase_test": {
+            "tracks": "/homes/ssv02/Diff-MST/test_data/song_1",
+            "ref": "/homes/ssv02/Diff-MST/test_reference/REFERENCE MSTTest - 0005 - Audio - RnB - Synth Lead A Minor 05_130bpm.wav",
         },
     }
     loss = AudioFeatureLoss([0.1,0.001,1.0,1.0,0.1], 44100)
@@ -89,7 +105,7 @@ if __name__ == "__main__":
 
         AF[example_name] = {}
         print(example_name)
-        example_dir = os.path.join(output_dir, example_name)
+        example_dir = os.path.join(output_dir)
         os.makedirs(example_dir, exist_ok=True)
         json_dir = os.path.join(output_dir, "AF")
         if not os.path.exists(json_dir):
@@ -128,8 +144,8 @@ if __name__ == "__main__":
 
             # loudness normalize the tracks to -48 LUFS
             lufs_db = meter.integrated_loudness(audio.permute(1, 0).numpy())
-            # lufs_delta_db = -48 - lufs_db
-            # audio = audio * 10 ** (lufs_delta_db / 20)
+            lufs_delta_db = -48 - lufs_db
+            audio = audio * 10 ** (lufs_delta_db / 20)
 
             print(track_idx, os.path.basename(track_filepath), audio.shape, sr, lufs_db)
 
@@ -152,7 +168,7 @@ if __name__ == "__main__":
 
         # stack into a tensor
         tracks = torch.cat(tracks, dim=0)
-        tracks = tracks.view(1, -1, max_length)
+        tracks = tracks.view(1, -1, 1, max_length)
         ref_audio = ref_audio.view(1, 2, -1)
 
         # crop tracks to max of 60 seconds or so
@@ -160,10 +176,10 @@ if __name__ == "__main__":
         tracks_length = max_length
         
         #print(tracks.shape)
-        track_start_idx = int(tracks_length / 4)
-        ref_start_idx = int(ref_length / 4)
-        track_stop_idx = int(3*tracks_length / 4)
-        ref_stop_idx = int(3*ref_length / 4)
+        track_start_idx = 0
+        ref_start_idx = 0
+        track_stop_idx = int(441000)  # 10 seconds
+        ref_stop_idx = int(441000 )   # 10 seconds
         #find the number of sets of track samples of 10 sec duration each
         track_num_sets = int((track_stop_idx - track_start_idx) / 441000)
         ref_num_sets = int((ref_stop_idx - ref_start_idx) / 441000)
@@ -171,6 +187,7 @@ if __name__ == "__main__":
         print("ref_num_sets", ref_num_sets)
         min_AF_loss = float('inf')
         min_AF_loss_example = None
+        print("track", tracks.shape, "ref", ref_audio.shape)
         for i in range(track_num_sets):
             for j in range(ref_num_sets):
                 print(f"track-{i}-ref-{j}")
@@ -182,20 +199,20 @@ if __name__ == "__main__":
                 # create mixes varying the loudness of the reference
                 for ref_loudness_target in [-16.0]:
                     print("Ref loudness", ref_loudness_target)
-                    ref_filepath = os.path.join(
-                        example_dir,
-                        f"ref-analysis-track-{i}-ref-{j}-lufs-{ref_loudness_target:0.0f}.wav",
-                    )
+                    # ref_filepath = os.path.join(
+                    #     example_dir,
+                    #     f"ref-analysis-track-{i}-ref-{j}-lufs-{ref_loudness_target:0.0f}.wav",
+                    # )
 
                     # loudness normalize the reference mix section to -14 LUFS
                     ref_lufs_db = meter.integrated_loudness(
                         ref_analysis.squeeze().permute(1, 0).numpy()
                     )
-                    print("ref_lufs_db", ref_lufs_db)
+                    # print("ref_lufs_db", ref_lufs_db)
                     lufs_delta_db = ref_loudness_target - ref_lufs_db
                     ref_analysis = ref_analysis * 10 ** (lufs_delta_db / 20)
 
-                    torchaudio.save(ref_filepath, ref_analysis.squeeze(), 44100)
+                    # torchaudio.save(ref_filepath, ref_analysis.squeeze(), 44100)
                     
                     AF_loss = 0
                     for method_name, method in methods.items():
@@ -225,8 +242,8 @@ if __name__ == "__main__":
                                 ref_analysis.clone(),
                                 model,
                                 mix_console,
-                                track_start_idx=0,
-                                ref_start_idx=0,
+                                # track_start_idx=0,
+                                # ref_start_idx=0,
                             )
 
                             (
@@ -235,47 +252,59 @@ if __name__ == "__main__":
                                 pred_fx_bus_param_dict,
                                 pred_master_bus_param_dict,
                             ) = result
-
-                        bs, chs, seq_len = pred_mix.shape
-                        print("pred_mix shape", pred_mix.shape)
-                        # loudness normalize the output mix
-                        mix_lufs_db = meter.integrated_loudness(
-                            pred_mix.squeeze(0).permute(1, 0).numpy()
-                        )
-                        print("pred_mix_lufs_db", mix_lufs_db)
-                        #print(mix_lufs_db)
-                        lufs_delta_db = target_lufs_db - mix_lufs_db
-                        pred_mix = pred_mix * 10 ** (lufs_delta_db / 20)
-                        mix_filepath = os.path.join(
+                        print("method_name", method_name)
+                        print("track_params", pred_track_param_dict)
+                        print("master bus", pred_master_bus_param_dict)
+                        mix_file_path = os.path.join(
                             example_dir,
-                            f"{example_name}-{method_name}-tracks-{i}-ref={j}-lufs-{ref_loudness_target:0.0f}.wav",
+                            f"{example_name}-{method_name}.wav"
                         )
-                        torchaudio.save(mix_filepath, pred_mix.view(chs, -1), 44100)
+                        # print(pred_mix.shape)
+                        # torchaudio.save(
+                        #     mix_file_path,
+                        #     pred_mix.squeeze(0),
+                        #     44100,
+                        # )
+        #                 bs, chs, seq_len = pred_mix.shape
+        #                 print("pred_mix shape", pred_mix.shape)
+        #                 # loudness normalize the output mix
+        #                 mix_lufs_db = meter.integrated_loudness(
+        #                     pred_mix.squeeze(0).permute(1, 0).numpy()
+        #                 )
+        #                 print("pred_mix_lufs_db", mix_lufs_db)
+        #                 #print(mix_lufs_db)
+        #                 lufs_delta_db = target_lufs_db - mix_lufs_db
+        #                 pred_mix = pred_mix * 10 ** (lufs_delta_db / 20)
+        #                 mix_filepath = os.path.join(
+        #                     example_dir,
+        #                     f"{example_name}-{method_name}-tracks-{i}-ref={j}-lufs-{ref_loudness_target:0.0f}.wav",
+        #                 )
+        #                 torchaudio.save(mix_filepath, pred_mix.view(chs, -1), 44100)
                         
-                        # compute audio features
-                        AF_loss = loss(pred_mix, ref_analysis)
+        #                 # compute audio features
+        #                 AF_loss = loss(pred_mix, ref_analysis)
                        
-                        for key, value in AF_loss.items():
-                            AF[example_name][method_name][audio_section][key] = value.detach().cpu().numpy()
-                        AF[example_name][method_name][audio_section]["net_AF_loss"]  = sum(AF_loss.values()).detach().cpu().numpy()
-                        print(AF[example_name][method_name][audio_section])
+        #                 for key, value in AF_loss.items():
+        #                     AF[example_name][method_name][audio_section][key] = value.detach().cpu().numpy()
+        #                 AF[example_name][method_name][audio_section]["net_AF_loss"]  = sum(AF_loss.values()).detach().cpu().numpy()
+        #                 print(AF[example_name][method_name][audio_section])
 
-                        if AF[example_name][method_name][audio_section]["net_AF_loss"]  < min_AF_loss:
-                            min_AF_loss = AF[example_name][method_name][audio_section]["net_AF_loss"]
-                            min_AF_loss_example = f"{example_name}-{method_name}-{audio_section}"
-                        print("min_AF_loss", min_AF_loss)
-                        print("min_AF_loss_example", min_AF_loss_example)
-                        # save resulting audio and parameters
-                        #append to csv the method name, audio section, audio features values and net loss on different columns
+        #                 if AF[example_name][method_name][audio_section]["net_AF_loss"]  < min_AF_loss:
+        #                     min_AF_loss = AF[example_name][method_name][audio_section]["net_AF_loss"]
+        #                     min_AF_loss_example = f"{example_name}-{method_name}-{audio_section}"
+        #                 print("min_AF_loss", min_AF_loss)
+        #                 print("min_AF_loss_example", min_AF_loss_example)
+        #                 # save resulting audio and parameters
+        #                 #append to csv the method name, audio section, audio features values and net loss on different columns
                        
-                        with open(csv_path, 'a') as f:
-                            writer = csv.writer(f)
-                            writer.writerow([method_name, audio_section, AF[example_name][method_name][audio_section]["track_start_idx"], AF[example_name][method_name][audio_section]["track_stop_idx"], AF[example_name][method_name][audio_section]["ref_start_idx"], AF[example_name][method_name][audio_section]["ref_stop_idx"], AF[example_name][method_name][audio_section]["mix-rms"], AF[example_name][method_name][audio_section]["mix-crest_factor"], AF[example_name][method_name][audio_section]["mix-stereo_width"], AF[example_name][method_name][audio_section]["mix-stereo_imbalance"], AF[example_name][method_name][audio_section]["mix-barkspectrum"], AF[example_name][method_name][audio_section]["net_AF_loss"]])
-                            f.close()
+        #                 with open(csv_path, 'a') as f:
+        #                     writer = csv.writer(f)
+        #                     writer.writerow([method_name, audio_section, AF[example_name][method_name][audio_section]["track_start_idx"], AF[example_name][method_name][audio_section]["track_stop_idx"], AF[example_name][method_name][audio_section]["ref_start_idx"], AF[example_name][method_name][audio_section]["ref_stop_idx"], AF[example_name][method_name][audio_section]["mix-rms"], AF[example_name][method_name][audio_section]["mix-crest_factor"], AF[example_name][method_name][audio_section]["mix-stereo_width"], AF[example_name][method_name][audio_section]["mix-stereo_imbalance"], AF[example_name][method_name][audio_section]["mix-barkspectrum"], AF[example_name][method_name][audio_section]["net_AF_loss"]])
+        #                     f.close()
                       
         
-        print(f"for {example_name} min loss is {min_AF_loss} corresponding to {min_AF_loss_example}")
-        print()
+        # print(f"for {example_name} min loss is {min_AF_loss} corresponding to {min_AF_loss_example}")
+        # print()
 
     #write disctionary to json
 
