@@ -33,6 +33,7 @@ class MixStyleTransferModel(torch.nn.Module):
         ref_mix: torch.torch.Tensor,
         track_padding_mask: Optional[torch.Tensor] = None,
     ):
+       
         bs, num_tracks, seq_len = tracks.size()
 
         # first process the tracks
@@ -805,8 +806,8 @@ class SpectrogramEncoder(torch.nn.Module):
         # X = X.repeat(1, 3, 1, 1)  # add dummy channels (3)
 
         # apply normalization
-        if self.input_batchnorm:
-            X = self.bn(X)
+        # if self.input_batchnorm:
+        X = self.bn(X)
 
         # process with CNN
         embeds = self.model(X)

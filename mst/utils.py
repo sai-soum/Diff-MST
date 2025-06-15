@@ -371,15 +371,25 @@ def load_diffmst(config_path: str, ckpt_path: str, map_location: str = "cpu"):
         if k.startswith("model.mix_console"):
             state_dict[k.replace("model.mix_console.", "", 1)] = v
     mix_console.load_state_dict(state_dict)
-    track_encoder = VariableLengthEncoder(track_encoder,
-                                      chunk_seconds=5.0,  # or 10.0, etc.
-                                      hop_seconds=2.5,
-                                      pool="mean")        # or "attention"
+    # track_encoder = VariableLengthEncoder(track_encoder,
+    #                                     chunk_seconds = 5.0,
+    #                                     hop_seconds = 2.5,
+    #                                     # 0 = mean, 1 = max, 2 = attention
+    #                                     pool_mode = 0,  
+    #                                     embed_dim = 512     # or "attention"
+    #                                 )
+    # mix_encoder = VariableLengthEncoder(mix_encoder,
+    #                                     chunk_seconds = 5.0,
+    #                                     hop_seconds = 2.5,
+    #                                     # 0 = mean, 1 = max, 2 = attention
+    #                                     pool_mode = 0,  
+    #                                     embed_dim = 512     # or "attention"
+    #                                 )
 
-    mix_encoder = VariableLengthEncoder(mix_encoder,
-                                    chunk_seconds=5.0,
-                                    hop_seconds=2.5,
-                                    pool="mean")
+    # mix_encoder = VariableLengthEncoder(mix_encoder,
+    #                                 chunk_seconds=5.0,
+    #                                 hop_seconds=2.5,
+    #                                 pool="mean")
 
     model = MixStyleTransferModel(
         track_encoder,
