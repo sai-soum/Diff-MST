@@ -24,6 +24,11 @@ class MixStyleTransferModel(torch.nn.Module):
         super().__init__()
         self.track_encoder = track_encoder
         self.mix_encoder = mix_encoder
+        # freeze the encoders
+        # for param in self.track_encoder.parameters():
+        #     param.requires_grad = False
+        # for param in self.mix_encoder.parameters():
+        #     param.requires_grad = False
         self.controller = controller
         self.sum_and_diff = sum_and_diff
 
@@ -126,16 +131,20 @@ class AdvancedMixConsole(torch.nn.Module):
                 "low_shelf_cutoff_freq": (20, 2000),
                 "low_shelf_q_factor": (0.1, 0.1),
                 "band0_gain_db": (eq_min_gain_db, eq_max_gain_db),
-                "band0_cutoff_freq": (80, 2000),
+                "band0_cutoff_freq": (20, 200),
+                   # 80, 2000
                 "band0_q_factor": (0.1, 5.0),
                 "band1_gain_db": (eq_min_gain_db, eq_max_gain_db),
-                "band1_cutoff_freq": (2000, 8000),
+                "band1_cutoff_freq": (200, 1000),
+                # 2000, 8000
                 "band1_q_factor": (0.1, 5.0),
                 "band2_gain_db": (eq_min_gain_db, eq_max_gain_db),
-                "band2_cutoff_freq": (8000, 12000),
+                "band2_cutoff_freq": (1000, 5000),
+                # 8000, 12000
                 "band2_q_factor": (0.1, 5.0),
                 "band3_gain_db": (eq_min_gain_db, eq_max_gain_db),
-                "band3_cutoff_freq": (12000, (sample_rate // 2) - 1000),
+                "band3_cutoff_freq": (5000, (sample_rate // 2) - 1000),
+                # 12000
                 "band3_q_factor": (0.1, 5.0),
                 "high_shelf_gain_db": (0.0, 0.0),
                 "high_shelf_cutoff_freq": (6000, (sample_rate // 2) - 1000),
@@ -472,7 +481,7 @@ class AdvancedMixConsole(torch.nn.Module):
         master_bus_param_dict = denormalize_parameters(
             master_bus_param_dict, self.param_ranges
         )
-        print("track gain values", track_param_dict["input_fader"]["gain_db"])
+        # print("track gain values", track_param_dict["input_fader"]["gain_db"])
         mixed_tracks, mix = self.forward_mix_console(
             tracks,
             track_param_dict,

@@ -1,6 +1,6 @@
 seed_everything: 42
 # use ckpt_path to load a model from a checkpoint
-# ckpt_path: /import/c4dm-datasets-ext/soum/Diff-MST/DiffMST/4sfexj46/checkpoints/epoch=273-step=81443.ckpt
+ckpt_path: /import/c4dm-datasets-ext/soum/Diff-MST/DiffMST/dr094bf8/checkpoints/epoch=866-step=54621.ckpt
 trainer:
   logger: 
     class_path: pytorch_lightning.loggers.WandbLogger
@@ -35,7 +35,7 @@ trainer:
   check_val_every_n_epoch: 1
   max_epochs: 1000
   #change to log less or more often to wandb
-  log_every_n_steps: 20
+  log_every_n_steps: 50
   accelerator: gpu
   strategy: ddp_find_unused_parameters_true
   sync_batchnorm: true

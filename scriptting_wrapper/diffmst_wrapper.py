@@ -143,7 +143,7 @@ class DiffMSTWrapper(torch.nn.Module):
         for t in range(n_tracks):
             wav = tracks[:, t, :]
             lufs = self.estimate_loudness(wav)
-            print(f"Track {t} LUFS: {lufs.item():.2f}")
+            # print(f"Track {t} LUFS: {lufs.item():.2f}")
             if lufs < self.track_lufs_target:
                 continue
 
@@ -199,32 +199,35 @@ if __name__ == "__main__":
 
     # Load pretrained model
     model, mix_console = load_diffmst(
-        "/Users/svanka/Codes/Diff-MST/scriptting_wrapper/diffmst_wrapper.yaml",
-        "/Users/svanka/Downloads/ckpt12.6/gp_5k8/epoch=189-step=11970.ckpt"
+        "scriptting_wrapper/diffmst_wrapper.yaml",
+        "/import/c4dm-datasets-ext/soum/Diff-MST/DiffMST/dr094bf8/checkpoints/epoch=847-step=53424.ckpt"
+        # "/import/c4dm-datasets-ext/soum/Diff-MST/DiffMST/5k8fd6ie/checkpoints/epoch=666-step=42021.ckpt"
+        # "/import/c4dm-datasets-ext/soum/Diff-MST/DiffMST/5k8fd6ie/checkpoints/epoch=655-step=41328.ckpt"
         # "/Users/svanka/Downloads/ckpt12.6/gpec_dr09/epoch=258-step=16317.ckpt"
     )
+    print("have the model")
     model.eval()
 
     # Wrap model
     wrapper = DiffMSTWrapper(model)
     wrapper.eval()
-    track_path = "/Users/svanka/Downloads/BenFlowers_Ecstasy"
-    ref_path = "/Users/svanka/Codes/sai-soum.github.io/assets/audio/Listening_Examples_Diff_MST/Electronic/electronic-ref-16lufs.wav"
-    # track_path = "/Users/svanka/Downloads/DiffMSTTest/tracks"
-    # ref_path = "/Users/svanka/Downloads/DiffMSTTest/ref/REFERENCE MSTTest - 0005 - Audio - RnB - Synth Lead A Minor 05_130bpm.wav"
+    # track_path = "/Users/svanka/Downloads/BenFlowers_Ecstasy"
+    # ref_path = "/Users/svanka/Codes/sai-soum.github.io/assets/audio/Listening_Examples_Diff_MST/Electronic/electronic-ref-16lufs.wav"
+    # track_path = "/homes/ssv02/Diff-MST/test_data/song_1"
+    # ref_path = "/homes/ssv02/Diff-MST/test_reference/REFERENCE MSTTest - 0005 - Audio - RnB - Synth Lead A Minor 05_130bpm.wav"
     # Create example inputs (shorter for testing)
-    # example_tracks = torch.randn(1, 5, 441000)
-    # example_ref = torch.randn(1, 2, 441000)
-    example_tracks, example_ref = load_data(track_path, ref_path)   
-    print("Example input shapes:", example_tracks.shape, example_ref.shape)
+    example_tracks = torch.randn(1, 5, 441000)
+    example_ref = torch.randn(1, 2, 441000)
+    # example_tracks, example_ref = load_data(track_path, ref_path)   
+    # print("Example input shapes:", example_tracks.shape, example_ref.shape)
     t_p, fx_bus_p, master_p = wrapper(example_tracks, example_ref)
     _, mix, t_p_dict, fx_bus_p_dict, master_p_dict,= mix_console(example_tracks, 
                                                                                 t_p, 
                                                                                 fx_bus_p, 
                                                                                 master_p,
                                                                                 use_track_input_fader = True,
-                                                                                use_track_eq = False,
-                                                                                use_track_compressor= False,
+                                                                                use_track_eq = True,
+                                                                                use_track_compressor= True,
                                                                                 use_track_panner= True,
                                                                                 use_master_bus = False,
                                                                                 use_fx_bus = False,
@@ -234,66 +237,66 @@ if __name__ == "__main__":
     print("mix", mix.shape)
     mix_lufs = estimate_loudness(mix)
     print(f"Mix LUFS: {mix_lufs.item():.2f}")
-    #  normalise to -16 LUFS
-    mix_lufs_target = -16.0
-    mix_gain = torch.pow(10.0, (mix_lufs_target - mix_lufs) / 20.0)
-    mix = mix * mix_gain  # apply gain to mix
-    print(f"Applied gain: {mix_gain.item():.2f}")
-    mix = mix.squeeze(0)  # (2, T) — remove batch dimension
-    mix = mix.detach().clamp(-1.0, 1.0).to(torch.float32) # ensure proper dtype and range
-    example_ref = example_ref.squeeze(0)  # (2, T) — remove batch dimension
-    example_ref = example_ref.detach().clamp(-1.0, 1.0).to(torch.float32) # ensure proper dtype and range
-    sum_mix = example_tracks.sum(dim=1)  # (T) — sum across tracks
-    sum_lufs = estimate_loudness(sum_mix)
-    print(f"Sum of tracks LUFS: {sum_lufs.item():.2f}")
-    sum_mix = sum_mix.detach().clamp(-1.0, 1.0).to(torch.float32) # ensure proper dtype and range
-    print("Sum of tracks shape:", sum_mix.shape)
+    # #  normalise to -16 LUFS
+    # # mix_lufs_target = -16.0
+    # # mix_gain = torch.pow(10.0, (mix_lufs_target - mix_lufs) / 20.0)
+    # # mix = mix * mix_gain  # apply gain to mix
+    # # print(f"Applied gain: {mix_gain.item():.2f}")
+    # mix = mix.squeeze(0)  # (2, T) — remove batch dimension
+    # mix = mix.detach().clamp(-1.0, 1.0).to(torch.float32) # ensure proper dtype and range
+    # example_ref = example_ref.squeeze(0)  # (2, T) — remove batch dimension
+    # example_ref = example_ref.detach().clamp(-1.0, 1.0).to(torch.float32) # ensure proper dtype and range
+    # sum_mix = example_tracks.sum(dim=1)  # (T) — sum across tracks
+    # sum_lufs = estimate_loudness(sum_mix)
+    # print(f"Sum of tracks LUFS: {sum_lufs.item():.2f}")
+    # sum_mix = sum_mix.detach().clamp(-1.0, 1.0).to(torch.float32) # ensure proper dtype and range
+    # print("Sum of tracks shape:", sum_mix.shape)
 
-    torchaudio.save(
-        "scriptting_wrapper/diffmst_wrapper_mix.wav",
-        mix,
-        44100,
-        encoding="PCM_F",
-        format="wav",
-        bits_per_sample=32
-    )
-    print("Mix saved successfully.")
-    # save ref audio
-    torchaudio.save(
-        "scriptting_wrapper/diffmst_wrapper_ref.wav",
-        example_ref.squeeze(0),  # (2, T) — remove batch dimension
-        44100,
-        encoding="PCM_F",
-        format="wav",
-        bits_per_sample=32
-    )
-    print("Reference audio saved successfully.")
-    # save sum of tracks
-    torchaudio.save(
-        "scriptting_wrapper/diffmst_wrapper_tracks.wav",
-        sum_mix,  # (T) — sum across tracks
-        44100,
-        encoding="PCM_F",
-        format="wav",
-        bits_per_sample=32
-    )
+    # torchaudio.save(
+    #     "scriptting_wrapper/diffmst_wrapper_mix.wav",
+    #     mix,
+    #     44100,
+    #     encoding="PCM_F",
+    #     format="wav",
+    #     bits_per_sample=32
+    # )
+    # print("Mix saved successfully.")
+    # # save ref audio
+    # torchaudio.save(
+    #     "scriptting_wrapper/diffmst_wrapper_ref.wav",
+    #     example_ref.squeeze(0),  # (2, T) — remove batch dimension
+    #     44100,
+    #     encoding="PCM_F",
+    #     format="wav",
+    #     bits_per_sample=32
+    # )
+    # print("Reference audio saved successfully.")
+    # # save sum of tracks
+    # torchaudio.save(
+    #     "scriptting_wrapper/diffmst_wrapper_tracks.wav",
+    #     sum_mix,  # (T) — sum across tracks
+    #     44100,
+    #     encoding="PCM_F",
+    #     format="wav",
+    #     bits_per_sample=32
+    # )
 
-    # # Script and save
-    # try:
-    #     example_ref = example_ref.unsqueeze(0)  # (1, 2, T) for scripting
-    #     # scripted_model = torch.jit.script(wrapper)
-    #     # scripted_model.save("/Users/svanka/Downloads/ckpt12.6/gpec_dr09/gpec_scripted.pt")
-    #     # print("✅ Model scripted and saved successfully.")
-    #     # load and test the scripted model
-    #     loaded_model = torch.jit.load("/Users/svanka/Codes/Diff-MST/scriptting_wrapper/diffmst_wrapper_scripted.pt")
-    #     loaded_model.eval()
-    #     t_p, fx_bus_p, master_p = loaded_model(example_tracks, example_ref)
-    #     # print("Loaded model output shapes:", t_p.shape, fx_bus_p.shape, master_p.shape)
-    #     # print("params", t_p, fx_bus_p, master_p)
+    # Script and save
+    try:
+        # example_ref = example_ref.unsqueeze(0)  # (1, 2, T) for scripting
+        scripted_model = torch.jit.script(wrapper)
+        scripted_model.save("/import/c4dm-datasets-ext/soum/Diff-MST/DiffMST/dr094bf8/checkpoints/diffmst_wrapper_scripted_gpec.pt")
+        print("✅ Model scripted and saved successfully.")
+        # load and test the scripted model
+        loaded_model = torch.jit.load("/import/c4dm-datasets-ext/soum/Diff-MST/DiffMST/dr094bf8/checkpoints/diffmst_wrapper_scripted_gpec.pt")
+        loaded_model.eval()
+        t_p_s, fx_bus_p_s, master_p_s = loaded_model(example_tracks, example_ref)
+        print("Loaded model output shapes:", t_p_s.shape, fx_bus_p_s.shape, master_p_s.shape)
+        print("params", t_p_s, fx_bus_p_s, master_p_s)
       
-    #     # check if the outputs are the same
-    #     assert torch.allclose(t_p, t_p), "Output mismatch after loading scripted model."
-    #     print("✅ Outputs match after loading scripted model.")
+        # check if the outputs are the same
+        assert torch.allclose(t_p_s, t_p), "Output mismatch after loading scripted model."
+        print("✅ Outputs match after loading scripted model.")
 
-    # except Exception as e:
-    #     print("❌ Error during scripting or saving:", e)
+    except Exception as e:
+        print("❌ Error during scripting or saving:", e)

@@ -59,8 +59,10 @@ model:
         #   - 1.0 # stereo imbalance
         #   - 0.1 # bark spectrum
         weights: 
-          - 0.1 # rms
-          - 0.001 # crest factor
+          # - 0.1 # rms
+          # - 0.001 # crest factor
+          - 0.0
+          - 0.0
           - 1.0  # stereo width
           - 1.0 # stereo imbalance
           - 0.1 # bark spectrum
