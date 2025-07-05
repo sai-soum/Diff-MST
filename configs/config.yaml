@@ -1,6 +1,6 @@
-seed_everything: 42
+seed_everything: 40
 # use ckpt_path to load a model from a checkpoint
-ckpt_path: /import/c4dm-datasets-ext/soum/Diff-MST/DiffMST/dr094bf8/checkpoints/epoch=866-step=54621.ckpt
+# ckpt_path: /import/c4dm-datasets-ext/soum/Diff-MST/DiffMST/dr094bf8/checkpoints/epoch=866-step=54621.ckpt
 trainer:
   logger: 
     class_path: pytorch_lightning.loggers.WandbLogger
@@ -14,6 +14,7 @@ trainer:
     - class_path: pytorch_lightning.callbacks.ModelSummary
       init_args: 
         max_depth: 2
+
     #uncomment if you want to run validation on custom examples during training
     # - class_path: mst.callbacks.mix.LogReferenceMix
     #   init_args:
@@ -30,7 +31,8 @@ trainer:
     #       - /import/c4dm-datasets-ext/diffmst_validation/validation_set/song2/ref/Taylor Swift - Shake It Off.wav
     #       - /import/c4dm-datasets-ext/diffmst_validation/validation_set/song3/ref/Miley Cyrus - Wrecking Ball (Lyrics).wav
   default_root_dir: null
-  gradient_clip_val: 10.0
+  gradient_clip_val: 5.0
+  # gradient_clip_algorithm: "norm"
   devices: 1
   check_val_every_n_epoch: 1
   max_epochs: 1000
@@ -41,8 +43,9 @@ trainer:
   sync_batchnorm: true
   precision: 32
   enable_model_summary: true
-  num_sanity_val_steps: 1
+  num_sanity_val_steps: 10
   benchmark: true
   accumulate_grad_batches: 4
   reload_dataloaders_every_n_epochs: 1
+  # detect_anomaly: True
 

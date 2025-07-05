@@ -19,3 +19,4 @@ data/FXencoder_ps.pt
 outputs/**
 test_data/**
 diffmst_wrapper_scripted.pt
+tmp/** */

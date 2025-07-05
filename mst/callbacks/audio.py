@@ -89,7 +89,7 @@ class LogAudioCallback(pl.callbacks.Callback):
         )
 
         # # now try to log parameters
-        # pred_track_param_dict = outputs["pred_track_param_dict"]
+        pred_track_param_dict = outputs["pred_track_param_dict"]
         # ref_track_param_dict = outputs["ref_track_param_dict"]
 
         # pred_fx_bus_param_dict = outputs["pred_fx_bus_param_dict"]
@@ -98,37 +98,42 @@ class LogAudioCallback(pl.callbacks.Callback):
         # pred_master_bus_param_dict = outputs["pred_master_bus_param_dict"]
         # ref_master_bus_param_dict = outputs["ref_master_bus_param_dict"]
 
-        # effect_names = list(pred_track_param_dict.keys())
+        effect_names = list(pred_track_param_dict.keys())
 
-        # column_names = None
-        # rows = []
-        # for effect_name in effect_names:
-        #     param_names = list(pred_track_param_dict[effect_name].keys())
-        #     for param_name in param_names:
-        #         pred_param_val = pred_track_param_dict[effect_name][param_name]
-        #         ref_param_val = ref_track_param_dict[effect_name][param_name]
+        column_names = None
+        rows = []
+        for effect_name in effect_names:
+            param_names = list(pred_track_param_dict[effect_name].keys())
+            for param_name in param_names:
+                if param_name in ["low_shelf_gain_db", "low_shelf_cutoff_freq", "low_shelf_q_factor", "high_shelf_gain_db", "high_shelf_cutoff_freq", "high_shelf_q_factor", "knee_db", "send_db"]:
+                    continue
+                pred_param_val = pred_track_param_dict[effect_name][param_name]
+                # print(f"effect_name: {effect_name}, param_name: {param_name}")
+                # print(f"pred_param_val shape: {pred_param_val.shape}")
 
-        #         row = []
-        #         row_name = f"{effect_name}.{param_name}"
-        #         row.append(row_name)
+                # ref_param_val = ref_track_param_dict[effect_name][param_name]
 
-        #         if column_names is None:
-        #             column_names = ["parameter"]
-        #             for i in range(pred_param_val.shape[1]):
-        #                 column_names.append(f"{i}_pred")
-        #                 column_names.append(f"{i}_ref")
-        #             # column_names.append("master_bus_pred")
+                row = []
+                row_name = f"{effect_name}.{param_name}"
+                row.append(row_name)
+
+                if column_names is None:
+                    column_names = ["parameter"]
+                    for i in range(pred_param_val.shape[1]):
+                        column_names.append(f"{i}_pred")
+                        # column_names.append(f"{i}_ref")
+                    # column_names.append("master_bus_pred")
         #             # column_names.append("master_bus_ref")
 
-        #         for i in range(pred_param_val.shape[1]):
-        #             row.append(pred_param_val[sample_idx, i].item())
+                for i in range(pred_param_val.shape[1]):
+                    row.append(pred_param_val[sample_idx, i].item())
         #             row.append(ref_param_val[sample_idx, i].item())
 
         #         # row.append(pred_master_bus_param_dict[effect_name][batch_idx].item())
+                # print("row", row)
+                rows.append(row)
 
-        #         rows.append(row)
-
-        # wandb_table = wandb.Table(data=rows, columns=column_names)
-        # logger.experiment.log(
-        #     {f"batch={batch_idx}_sample={sample_idx}_parameters": wandb_table}
-        # )
+        wandb_table = wandb.Table(data=rows, columns=column_names)
+        logger.experiment.log(
+            {f"batch={batch_idx}_sample={sample_idx}_parameters": wandb_table}
+        )

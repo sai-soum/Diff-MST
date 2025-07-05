@@ -4,6 +4,7 @@ import librosa
 
 from typing import List
 from mst.filter import barkscale_fbanks
+import torch.nn as nn
 
 
 def compute_mid_side(x: torch.Tensor):
@@ -258,3 +259,4 @@ class AudioFeatureLoss(torch.nn.Module):
                 losses[key] = weight * val * self.source_weights[stem_idx]
 
         return losses
+

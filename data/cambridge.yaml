@@ -197,7 +197,6 @@ val:
     12_Cello2.wav: cello
     13_LeadVox.wav: vox
     14_BackingVox.wav: backingvox
-train:
   00055/tracks/JeffreyHayat_AlexTheAdventurer:
     01_BassDrum.wav: bass
     02_OutroHit.wav: hit
@@ -462,6 +461,7 @@ train:
     21_Vox1Dry.wav: vox
     22_Vox2Dry.wav: vox
     23_VoxBothSFX.wav: vox
+train:
   00122/tracks/Fin_Echoes_Full:
     01_Kick.wav: kick
     02_Snare.wav: snare

@@ -138,8 +138,22 @@ If you find this work useful, please consider citing our paper:
 The code is licensed under the terms of the CC-BY-NC-SA 4.0 license. For a human-readable summary of the license, see https://creativecommons.org/licenses/by-nc-sa/4.0/deed.en .
 
 
-CUDA_VISIBLE_DEVICES=3 python main.py fit \
+CUDA_VISIBLE_DEVICES=5 python main.py fit \
 -c configs/config.yaml \
 -c configs/optimizer.yaml \
 -c configs/data/medley+cambridge+jamendo-16.yaml \
--c configs/models/unpaired+feat+gpec.yaml
+-c configs/models/unpaired+feat+gpec+afxrem.yaml
+
+
+
+To do:
+try with AFxrem and af loss
+try master normalisation for ref mastered mixes with af loss
+add track instrument name to transformer input
+train with a TCN (end-to-end approach)
+check why the other loss doesnt work well?
+adding a pooling for longer context
+what about a gan kind of loss?
+Add classification for using effects
+evluate track encodr for instruemnt and mix encoder for genre?
+maybe try mixing af method and diff section method with stft

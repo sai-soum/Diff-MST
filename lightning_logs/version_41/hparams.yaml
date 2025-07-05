@@ -1,0 +1,37 @@
+generate_mix: false
+use_track_loss: false
+use_mix_loss: true
+use_param_loss: false
+use_domain_inspired_loss: false
+instrument_id_json: data/instrument_name2id.json
+knowledge_engineering_yaml: data/knowledge_engineering.yaml
+active_eq_epoch: 0
+active_compressor_epoch: 0
+active_fx_bus_epoch: 1000
+active_master_bus_epoch: 1000
+plot_weights: true
+lr: 0.0001
+max_epochs: 500
+schedule: step
+track_root_dirs:
+- /import/c4dm-datasets-ext/mixing-secrets/
+- /import/c4dm-datasets/
+metadata_files:
+- ./data/cambridge.yaml
+- ./data/medley.yaml
+length: 262144
+mix_root_dirs:
+- /import/c4dm-scratch-02/MTG-jamendo-wav
+min_tracks: 8
+max_tracks: 8
+num_workers: 1
+batch_size: 1
+num_train_examples: 10
+num_val_examples: 10
+num_train_passes: 5
+num_val_passes: 1
+train_buffer_size_gb: 0.3
+val_buffer_size_gb: 0.1
+target_track_lufs_db: -20.0
+target_mix_lufs_db: -16.0
+randomize_ref_mix_gain: true

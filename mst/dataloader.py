@@ -194,6 +194,7 @@ class MultitrackDataset(torch.utils.data.Dataset):
             self.mixes.extend(mix_files)
         if len(self.mixes) == 0:
                 raise ValueError(
+                
                     f"No mix files found in {mix_dir}. Please check the path."
                 )
 
@@ -211,19 +212,20 @@ class MultitrackDataset(torch.utils.data.Dataset):
     def reload_mix_buffer(self):
             self.mix_examples = []  # clear buffer
             nbytes_loaded = 0  # counter for data in RAM
-
-            random.shuffle(self.mix_dirs)  # shuffle dataset
+            random.shuffle(self.mixes)  # shuffle dataset
 
             pbar = tqdm(itertools.cycle(self.mixes))
-
+            # i = 0
             for filepath in pbar:
+                # i += 1
+                # print(f"Loading mix {i}/{len(self.mixes)}: {filepath}")
                 num_frames = torchaudio.info(filepath).num_frames
                 offset = np.random.randint(0.25 * num_frames, num_frames - self.length - 1)
 
                 # ensure the song is long enough if we start from 25% in
                 if (0.75 * num_frames) < self.length:
                     continue
-
+                refname = os.path.basename(filepath)
 
                 mix, _ = torchaudio.load(
                     filepath,
@@ -253,7 +255,7 @@ class MultitrackDataset(torch.utils.data.Dataset):
                 gain_lin = 10.0 ** (delta_lufs_db.clamp(-120, 40.0) / 20.0)
                 mix = gain_lin * mix
 
-                self.mix_examples.append(mix)
+                self.mix_examples.append((mix, refname))
 
                 nbytes_loaded += mix.element_size() * mix.nelement()
                 pbar.set_description(
@@ -261,7 +263,8 @@ class MultitrackDataset(torch.utils.data.Dataset):
                 )
 
                 # check if buffer is full
-                if nbytes_loaded > int(self.buffer_size_gb/2) * 1e9:
+                if nbytes_loaded > self.buffer_size_gb * 1e9:
+                    print(f"Loaded {len(self.mix_examples)} mix examples.")
                     break
     def reload_track_buffer(self):
         self.track_examples = []  # clear buffer
@@ -323,7 +326,7 @@ class MultitrackDataset(torch.utils.data.Dataset):
                 if track_lufs_db < -48.0 or track_lufs_db == float("-inf"):
                     continue
                 # Random target loudness between -16 and -8 dB LUFS
-                target_track_lufs_db = np.random.uniform(-16.0, -8.0)
+                target_track_lufs_db = np.random.uniform(-24.0, -8.0)
 
                 # Compute gain required to match target loudness
                 delta_lufs_db = torch.tensor([target_track_lufs_db - track_lufs_db]).float()
@@ -335,8 +338,9 @@ class MultitrackDataset(torch.utils.data.Dataset):
                 track = gain_lin * track
 
                 instrument = self.song_dirs[dirname][os.path.basename(track_filepath)]
-                instrument = self.instrument_ids[instrument]
-
+                # print(f"Loading {os.path.basename(track_filepath)} with instrument {instrument}.")
+                # instrument = self.instrument_ids[instrument]
+                # print(f"Instrument ID: {instrument}")
                 if track.size()[0] == 2:
                     stereo = True
 
@@ -363,14 +367,14 @@ class MultitrackDataset(torch.utils.data.Dataset):
             # pad tracks to max_tracks
             while track_idx < self.max_tracks:
                 tracks.append(torch.zeros_like(tracks[0]))
-                track_metadata.append(0)
+                track_metadata.append("silence")
                 track_padding.append(True)
                 stereo_info.append(0)
                 track_idx += 1
 
             # convert to tensor
             tracks = torch.cat(tracks)
-
+            # print(f"Loaded {tracks.shape[0]} tracks for {song_name}.")
             
             # if tracks[...,0:middle_idx].sum() == 0 or tracks[...,middle_idx:].sum() == 0:
             #     continue
@@ -380,8 +384,10 @@ class MultitrackDataset(torch.utils.data.Dataset):
             if torch.any(mix_check[...,0:middle_idx] == False) or torch.any(mix_check[...,middle_idx:] == False):
                 continue
 
-            track_metadata = torch.tensor(track_metadata)
-            stereo_info = torch.tensor(stereo_info).reshape(track_metadata.shape)
+            # track_metadata = torch.tensor(track_metadata)
+            # print("Track metadata shape:", track_metadata)
+            stereo_info = torch.tensor(stereo_info)
+            # print("Stereo info shape:", stereo_info.shape)
             track_padding = torch.tensor(track_padding)
 
             # add to buffer
@@ -398,7 +404,9 @@ class MultitrackDataset(torch.utils.data.Dataset):
 
             # check if buffer is full
             if nbytes_loaded > self.buffer_size_gb * 1e9:
+                print(f"Loaded {len(self.track_examples)} track examples.")
                 break
+
 
     def __getitem__(self, idx):
 
@@ -425,17 +433,19 @@ class MultitrackDataset(torch.utils.data.Dataset):
         # optional
         if len(self.mix_examples) > 0:
             mix_example_idx = np.random.randint(0, len(self.mix_examples))
-            mix = self.mix_examples[mix_example_idx]
+            mix = self.mix_examples[mix_example_idx][0]
 
             if self.randomize_ref_mix_gain:
                 gain_db = np.random.uniform(-16.0, 12.0)
                 gain_lin = 10.0 ** (gain_db / 20.0)
                 mix = gain_lin * mix
+            refname = self.mix_examples[mix_example_idx][1]
         else:
             mix = torch.empty(1)
+            refname = "no_mix"
 
 
-        return tracks, stereo_info, track_metadata, track_padding, mix, song_name
+        return tracks, stereo_info, track_metadata, track_padding, mix, song_name, refname
 
 
 
@@ -509,7 +519,9 @@ class MultitrackDataModule(pl.LightningDataModule):
         return torch.utils.data.DataLoader(
             self.val_dataset,
             batch_size=self.hparams.batch_size,
-            num_workers=1,
+            num_workers=self.hparams.num_workers,
+            shuffle=True,
+            drop_last=True,
         )
 
     def test_dataloader(self):

@@ -10,14 +10,14 @@ data:
       - ./data/cambridge.yaml 
       - ./data/medley.yaml
     length: 262144
-    min_tracks: 4
-    max_tracks: 12
+    min_tracks: 8
+    max_tracks: 8
     batch_size: 1
     num_workers: 1
     num_train_passes: 5
     num_val_passes: 1
     train_buffer_size_gb: 1.0
-    val_buffer_size_gb: 0.3
+    val_buffer_size_gb: 0.1
     target_track_lufs_db: -20.0
     randomize_ref_mix_gain: true
     num_train_examples: 10

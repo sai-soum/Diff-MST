@@ -22,14 +22,16 @@ class System(pl.LightningModule):
         loss: torch.nn.Module,
         generate_mix: bool = True,
         use_track_loss: bool = False,
-        use_mix_loss: bool = True,
+        use_mix_loss: bool = False,
         use_param_loss: bool = False,
+        use_domain_inspired_loss: bool = False,
         instrument_id_json: str = "data/instrument_name2id.json",
         knowledge_engineering_yaml: str = "data/knowledge_engineering.yaml",
         active_eq_epoch: int = 0,
         active_compressor_epoch: int = 0,
         active_fx_bus_epoch: int = 0,
         active_master_bus_epoch: int = 0,
+        plot_weights: bool = False,
         lr: float = 1e-4,
         max_epochs: int = 500,
         schedule: str = "step",
@@ -44,11 +46,12 @@ class System(pl.LightningModule):
         self.use_track_loss = use_track_loss
         self.use_mix_loss = use_mix_loss
         self.use_param_loss = use_param_loss
+        self.use_domain_inspired_loss = use_domain_inspired_loss
         self.active_eq_epoch = active_eq_epoch
         self.active_compressor_epoch = active_compressor_epoch
         self.active_fx_bus_epoch = active_fx_bus_epoch
         self.active_master_bus_epoch = active_master_bus_epoch
-
+        self.plot_weights = plot_weights
         self.meter = pyln.Meter(44100)
         #self.warmup = warmup
 
@@ -86,7 +89,7 @@ class System(pl.LightningModule):
         self.use_track_compressor = False
         self.use_fx_bus = False
         self.use_master_bus = False
-        self.use_output_fader = True
+        self.use_output_fader = False
 
     def forward(self, tracks: torch.Tensor, ref_mix: torch.Tensor) -> torch.Tensor:
         """Apply model to audio waveform tracks.
@@ -112,8 +115,9 @@ class System(pl.LightningModule):
             optimizer_idx (int): Index of the optimizer, this step is called once for each optimizer.
             train (bool): Wether step is called during training (True) or validation (False).
         """
-
-        tracks, instrument_id, stereo_info, track_padding, ref_mix, song_name = batch
+        print("train step" if train else "val step")
+        tracks,  stereo_info, instrument_id, track_padding, ref_mix, song_name, refname = batch
+        print("songname: ", song_name, "refname: ", refname)
         #print("song_names from this batch: ", song_name)
 
         # split into A and B sections
@@ -200,6 +204,8 @@ class System(pl.LightningModule):
         #print("input tracks: ", tracks[...,middle_idx:])
         #print("ref_mix: ", ref_mix_a)
 
+        if self.current_epoch >= self.active_eq_epoch:
+            self.use_track_eq = True
 
         if self.current_epoch >= self.active_compressor_epoch:
             self.use_track_compressor = True
@@ -290,9 +296,13 @@ class System(pl.LightningModule):
             use_master_bus=self.use_master_bus,
             use_output_fader=self.use_output_fader,
         )
+        # print("track_param_dict: ", pred_track_param_dict)
+        # print("pred_mix_b: ", pred_mix_b.shape)
+        # print("ref_mix_b: ", ref_mix_b.shape)
+        # print("pred_mixed_tracks_b: ", pred_mixed_tracks_b.shape)
 
         # normalize the predicted mix before computing the loss
-        # pred_mix_b = batch_stereo_peak_normalize(pred_mix_b)
+       
         if torch.isnan(pred_mix_b).any():
             # print(pred_track_param_dict)
             raise ValueError("Found nan in pred_mix_b")
@@ -338,6 +348,7 @@ class System(pl.LightningModule):
             # pred_mix_b = batch_stereo_peak_normalize(pred_mix_b)
             # ref_mix_b = batch_stereo_peak_normalize(ref_mix_b)
             mix_loss = self.loss(pred_mix_b, ref_mix_b)
+            # print("mix_loss: ", mix_loss)
 
             if type(mix_loss) == dict:
                 for key, val in mix_loss.items():
@@ -357,12 +368,137 @@ class System(pl.LightningModule):
                         logger=True,
                         sync_dist=True,
                     )
+            if self.plot_weights:
+                for (i, weight) in enumerate(learnt_weights):
+                    self.log(
+                        ("train" if train else "val") + "/" + f"weight_{i}",
+                        weight,
+                        on_step=True,
+                        on_epoch=True,
+                        prog_bar=False,
+                        logger=True,
+                        sync_dist=True,
+                    )
             #print(loss)
-
+        if self.use_domain_inspired_loss:
+            (
+            loss,
+            style_loss_dict,
+            total_style_loss,
+            energy_preservation_loss,
+            band_preservation_loss,
+            low_band_centering_loss,
+            high_band_widening_loss,
+            vocal_loss,
+            double_loss,
+            learnt_weights
+             ) = self.loss(
+                pred_mix_b,
+                ref_mix_b,
+                pred_mixed_tracks_b,
+                tracks_b,
+                instrument_id,
+                global_step=self.global_step,
+                max_step=self.hparams.max_epochs,
+            )
+            
+            if self.plot_weights:
+                for (i, weight) in enumerate(learnt_weights):
+                    self.log(
+                        ("train" if train else "val") + "/" + f"weight_{i}",
+                        weight,
+                        on_step=True,
+                        on_epoch=True,
+                        prog_bar=False,
+                        logger=True,
+                        sync_dist=True,
+                    )
+            if type(style_loss_dict) == dict:
+                for key, value in style_loss_dict.items():
+                    self.log(
+                        ("train" if train else "val") + "/" + key,
+                        value,
+                        on_step=True,
+                        on_epoch=True,
+                        prog_bar=False,
+                        logger=True,
+                        sync_dist=True,
+                    )
+            # log the losses, if dict (only style_loss), plot each loss separately
+            self.log(
+                ("train" if train else "val") + "/total_style_loss",
+                total_style_loss,
+                on_step=True,
+                on_epoch=True,
+                prog_bar=True,
+                logger=True,
+                sync_dist=True,
+            )
+            if energy_preservation_loss is not None:
+                self.log(
+                    ("train" if train else "val") + "/energy_preservation_loss",
+                    energy_preservation_loss,
+                    on_step=True,
+                    on_epoch=True,
+                    prog_bar=True,
+                    logger=True,
+                    sync_dist=True,
+                )
+            if band_preservation_loss is not None:
+                self.log(
+                    ("train" if train else "val") + "/band_preservation_loss",
+                    band_preservation_loss,
+                    on_step=True,
+                    on_epoch=True,
+                    prog_bar=True,
+                    logger=True,
+                    sync_dist=True,
+                )
+            if low_band_centering_loss is not None:
+                self.log(
+                    ("train" if train else "val") + "/low_band_centering_loss",
+                    low_band_centering_loss,
+                    on_step=True,
+                    on_epoch=True,
+                    prog_bar=True,
+                    logger=True,
+                    sync_dist=True,
+                )
+            if high_band_widening_loss is not None:
+                self.log(
+                    ("train" if train else "val") + "/high_band_widening_loss",
+                    high_band_widening_loss,
+                    on_step=True,
+                    on_epoch=True,
+                    prog_bar=True,
+                    logger=True,
+                    sync_dist=True,
+                )
+            if vocal_loss is not None:
+                self.log(
+                    ("train" if train else "val") + "/vocal_loss",
+                    vocal_loss,
+                    on_step=True,
+                    on_epoch=True,
+                    prog_bar=True,
+                    logger=True,
+                    sync_dist=True,
+                )
+            if double_loss is not None:
+                self.log(
+                    ("train" if train else "val") + "/double_tracking_loss",
+                    double_loss,
+                    on_step=True,
+                    on_epoch=True,
+                    prog_bar=True,
+                    logger=True,
+                    sync_dist=True,
+                )
+            
 
         # log the losses
         self.log(
-            ("train" if train else "val") + "/loss",
+            ("train" if train else "val") + "/total_loss",
             loss,
             on_step=True,
             on_epoch=True,
@@ -370,7 +506,7 @@ class System(pl.LightningModule):
             logger=True,
             sync_dist=True,
         )
-
+        # print("loss: ", loss)
 
         # sisdr_error = -self.sisdr(pred_mix_b, ref_mix_b)
         # log the SI-SDR error
@@ -397,8 +533,9 @@ class System(pl.LightningModule):
         # )
         # print("pred_mix_b:  ", pred_mix_b)
         # for plotting down the line
+        # pred_mix_b = batch_stereo_peak_normalize(pred_mix_b)
         sum_mix_b = tracks_b.sum(dim=1, keepdim=True).detach().float().cpu()
-        # sum_mix_b = batch_stereo_peak_normalize(sum_mix_b)
+        sum_mix_b = batch_stereo_peak_normalize(sum_mix_b)
         # data_dict = {
         #     "ref_mix_a": ref_mix_a.detach().float().cpu(),
         #     "ref_mix_b_norm": ref_mix_b.detach().float().cpu(),
@@ -416,6 +553,7 @@ class System(pl.LightningModule):
             "ref_mix_b_norm": ref_mix_b.detach().float().cpu(),
             "pred_mix_b_norm": pred_mix_b.detach().float().cpu(),
             "sum_mix_b": sum_mix_b,
+            "pred_track_param_dict": pred_track_param_dict,
         }
         return loss, data_dict
 

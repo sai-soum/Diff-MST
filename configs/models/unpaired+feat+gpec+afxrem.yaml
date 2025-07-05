@@ -1,0 +1,122 @@
+model:
+  class_path: mst.system.System
+  init_args:
+    generate_mix: false
+    active_eq_epoch: 0
+    active_compressor_epoch: 0
+    active_fx_bus_epoch: 1000
+    active_master_bus_epoch: 1000
+ 
+    mix_fn: mst.mixing.naive_random_mix
+    mix_console:
+      class_path: mst.modules.AdvancedMixConsole
+      init_args:
+        sample_rate: 44100
+        input_min_gain_db: -48.0
+        # -90.0
+        input_max_gain_db: 12.0
+        output_min_gain_db: -48.0
+        # -90.0
+        output_max_gain_db: 12.0
+        eq_min_gain_db: -24.0
+        eq_max_gain_db: 24.0
+        min_pan: 0.0
+        max_pan: 1.0
+    model:
+      class_path: mst.modules.MixStyleTransferModel
+      init_args:
+        pre_trained_mix_encoder: True
+        track_encoder: 
+          class_path: mst.modules.SpectrogramEncoder
+          init_args:
+            embed_dim: 512
+            n_fft: 2048
+            hop_length: 512
+            input_batchnorm: false
+        mix_encoder: 
+          class_path: mst.modules.AFxRem
+          init_args:
+            sr: 44100
+        controller:
+          class_path: mst.modules.TransformerController
+          init_args:
+            embed_dim: 512
+            num_track_control_params: 19
+            num_fx_bus_control_params: 25
+            num_master_bus_control_params: 18
+            num_layers: 12
+            nhead: 8
+    use_mix_loss: True
+    use_param_loss: False
+    use_domain_inspired_loss: False
+    plot_weights: false
+    loss: 
+      class_path: mst.loss.AudioFeatureLoss
+      init_args:
+        sample_rate: 44100
+        stem_separation: false
+        use_clap: false
+        # weights: 
+        #   - 0 # rms
+        #   - 0 # crest factor
+        #   - 1.0  # stereo width
+        #   - 1.0 # stereo imbalance
+        #   - 0.1 # bark spectrum
+        weights: 
+          - 1.0 # rms
+          - 0.001 # crest factor
+          - 1.0  # stereo width
+          - 1.0 # stereo imbalance
+          - 0.1 # bark spectrum
+          
+    # loss:
+    #   class_path: mst.domain_informed_loss.FullDiffMSTLoss
+    #   init_args:
+    #     af_loss_fn: 
+    #       class_path: mst.domain_informed_loss.AudioFeatureLoss
+    #       init_args:
+    #         sample_rate: 44100
+    #         stem_separation: false
+    #         use_clap: false
+    #         weights: 
+    #             - 10 # rms
+    #             - 0.001 # crest factor
+    #             - 1000.0  # stereo width
+    #             - 10.0 # stereo imbalance
+    #             - 0.1 # bark spectrum
+    #     sample_rate: 44100
+        # lambda_energy: 0.05
+        # lambda_band: 0.2
+        # lambda_low_center: 0.05
+        # lambda_high_widen: 0.05
+        # lambda_vocal_center: 0.5
+        # lambda_double_pan: 0.4
+        # energy_threshold: 0.03
+        # low_band_indices: 
+        #   - 0
+        #   - 1
+        # high_band_indices: 
+        #   - 20
+        #   - 21
+        #   - 22
+        #   - 23
+        # use_energy_preservation: True
+        # use_band_preservation: False
+        # use_low_band_centering: True
+        # use_high_band_widening: True
+        # use_vocal_centering: True
+        # use_doubletrack_panning: False
+      
+    # loss: 
+    #   class_path: mst.domain_informed_loss.AudioFeatureLoss
+    #   init_args:
+    #     sample_rate: 44100
+    #     stem_separation: false
+    #     use_clap: false
+    #     weights: 
+    #       - 10 # rms
+    #       - 0.001 # crest factor
+    #       - 1000.0  # stereo width
+    #       - 10.0 # stereo imbalance
+    #       - 0.1 # bark spectrum
+

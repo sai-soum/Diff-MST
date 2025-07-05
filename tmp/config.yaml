@@ -1,0 +1,151 @@
+# # pytorch_lightning==2.1.2
+# seed_everything: 4000152388
+# trainer:
+#   accelerator: gpu
+#   strategy: ddp_find_unused_parameters_true
+#   devices: -1
+#   num_nodes: 1
+#   precision: 32
+#   logger:
+#     class_path: pytorch_lightning.loggers.WandbLogger
+#     init_args:
+#       name: null
+#       save_dir: /import/c4dm-datasets-ext/lcap/param
+#       version: null
+#       offline: false
+#       dir: null
+#       id: null
+#       anonymous: null
+#       project: lcap-param
+#       log_model: false
+#       experiment: null
+#       prefix: ''
+#       checkpoint_name: null
+#       job_type: null
+#       config: null
+#       entity: null
+#       reinit: null
+#       tags: null
+#       group: null
+#       notes: null
+#       magic: null
+#       config_exclude_keys: null
+#       config_include_keys: null
+#       mode: null
+#       allow_val_change: null
+#       resume: null
+#       force: null
+#       tensorboard: null
+#       sync_tensorboard: null
+#       monitor_gym: null
+#       save_code: null
+#       settings: null
+#   callbacks:
+#   - class_path: pytorch_lightning.callbacks.ModelCheckpoint
+#     init_args:
+#       dirpath: null
+#       filename: '{epoch}-{step}'
+#       monitor: val_loss
+#       verbose: false
+#       save_last: true
+#       save_top_k: 1
+#       save_weights_only: false
+#       mode: min
+#       auto_insert_metric_name: true
+#       every_n_train_steps: null
+#       train_time_interval: null
+#       every_n_epochs: null
+#       save_on_train_epoch_end: null
+#       enable_version_counter: true
+#   - class_path: pytorch_lightning.callbacks.ModelSummary
+#     init_args:
+#       max_depth: 2
+#   - class_path: pytorch_lightning.callbacks.LearningRateMonitor
+#     init_args:
+#       logging_interval: null
+#       log_momentum: false
+#       log_weight_decay: false
+#   - class_path: lcap.callbacks.MoveConfigCallback
+#     init_args:
+#       project_name: lcap-param
+#   - class_path: lcap.callbacks.ConfusionMatrixCallback
+#   fast_dev_run: false
+#   max_epochs: 250
+#   min_epochs: null
+#   max_steps: -1
+#   min_steps: null
+#   max_time: null
+#   limit_train_batches: null
+#   limit_val_batches: null
+#   limit_test_batches: null
+#   limit_predict_batches: null
+#   overfit_batches: 0.0
+#   val_check_interval: null
+#   check_val_every_n_epoch: 5
+#   num_sanity_val_steps: 32
+#   log_every_n_steps: 100
+#   enable_checkpointing: null
+#   enable_progress_bar: null
+#   enable_model_summary: null
+#   accumulate_grad_batches: 1
+#   gradient_clip_val: null
+#   gradient_clip_algorithm: null
+#   deterministic: null
+#   benchmark: true
+#   inference_mode: true
+#   use_distributed_sampler: true
+#   profiler: null
+#   detect_anomaly: false
+#   barebones: false
+#   plugins: null
+#   sync_batchnorm: true
+#   reload_dataloaders_every_n_epochs: 0
+#   default_root_dir: /import/c4dm-datasets-ext/lcap/param
+# ckpt_path: null
+model:
+  class_path: mst.methods.param.ParameterEstimator
+  init_args:
+    encoder:
+      class_path: mst.models.panns.Cnn14
+      init_args:
+        embed_dim: 512
+        sample_rate: 48000.0
+        window_size: 2048
+        hop_size: 1024
+        mel_bins: 128
+        fmin: 20.0
+        fmax: 20000.0
+        use_batchnorm: true
+        input_norm: minmax
+    lr: 0.0001
+    num_instances: 63
+    num_presets: 10
+    weight_decay: 0.0001
+    max_epochs: 250
+    embed_mode: concat
+    norm: L2
+# data:
+#   class_path: lcap.dataset.dataset_param.PluginTarfileDataModule
+#   init_args:
+#     train_tarfiles:
+#     - /import/c4dm-datasets-ext/lcap-datasets/20k/musdb18-vst3-presets.tar
+#     - /import/c4dm-datasets-ext/lcap-datasets/20k/mtg-jamendo-vst3-presets.tar
+#     - /import/c4dm-datasets-ext/lcap-datasets/20k/ursing-vst3-presets.tar
+#     - /import/c4dm-datasets-ext/lcap-datasets/20k/enst-drums-vst3-presets.tar
+#     - /import/c4dm-datasets-ext/lcap-datasets/20k/fsd50k-vst3-presets.tar
+#     - /import/c4dm-datasets-ext/lcap-datasets/20k/librispeech-vst3-presets.tar
+#     - /import/c4dm-datasets-ext/lcap-datasets/20k/medley-solos-db-vst3-presets.tar
+#     - /import/c4dm-datasets-ext/lcap-datasets/20k/guitarset-vst3-presets.tar
+#     val_tarfiles:
+#     - /import/c4dm-datasets-ext/lcap-datasets/20k/guitarset-vst3-presets.tar
+#     plugin_json: plugins/valid_plugins.json
+#     batch_size: 64
+#     num_workers: 8
+#     length: 262144
+#     stereo: true
+#     test_tarfiles: null
+#     pin_memory: true
+#     persistent_workers: true
+#     num_train_examples: 140000
+#     num_val_examples: 2000
+#     num_test_examples: 2000
